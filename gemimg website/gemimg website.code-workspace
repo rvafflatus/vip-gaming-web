@@ -1,0 +1,13 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"path": "../Afflatus Classes"
+		}
+	],
+	"settings": {
+		"liveServer.settings.multiRootWorkspaceName": "gemimg website"
+	}
+}

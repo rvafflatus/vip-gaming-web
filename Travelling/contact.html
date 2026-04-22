@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TravelGo | Home</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* Map Section Styling */
+        .map-wrapper {
+            margin: 40px auto;
+            max-width: 900px;
+            background: #fff;
+            padding: 25px;
+            border-radius: 20px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+            border: 1px solid #eee;
+        }
+
+        .map-wrapper h2 {
+            margin-bottom: 20px;
+            color: #2c3e50;
+            font-size: 28px;
+        }
+
+        .india-map {
+            width: 100%;
+            height: auto;
+            border-radius: 10px;
+            filter: drop-shadow(0 5px 15px rgba(0,0,0,0.1));
+            transition: transform 0.5s ease;
+        }
+
+        .india-map:hover {
+            transform: scale(1.02);
+        }
+
+        .home-hero {
+            padding: 60px 10%;
+            text-align: center;
+        }
+
+        .home-hero h1 {
+            font-size: 50px;
+            color: #2c3e50;
+        }
+
+        .home-hero h1 span {
+            color: #ff7675;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo">Travel<span>Go</span></div>
+        <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="destinations.html">Destinations</a></li>
+            <li><a href="about.html">About</a></li>
+            <li><a href="contact.html">Contact</a></li>
+        </ul>
+    </nav>
+
+    <div class="home-hero">
+        <h1>Welcome to <span>TravelGo</span></h1>
+        <p style="font-size: 20px; color: #636e72; margin-top: 10px;">Bharat ke har kone ki sair, Avni Chaudhary ke saath.</p>
+
+        <div class="map-wrapper">
+            <h2>India Administrative Map</h2>
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/17/India_administrative_map.png/800px-India_administrative_map.png" 
+                 alt="Incredible India Map" 
+                 class="india-map">
+        </div>
+
+        <div class="book-container">
+            <a href="destinations.html" class="book-btn">View Destinations ✈️</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>© 2026 | TravelGo by Avni Chaudhary</p>
+    </footer>
+</body>
+</html>

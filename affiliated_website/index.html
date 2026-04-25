@@ -2,43 +2,33 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Shop Categories | VIP Gaming</title>
-    <link rel="stylesheet" href="style.css">
+    <title>VIP Shop | Best Deals</title>
     <style>
-        .category-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-            padding: 40px;
-        }
-        .category-card {
-            border: 1px solid #ddd;
-            border-radius: 10px;
-            padding: 20px;
-            text-align: center;
-            background: #f9f9f9;
-            transition: 0.3s;
-            text-decoration: none;
-            color: #333;
-        }
-        .category-card:hover { transform: translateY(-5px); box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
-        .category-card img { width: 100%; height: 150px; object-fit: cover; border-radius: 8px; }
+        body { font-family: 'Segoe UI', sans-serif; text-align: center; background: #f9f9f9; margin: 0; }
+        .shop-header { background: #232f3e; color: white; padding: 40px 20px; }
+        .cat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 25px; padding: 50px 10%; }
+        .cat-card { background: white; padding: 30px; border-radius: 15px; text-decoration: none; color: #333; box-shadow: 0 4px 12px rgba(0,0,0,0.1); transition: 0.3s; }
+        .cat-card:hover { transform: translateY(-10px); border: 2px solid #ff9900; }
+        .back-home { display: inline-block; margin-top: 30px; text-decoration: none; color: #007185; }
     </style>
 </head>
 <body>
-    <h1>Browse by Category</h1>
-    <div class="category-grid">
-        <a href="gaming.html" class="category-card">
-            <img src="https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=500" alt="Gaming">
-            <h3>Gaming Gear</h3>
-            <p>Mice, Keyboards, and Headsets</p>
-        </a>
+    <div class="shop-header">
+        <h1>VIP Gaming Shopping Portal</h1>
+        <p>Top Rated Gear & Gadgets</p>
+    </div>
 
-        <a href="electronics.html" class="category-card">
-            <img src="https://images.unsplash.com/photo-1498049794561-7780e7231661?q=80&w=500" alt="Electronics">
-            <h3>Electronics</h3>
-            <p>Laptops, Monitors, and Accessories</p>
+    <div class="cat-grid">
+        <a href="gaming.html" class="cat-card">
+            <h2>🎮 Gaming Gear</h2>
+            <p>Mice, Keyboards, and RGB accessories.</p>
+        </a>
+        <a href="#" class="cat-card">
+            <h2>💻 Electronics</h2>
+            <p>Coming Soon: Laptops and Monitors.</p>
         </a>
     </div>
+
+    <a href="../index.html" class="back-home">← Back to Afflatus Classes</a>
 </body>
 </html>

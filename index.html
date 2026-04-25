@@ -3,8 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Afflatus Classes | Welcome to VIP Gaming</title>
+    <title>Afflatus Classes | VIP Gaming Portal</title>
     <link rel="stylesheet" href="style.css">
+    <style>
+        /* Adding some quick styles for the new section cards */
+        .business-sections {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            padding: 50px 10%;
+            background: #f4f4f4;
+        }
+        .section-card {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            text-decoration: none;
+            color: #333;
+            transition: transform 0.3s ease;
+        }
+        .section-card:hover {
+            transform: translateY(-10px);
+            border: 2px solid #ff9900;
+        }
+        .section-card h2 { color: #232f3e; margin-bottom: 10px; }
+        .section-card p { font-size: 0.9rem; color: #666; }
+        .btn {
+            display: inline-block;
+            margin-top: 15px;
+            padding: 10px 20px;
+            background: #232f3e;
+            color: white;
+            border-radius: 5px;
+            text-decoration: none;
+        }
+    </style>
 </head>
 <body>
 
@@ -16,11 +51,8 @@
     <nav>
         <a href="index.html">Home</a>
         <a href="courses.html">Courses</a>
-        
         <a href="affiliated_website/index.html">Shop Deals</a>
-        
         <a href="Travelling/index.html">Travel Site</a>
-        
         <a href="contact.html">Contact Us</a>
     </nav>
 </header>
@@ -28,12 +60,34 @@
 <main>
     <section class="hero">
         <h1>Welcome to Afflatus Classes</h1>
-        <p>Providing quality education and digital excellence.</p>
+        <p>Your Gateway to Education, Travel, and the Best Gaming Gear.</p>
+    </section>
+
+    <section class="business-sections">
+        
+        <a href="courses.html" class="section-card">
+            <h2>📚 Education</h2>
+            <p>Quality coaching and technical courses for digital excellence.</p>
+            <span class="btn">View Courses</span>
+        </a>
+
+        <a href="affiliated_website/index.html" class="section-card">
+            <h2>🛒 VIP Shop</h2>
+            <p>Handpicked Amazon deals on the best gaming mice and keyboards.</p>
+            <span class="btn">Browse Deals</span>
+        </a>
+
+        <a href="Travelling/index.html" class="section-card">
+            <h2>✈️ TravelGo</h2>
+            <p>Explore Udaipur, Rishikesh, and Kashmir with our guides.</p>
+            <span class="btn">Start Journey</span>
+        </a>
+
     </section>
 </main>
 
 <footer>
-    <p>&copy; 2026 VIP Gaming - Afflatus Classes</p>
+    <p>&copy; 2026 VIP Gaming - Afflatus Classes | Managed by Rahul</p>
 </footer>
 
 </body>

@@ -1,0 +1,37 @@
+[
+  {
+    "category": "gaming",
+    "name": "Logitech G502 Hero High Performance Wired Gaming Mouse",
+    "price": "₹3,995",
+    "image": "https://m.media-amazon.com/images/I/61mpMH5TCtL._SL1500_.jpg",
+    "link": "https://amzn.to/YOUR_LINK_1"
+  },
+  {
+    "category": "gaming",
+    "name": "Redgear Shadow Blade Mechanical Keyboard with RGB",
+    "price": "₹2,499",
+    "image": "https://m.media-amazon.com/images/I/619L89pPSkL._SL1200_.jpg",
+    "link": "https://amzn.to/YOUR_LINK_2"
+  },
+  {
+    "category": "gaming",
+    "name": "HyperX Cloud Stinger Gaming Headset",
+    "price": "₹3,290",
+    "image": "https://m.media-amazon.com/images/I/519u8P-GisL._SL1200_.jpg",
+    "link": "https://amzn.to/YOUR_LINK_3"
+  },
+  {
+    "category": "gaming",
+    "name": "SpinCart Gaming Mouse Pad (Large Size)",
+    "price": "₹499",
+    "image": "https://m.media-amazon.com/images/I/61m6q68H3BL._SL1000_.jpg",
+    "link": "https://amzn.to/YOUR_LINK_4"
+  },
+  {
+    "category": "gaming",
+    "name": "Ant Esports GameX Quest Gaming Chair",
+    "price": "₹11,499",
+    "image": "https://m.media-amazon.com/images/I/61669469O+L._SL1500_.jpg",
+    "link": "https://amzn.to/YOUR_LINK_5"
+  }
+]

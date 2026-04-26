@@ -36,16 +36,258 @@
   },
   {
     "category": "Electronics",
-    "name": "REDMI Note 15 Pro 5G (Carbon Black, 8GB+128GB) | 200MP OIS | Dimensity 7400-Ultra",
+    "brand": "redmi",
+    "name": "REDMI Note 15 Pro 5G (Carbon Black) | 200MP OIS | 6580mAh",
     "price": "₹29,999",
     "image": "https://m.media-amazon.com/images/I/81uGa3uCO1L._SX679_.jpg",
     "link": "https://amzn.to/41WzY6c"
   },
   {
     "category": "Electronics",
-    "name": "REDMI Note 15 Pro+ 5G (Coffee Mocha, 8GB+256GB) | 200MP OIS | Snapdragon 7s Gen 4",
+    "brand": "redmi",
+    "name": "REDMI Note 15 Pro+ 5G (Coffee Mocha) | Snapdragon 7s Gen 4",
     "price": "₹37,999",
     "image": "https://m.media-amazon.com/images/I/417Cj8smSkL._SY300_SX300_QL70_FMwebp_.jpg",
     "link": "https://amzn.to/4u2k6Lw"
+  },
+  {
+    "category": "Electronics",
+    "brand": "one plus",
+    "name": "OnePlus 13s | Snapdragon 8 Elite | Lifetime Display Warranty",
+    "price": "₹52,999",
+    "image": "https://m.media-amazon.com/images/I/61EUYqQSoTL._SL1500_.jpg",
+    "link": "https://amzn.to/4tyLfWF"
+  },
+  {
+    "category": "Electronics",
+    "brand": "oppo",
+    "name": "Oppo A3 Pro 5G (Starry Black) | 120Hz Refresh Rate",
+    "price": "₹19,206",
+    "image": "https://m.media-amazon.com/images/I/81K-xfO1qIL._SL1500_.jpg",
+    "link": "https://amzn.to/48prvMv"
+  },
+  {
+    "category": "Electronics",
+    "brand": "oppo",
+    "name": "OPPO K13 5G | 7000mAh Battery | 80W SUPERVOOC",
+    "price": "₹20,999",
+    "image": "https://m.media-amazon.com/images/I/51KMBLVX9cL.jpg",
+    "link": "https://amzn.to/48r6y9I"
+  },
+  {
+    "category": "Electronics",
+    "brand": "oppo",
+    "name": "Oppo A79 5G (Mystery Black) | 50MP AI Rear Camera",
+    "price": "₹19,200",
+    "image": "https://m.media-amazon.com/images/I/81JY6TWuFjL._SL1500_.jpg",
+    "link": "https://amzn.to/4tyqg6f"
+  },
+  {
+    "category": "Electronics",
+    "brand": "oppo",
+    "name": "Oppo A58 (Dazzling Green) | Dual Stereo Speakers",
+    "price": "₹15,499",
+    "image": "https://m.media-amazon.com/images/I/818r371d5hL._SL1500_.jpg",
+    "link": "https://amzn.to/4tyzpLV"
+  },
+  {
+    "category": "Electronics",
+    "brand": "oppo",
+    "name": "Oppo F33 5G Smartphone (Pearl White) | 7000mAh Battery",
+    "price": "₹37,999",
+    "image": "https://m.media-amazon.com/images/I/61FqkCnXgBL._SL1500_.jpg",
+    "link": "https://amzn.to/3QvgmUm"
+  },
+  {
+    "category": "Electronics",
+    "brand": "redmi",
+    "name": "Redmi Note 14 Pro 5G Prime Edition | Dimensity 7300-Ultra",
+    "price": "₹26,999",
+    "image": "https://m.media-amazon.com/images/I/71q5LyLKV7L._SL1500_.jpg",
+    "link": "https://amzn.to/4cLTBTk"
+  },
+  {
+    "category": "Electronics",
+    "brand": "redmi",
+    "name": "Redmi Note 13 5G (Stealth Black) | 108MP Pro-Grade Camera",
+    "price": "₹19,999",
+    "image": "https://m.media-amazon.com/images/I/71NnrsYP63L._SL1500_.jpg",
+    "link": "https://amzn.to/3QHUhBV"
+  },
+  {
+    "category": "Electronics",
+    "brand": "redmi",
+    "name": "Redmi A4 5G (Sparkle Purple) | 120Hz Display",
+    "price": "₹11,999",
+    "image": "https://m.media-amazon.com/images/I/81BGKLI+cWL._SL1500_.jpg",
+    "link": "https://amzn.to/48p3Xrf"
+  },
+  {
+    "category": "Electronics",
+    "brand": "one plus",
+    "name": "OnePlus 15 | Snapdragon 8 Elite Gen 5 | 7300mAh Battery",
+    "price": "₹79,999",
+    "image": "https://m.media-amazon.com/images/I/6166kkUbRg4L._SL1500_.jpg",
+    "link": "https://amzn.to/3OpNBrB"
+  },
+  {
+    "category": "Electronics",
+    "brand": "one plus",
+    "name": "OnePlus 10R 5G (Forest Green) | 80W SuperVOOC",
+    "price": "₹30,990",
+    "image": "https://m.media-amazon.com/images/I/716uVx3Wr5L._SL1500_.jpg",
+    "link": "https://amzn.to/42ssbgD"
+  },
+  {
+    "category": "Electronics",
+    "brand": "one plus",
+    "name": "OnePlus Nord 3 5G (Tempest Gray) | 8GB RAM",
+    "price": "₹36,699",
+    "image": "https://m.media-amazon.com/images/I/71-yDa90UrL._SL1482_.jpg",
+    "link": "https://amzn.to/4cLVHma"
+  },
+  {
+    "category": "Electronics",
+    "brand": "one plus",
+    "name": "OnePlus 10T 5G (Jade Green) | 128GB Storage",
+    "price": "₹35,999",
+    "image": "https://m.media-amazon.com/images/I/71flXufDnbL._SL1500_.jpg",
+    "link": "https://amzn.to/49acJJL"
+  },
+  {
+    "category": "Electronics",
+    "brand": "vivo",
+    "name": "VIVO T4x (Pronto Purple) | 8GB RAM | 128GB Storage",
+    "price": "₹18,949",
+    "image": "https://m.media-amazon.com/images/I/81SpTOTVQAL._SL1500_.jpg",
+    "link": "https://amzn.to/4t2B77n"
+  },
+  {
+    "category": "Electronics",
+    "brand": "vivo",
+    "name": "vivo V50e 5G (Pearl White) | 8GB RAM | 128GB Storage",
+    "price": "₹28,999",
+    "image": "https://m.media-amazon.com/images/I/71iVGB7GqEL._SL1500_.jpg",
+    "link": "https://amzn.to/4eIQ4rC"
+  },
+  {
+    "category": "Electronics",
+    "brand": "vivo",
+    "name": "Vivo V30e 5G Smartphone (Velvet Red) | 8GB RAM",
+    "price": "₹28,999",
+    "image": "https://m.media-amazon.com/images/I/61vxwwIEnXL._SL1080_.jpg",
+    "link": "https://amzn.to/4sWGXHuvivo"
+  },
+  {
+    "category": "Electronics",
+    "brand": "vivo",
+    "name": "vivo T5x 5G (Star Silver) | 7200mAh Battery",
+    "price": "₹27,989",
+    "image": "https://m.media-amazon.com/images/I/71ur3D4Wt3L._SL1500_.jpg",
+    "link": "https://amzn.to/4tCl950"
+  },
+  {
+    "category": "Electronics",
+    "brand": "vivo",
+    "name": "vivo V60e 5G (Elite Purple) | 8GB RAM | 128GB Storage",
+    "price": "₹31,999",
+    "image": "https://m.media-amazon.com/images/I/71BiI-RQ+-L._SX679_.jpg",
+    "link": "https://amzn.to/4d7wqnS"
+  },
+  {
+    "category": "Electronics",
+    "brand": "motorola",
+    "name": "Motorola G35 5G (Midnight Black) | 4GB RAM",
+    "price": "₹13,144",
+    "image": "https://m.media-amazon.com/images/I/61Krt4z4KmL._SL1500_.jpg",
+    "link": "https://amzn.to/3OKgtuw"
+  },
+  {
+    "category": "Electronics",
+    "brand": "motorola",
+    "name": "Motorola G45 5G (Brilliant Blue) | 8GB RAM",
+    "price": "₹14,990",
+    "image": "https://m.media-amazon.com/images/I/61yc3+G2hiL._SL1318_.jpg",
+    "link": "https://amzn.to/4eIQA92"
+  },
+  {
+    "category": "Electronics",
+    "brand": "motorola",
+    "name": "Motorola G57 Power 5G | 7000mAh Battery | IP64",
+    "price": "₹15,999",
+    "image": "https://m.media-amazon.com/images/I/41kKGEM47iL.jpg",
+    "link": "https://amzn.to/4ua98n1"
+  },
+  {
+    "category": "Electronics",
+    "brand": "motorola",
+    "name": "Motorola G67 Power 5G | 7000mAh Battery | 120Hz LCD",
+    "price": "₹17,090",
+    "image": "https://m.media-amazon.com/images/I/41bb7iSdQEL.jpg",
+    "link": "https://amzn.to/4vSzfkf"
+  },
+  {
+    "category": "Electronics",
+    "brand": "samsung",
+    "name": "Samsung Galaxy S25 FE 5G | Galaxy AI | JetBlack",
+    "price": "₹48,970",
+    "image": "https://m.media-amazon.com/images/I/4143cMel2GL._SL1000_.jpg",
+    "link": "https://amzn.to/4eH4hoW"
+  },
+  {
+    "category": "Electronics",
+    "brand": "samsung",
+    "name": "Samsung Galaxy S26 5G (Cobalt Violet) | AI Phone",
+    "price": "₹79,999",
+    "image": "https://m.media-amazon.com/images/I/715dfAKzbwL._SL1500_.jpg",
+    "link": "https://amzn.to/4ue2Jre"
+  },
+  {
+    "category": "Electronics",
+    "brand": "samsung",
+    "name": "Samsung Galaxy Z Fold7 5G | 200MP Camera | Blue Shadow",
+    "price": "₹1,74,978",
+    "image": "https://m.media-amazon.com/images/I/619Z1QHCy-L._SL1500_.jpg",
+    "link": "https://amzn.to/4mOrjfE"
+  },
+  {
+    "category": "Electronics",
+    "brand": "samsung",
+    "name": "Samsung Galaxy Z Flip7 FE 5G | Ultra Sleek Compact",
+    "price": "₹95,998",
+    "image": "https://m.media-amazon.com/images/I/61L+eT+cG+L._SL1500_.jpg",
+    "link": "https://amzn.to/3OQgxJc"
+  },
+  {
+    "category": "Electronics",
+    "brand": "samsung",
+    "name": "Samsung Galaxy M36 5G | Google Gemini | Serene Green",
+    "price": "₹20,449",
+    "image": "https://m.media-amazon.com/images/I/71lMM8WdrZL._SL1500_.jpg",
+    "link": "https://amzn.to/4cxAfTl"
+  },
+  {
+    "category": "Electronics",
+    "brand": "tecno",
+    "name": "Pova 7 Pro 5G (Neon Cyan) | 8GB+256GB",
+    "price": "₹19,299",
+    "image": "https://m.media-amazon.com/images/I/71F7wEYKTeL._SL1280_.jpg",
+    "link": "https://amzn.to/3ONc7mz"
+  },
+  {
+    "category": "Electronics",
+    "brand": "tecno",
+    "name": "POVA Curve 5G (Geek Black) | 8GB+256GB",
+    "price": "₹19,860",
+    "image": "https://m.media-amazon.com/images/I/61BN1v1SkVL._SL1280_.jpg",
+    "link": "https://amzn.to/4cuxTEI"
+  },
+  {
+    "category": "Electronics",
+    "brand": "tecno",
+    "name": "Pova Slim 5G (Slim White) | 8GB+128GB",
+    "price": "₹19,999",
+    "image": "https://m.media-amazon.com/images/I/51oD8oIm8-L._SL1280_.jpg",
+    "link": "https://amzn.to/48R0hP2"
   }
 ]

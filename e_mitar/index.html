@@ -2,21 +2,44 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>e-Mitra Services | VIP Portal</title>
-    <link rel="stylesheet" href="../style.css"> </head>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; text-align: center; background: #f9f9f9; margin: 0; }
+        .header { background: #1a5f7a; color: white; padding: 40px 20px; }
+        .cat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 25px; padding: 50px 10%; }
+        .cat-card { background: white; padding: 30px; border-radius: 15px; text-decoration: none; color: #333; box-shadow: 0 4px 12px rgba(0,0,0,0.1); transition: 0.3s; border: 2px solid transparent; }
+        .cat-card:hover { transform: translateY(-10px); border: 2px solid #1a5f7a; }
+        .icon { font-size: 3rem; margin-bottom: 15px; display: block; }
+        .back-home { display: inline-block; margin-top: 30px; text-decoration: none; color: #007185; font-weight: bold; }
+    </style>
+</head>
 <body>
-    <header>
-        <nav>
-            <a href="../index.html">Home</a>
-            <a href="../gaming_website/index.html">Gaming Hub</a>
-            <a href="index.html">e-Mitra</a>
-            <a href="../contact.html">Contact Us</a>
-        </nav>
-    </header>
-
-    <main style="padding: 50px; text-align: center;">
+    <div class="header">
         <h1>Rajasthan e-Mitra Services</h1>
-        <p>Apply for Jan Aadhaar, Birth Certificates, and Utility Bill payments here.</p>
-    </main>
+        <p>Your one-stop destination for Government Services</p>
+    </div>
+
+    <div class="cat-grid">
+        <a href="services.html?cat=ids" class="cat-card">
+            <span class="icon">🆔</span>
+            <h2>Govt IDs</h2>
+            <p>Jan Aadhaar, Aadhaar, PAN Card, and Voter ID.</p>
+        </a>
+
+        <a href="services.html?cat=bills" class="cat-card">
+            <span class="icon">💸</span>
+            <h2>Utility Bills</h2>
+            <p>Electricity, Water, and Mobile Bill Payments.</p>
+        </a>
+
+        <a href="services.html?cat=edu" class="cat-card">
+            <span class="icon">🎓</span>
+            <h2>Education</h2>
+            <p>RSCIT Exam forms, Board Results, and Scholarships.</p>
+        </a>
+    </div>
+
+    <a href="../index.html" class="back-home">← Back to Main Home</a>
 </body>
 </html>

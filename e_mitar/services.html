@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>e-Mitra Services List</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background: #f4f7f9; margin: 0; padding: 20px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+        .card { background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .apply-btn { background: #1a5f7a; color: white; padding: 10px; display: block; text-align: center; text-decoration: none; border-radius: 5px; margin-top: 10px; }
+    </style>
+</head>
+<body>
+    <h1 id="page-title" style="text-align: center;">e-Mitra Services</h1>
+    <div id="services-container" class="grid"></div>
+    <a href="index.html" style="display: block; text-align: center; margin-top: 20px;">Back to Categories</a>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const currentCat = urlParams.get('cat');
+
+        fetch('services.json')
+            .then(res => res.json())
+            .then(data => {
+                const container = document.getElementById('services-container');
+                const filtered = data.filter(s => s.category === currentCat);
+
+                filtered.forEach(s => {
+                    container.innerHTML += `
+                        <div class="card">
+                            <h3>${s.name}</h3>
+                            <p>${s.description}</p>
+                            <p><strong>Fees:</strong> ${s.price}</p>
+                            <a href="${s.link}" class="apply-btn">Apply Now</a>
+                        </div>
+                    `;
+                });
+            });
+    </script>
+</body>
+</html>

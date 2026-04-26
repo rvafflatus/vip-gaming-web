@@ -1,0 +1,23 @@
+[
+  {
+    "category": "ids",
+    "name": "Jan Aadhaar Enrollment",
+    "description": "Enrollment and modifications for Rajasthan Jan Aadhaar Card.",
+    "price": "Govt Charges Apply",
+    "link": "https://sso.rajasthan.gov.in/"
+  },
+  {
+    "category": "bills",
+    "name": "Electricity Bill Payment",
+    "description": "Instant payment for Jaipur/Ajmer/Jodhpur Vidyut Vitran Nigam.",
+    "price": "Bill Amount",
+    "link": "https://emitraapp.rajasthan.gov.in/"
+  },
+  {
+    "category": "edu",
+    "name": "RSCIT Exam Form",
+    "description": "Apply for the Rajasthan State Certificate in IT course.",
+    "price": "₹599",
+    "link": "https://www.afflatusclasses.com"
+  }
+]

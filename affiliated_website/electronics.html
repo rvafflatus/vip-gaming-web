@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Electronics Deals | VIP Shop</title>
+    <style>
+        :root { --amazon-orange: #ff9900; --text-dark: #232f3e; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f4f7f9; margin: 0; }
+        .header { background: var(--text-dark); color: white; padding: 20px; text-align: center; }
+        
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            padding: 40px 10%;
+        }
+
+        .product-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            transition: transform 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            border: 1px solid #eef0f2;
+        }
+
+        .product-card:hover { transform: translateY(-8px); box-shadow: 0 8px 25px rgba(0,0,0,0.1); }
+        .product-card img { width: 100%; height: 200px; object-fit: contain; border-radius: 8px; margin-bottom: 15px; }
+        .product-card h4 { margin: 10px 0; color: var(--text-dark); font-size: 1.1rem; height: 3em; overflow: hidden; }
+        .price { font-size: 1.3rem; font-weight: bold; color: #B12704; margin-bottom: 15px; }
+
+        .buy-btn {
+            background: var(--amazon-orange);
+            color: white;
+            text-align: center;
+            padding: 12px;
+            text-decoration: none;
+            border-radius: 25px;
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+        .buy-btn:hover { background: #e68a00; }
+        .back-link { display: block; text-align: center; margin-top: 20px; color: #007185; text-decoration: none; }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <h1>Latest Electronics</h1>
+    <p>Premium smartphones and gadgets at the best prices</p>
+</div>
+
+<div id="electronics-container" class="product-grid">
+    </div>
+
+<a href="index.html" class="back-link">← Back to Categories</a>
+
+<script>
+    // Fetch data from the shared JSON file
+    fetch('products.json')
+        .then(response => response.json())
+        .then(data => {
+            const container = document.getElementById('electronics-container');
+            
+            // FILTER: Only show products where category is 'Electronics'
+            const electronicsItems = data.filter(item => item.category === 'Electronics');
+
+            electronicsItems.forEach(item => {
+                container.innerHTML += `
+                    <div class="product-card">
+                        <img src="${item.image}" alt="${item.name}">
+                        <div>
+                            <h4>${item.name}</h4>
+                            <p class="price">${item.price}</p>
+                        </div>
+                        <a href="${item.link}" target="_blank" class="buy-btn">Buy on Amazon</a>
+                    </div>
+                `;
+            });
+            
+            if(electronicsItems.length === 0) {
+                container.innerHTML = "<p style='text-align:center; grid-column: 1/-1;'>No electronics products found in database.</p>";
+            }
+        })
+        .catch(error => console.error('Error loading electronics:', error));
+</script>
+
+</body>
+</html>

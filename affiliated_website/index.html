@@ -2,14 +2,16 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>VIP Shop | Best Deals</title>
     <style>
         body { font-family: 'Segoe UI', sans-serif; text-align: center; background: #f9f9f9; margin: 0; }
         .shop-header { background: #232f3e; color: white; padding: 40px 20px; }
         .cat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 25px; padding: 50px 10%; }
-        .cat-card { background: white; padding: 30px; border-radius: 15px; text-decoration: none; color: #333; box-shadow: 0 4px 12px rgba(0,0,0,0.1); transition: 0.3s; }
+        .cat-card { background: white; padding: 30px; border-radius: 15px; text-decoration: none; color: #333; box-shadow: 0 4px 12px rgba(0,0,0,0.1); transition: 0.3s; border: 2px solid transparent; }
         .cat-card:hover { transform: translateY(-10px); border: 2px solid #ff9900; }
-        .back-home { display: inline-block; margin-top: 30px; text-decoration: none; color: #007185; }
+        .icon { font-size: 3rem; margin-bottom: 15px; display: block; }
+        .back-home { display: inline-block; margin-top: 30px; text-decoration: none; color: #007185; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -20,12 +22,15 @@
 
     <div class="cat-grid">
         <a href="gaming.html" class="cat-card">
-            <h2>🎮 Gaming Gear</h2>
+            <span class="icon">🎮</span>
+            <h2>Gaming Gear</h2>
             <p>Mice, Keyboards, and RGB accessories.</p>
         </a>
-        <a href="#" class="cat-card">
-            <h2>💻 Electronics</h2>
-            <p>Coming Soon: Laptops and Monitors.</p>
+
+        <a href="electronics.html" class="cat-card">
+            <span class="icon">📱</span>
+            <h2>Electronics</h2>
+            <p>Latest Smartphones from Samsung, OnePlus, Redmi & more.</p>
         </a>
     </div>
 

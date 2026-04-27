@@ -15,7 +15,7 @@
             padding: 0;
         }
 
-        /* Navigation Header */
+        /* Fixed Navigation Header */
         header.top-bar {
             display: flex; 
             align-items: center; 
@@ -89,7 +89,7 @@
             display: block;
         }
 
-        /* e-Mitra Page Sections */
+        /* Page Layout Sections */
         .blue-banner { 
             background: #1a5f7a; 
             color: white; 
@@ -126,29 +126,11 @@
 
         .icon { font-size: 3rem; margin-bottom: 15px; display: block; }
 
-        /* Mobile Adjustments */
         @media (max-width: 768px) {
-            header.top-bar {
-                flex-direction: column;
-                padding: 15px;
-            }
-            nav {
-                margin-top: 15px;
-                gap: 10px;
-                flex-wrap: wrap;
-                justify-content: center;
-            }
-            .dropdown-content {
-                position: static;
-                box-shadow: none;
-                border: none;
-                display: none; 
-                padding-left: 15px;
-                min-width: 100%;
-            }
-            .dropdown:hover .dropdown-content {
-                display: block;
-            }
+            header.top-bar { flex-direction: column; padding: 15px; }
+            nav { margin-top: 15px; gap: 10px; flex-wrap: wrap; justify-content: center; }
+            .dropdown-content { position: static; display: none; padding-left: 15px; min-width: 100%; }
+            .dropdown:hover .dropdown-content { display: block; }
         }
     </style>
 </head>
@@ -178,8 +160,8 @@
 </header>
 
 <div class="blue-banner">
-    <h1 style="margin: 0; font-size: 2.5rem;">Rajasthan e-Mitra Services</h1>
-    <p style="margin-top: 10px; opacity: 0.9;">Your one-stop destination for Government Services</p>
+    <h1>Rajasthan e-Mitra Services</h1>
+    <p>Your one-stop destination for Government Services</p>
 </div>
 
 <div class="cat-grid">

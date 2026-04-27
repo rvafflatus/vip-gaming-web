@@ -6,7 +6,7 @@
     <title>e-Mitra Services | VIP Portal</title>
     <link rel="stylesheet" href="../style.css">
     <style>
-        /* Base Reset */
+        /* Base Reset to prevent gaps */
         body { 
             font-family: 'Segoe UI', sans-serif; 
             text-align: center; 
@@ -15,7 +15,7 @@
             padding: 0;
         }
 
-        /* Fixed Navigation Header */
+        /* Navigation Header */
         header.top-bar {
             display: flex; 
             align-items: center; 
@@ -23,11 +23,12 @@
             padding: 10px 5%; 
             background: #ffffff; 
             border-bottom: 1px solid #eee;
+            /* Using relative ensures it stays at the top and pushes content down */
             position: relative; 
             z-index: 1001; 
         }
 
-        /* Navigation Styles */
+        /* Navigation Menu Styling */
         nav {
             display: flex;
             align-items: center;
@@ -51,7 +52,7 @@
             color: #ff9900;
         }
 
-        /* Dropdown Logic */
+        /* Dropdown Functionality */
         .dropdown {
             position: relative;
             display: inline-block;
@@ -89,7 +90,7 @@
             display: block;
         }
 
-        /* Page Layout Sections */
+        /* e-Mitra Specific Banner */
         .blue-banner { 
             background: #1a5f7a; 
             color: white; 
@@ -97,6 +98,7 @@
             margin: 0;
         }
         
+        /* Responsive Grid for Categories */
         .cat-grid { 
             display: grid; 
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); 
@@ -126,11 +128,29 @@
 
         .icon { font-size: 3rem; margin-bottom: 15px; display: block; }
 
+        /* Mobile View Rules */
         @media (max-width: 768px) {
-            header.top-bar { flex-direction: column; padding: 15px; }
-            nav { margin-top: 15px; gap: 10px; flex-wrap: wrap; justify-content: center; }
-            .dropdown-content { position: static; display: none; padding-left: 15px; min-width: 100%; }
-            .dropdown:hover .dropdown-content { display: block; }
+            header.top-bar {
+                flex-direction: column;
+                padding: 15px;
+            }
+            nav {
+                margin-top: 15px;
+                gap: 10px;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            .dropdown-content {
+                position: static;
+                box-shadow: none;
+                border: none;
+                display: none; 
+                padding-left: 15px;
+                min-width: 100%;
+            }
+            .dropdown:hover .dropdown-content {
+                display: block;
+            }
         }
     </style>
 </head>
@@ -143,7 +163,7 @@
     </div>
     
     <nav>
-        <a href="../afflatus_classes/index.html" class="nav-link">Home</a>
+        <a href="../index.html" class="nav-link">Home</a>
         
         <div class="dropdown">
             <button class="dropbtn">Our Projects ▼</button>
@@ -160,8 +180,8 @@
 </header>
 
 <div class="blue-banner">
-    <h1>Rajasthan e-Mitra Services</h1>
-    <p>Your one-stop destination for Government Services</p>
+    <h1 style="margin: 0; font-size: 2.5rem;">Rajasthan e-Mitra Services</h1>
+    <p style="margin-top: 10px; opacity: 0.9;">Your one-stop destination for Government Services</p>
 </div>
 
 <div class="cat-grid">

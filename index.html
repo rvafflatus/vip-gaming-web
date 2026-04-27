@@ -3,56 +3,72 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Afflatus Classes | VIP Gaming Portal</title>
-    <link rel="stylesheet" href="style.css">
+    <title>e-Mitra Services | VIP Portal</title>
+    <link rel="stylesheet" href="../style.css">
     <style>
-        /* --- Dropdown Logic --- */
+        /* Base Reset */
+        body { 
+            font-family: 'Segoe UI', sans-serif; 
+            text-align: center; 
+            background: #f9f9f9; 
+            margin: 0; 
+            padding: 0;
+        }
+
+        /* Fixed Navigation Header */
+        header.top-bar {
+            display: flex; 
+            align-items: center; 
+            justify-content: space-between; 
+            padding: 10px 5%; 
+            background: #ffffff; 
+            border-bottom: 1px solid #eee;
+            position: relative; /* Changed from absolute/fixed to stay in flow */
+            z-index: 1001; /* Higher than the blue header */
+        }
+
+        /* Navigation Styles */
         nav {
             display: flex;
             align-items: center;
-            gap: 15px;
+            gap: 25px;
         }
 
-        .nav-item {
-            text-decoration: none; 
-            color: #333; 
-            padding: 8px 12px;
+        .nav-link, .dropbtn {
+            text-decoration: none;
+            color: #333;
             font-size: 16px;
+            font-weight: 500;
+            padding: 10px;
+            cursor: pointer;
+            background: none;
+            border: none;
             transition: color 0.3s;
+            font-family: inherit;
         }
 
-        .nav-item:hover {
+        .nav-link:hover, .dropbtn:hover {
             color: #ff9900;
         }
 
+        /* Dropdown Logic */
         .dropdown {
             position: relative;
             display: inline-block;
         }
 
-        .dropbtn {
-            background: none;
-            border: none;
-            color: #333;
-            padding: 8px 12px;
-            font-size: 16px;
-            font-weight: 500;
-            cursor: pointer;
-            font-family: inherit;
-        }
-
         .dropdown-content {
-            display: none; /* Hidden by default */
+            display: none;
             position: absolute;
             background-color: #ffffff;
-            min-width: 180px;
+            min-width: 200px;
             box-shadow: 0px 8px 16px rgba(0,0,0,0.1);
-            z-index: 100;
+            z-index: 1002;
             border-radius: 8px;
             top: 100%;
             left: 0;
-            overflow: hidden;
             border: 1px solid #eee;
+            overflow: hidden;
         }
 
         .dropdown-content a {
@@ -61,7 +77,6 @@
             text-decoration: none;
             display: block;
             text-align: left;
-            font-size: 14px;
             transition: background 0.2s;
         }
 
@@ -70,158 +85,122 @@
             color: #ff9900;
         }
 
-        /* Show the dropdown menu on hover */
         .dropdown:hover .dropdown-content {
             display: block;
         }
 
-        /* --- Portal Layout Styles --- */
-        .portal-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 20px;
-            padding: 40px 5%;
-            background: #f8f9fa;
+        /* e-Mitra Page Sections */
+        .blue-banner { 
+            background: #1a5f7a; 
+            color: white; 
+            padding: 60px 20px; 
+            margin: 0; /* Ensures no gap between nav and banner */
+        }
+        
+        .cat-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); 
+            gap: 25px; 
+            padding: 50px 10%; 
         }
 
-        .portal-card {
-            background: white;
-            padding: 25px;
-            border-radius: 15px;
-            text-align: center;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.05);
-            text-decoration: none;
-            color: #333;
-            transition: all 0.3s ease;
-            border: 1px solid #eee;
+        .cat-card { 
+            background: white; 
+            padding: 30px; 
+            border-radius: 15px; 
+            text-decoration: none; 
+            color: #333; 
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1); 
+            transition: 0.3s; 
+            border: 2px solid transparent;
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
+            justify-content: center;
+            align-items: center;
         }
 
-        .portal-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
-            border-color: #ff9900;
+        .cat-card:hover { 
+            transform: translateY(-10px); 
+            border: 2px solid #1a5f7a; 
         }
 
-        .portal-btn {
-            display: inline-block;
-            margin-top: 15px;
-            padding: 12px 25px;
-            background: #232f3e;
-            color: white;
-            border-radius: 5px;
-            text-decoration: none;
-            font-weight: bold;
-        }
+        .icon { font-size: 3rem; margin-bottom: 15px; display: block; }
 
-        /* MEDIA QUERIES FOR MOBILE DEVICES */
+        /* Mobile Adjustments */
         @media (max-width: 768px) {
-            header {
+            header.top-bar {
                 flex-direction: column;
-                text-align: center;
                 padding: 15px;
             }
-
             nav {
                 margin-top: 15px;
+                gap: 10px;
                 flex-wrap: wrap;
                 justify-content: center;
             }
-
             .dropdown-content {
                 position: static;
-                display: block; /* Show links plainly on mobile for easier tapping */
                 box-shadow: none;
                 border: none;
-                background: #fdfdfd;
+                display: none; /* Keep hidden until hover/click or set to block for mobile */
                 padding-left: 15px;
+                min-width: 100%;
             }
-            
-            .dropbtn {
-                font-weight: bold;
-                color: #232f3e;
+            .dropdown:hover .dropdown-content {
+                display: block;
             }
         }
     </style>
 </head>
 <body>
 
-<header style="display: flex; align-items: center; justify-content: space-between; background: #fff; border-bottom: 1px solid #eee; padding: 10px 5%;">
+<header class="top-bar">
     <div class="logo-container" style="display: flex; align-items: center; gap: 10px;">
-        <img src="logo.png" alt="Afflatus Classes Logo" class="logo-img" style="height: 40px;">
-        <span class="site-title" style="font-weight: bold; font-size: 1.2rem; color: #232f3e;">Afflatus</span>
+        <img src="../logo.png" alt="Afflatus Logo" style="height: 40px;">
+        <span style="font-weight: bold; font-size: 1.2rem; color: #333;">Afflatus</span>
     </div>
+    
     <nav>
-        <a href="index.html" class="nav-item">Home</a>
+        <a href="../index.html" class="nav-link">Home</a>
         
         <div class="dropdown">
             <button class="dropbtn">Our Projects ▼</button>
             <div class="dropdown-content">
-                <a href="gaming_website/index.html">🎮 Gaming Hub</a>
-                <a href="affiliated_website/index.html">🛒 Shop Deals</a>
-                <a href="emitra/index.html">📑 e-Mitra Services</a>
-                <a href="Travelling/index.html">✈️ Travel Site</a>
+                <a href="../gaming_website/index.html">🎮 Gaming Hub</a>
+                <a href="../affiliated_website/index.html">🛒 Shop Deals</a>
+                <a href="index.html">📑 e-Mitra Services</a>
+                <a href="../Travelling/index.html">✈️ Travel Site</a>
             </div>
         </div>
 
-        <a href="contact.html" class="nav-item">Contact Us</a>
+        <a href="../contact.html" class="nav-link">Contact Us</a>
     </nav>
 </header>
 
-<main>
-    <section class="hero" style="text-align: center; padding: 60px 20px; background: #232f3e; color: white;">
-        <h1 style="margin-bottom: 10px;">Welcome to Afflatus Classes</h1>
-        <p style="opacity: 0.9;">Your portal for Education, Gaming, and Global Travel Guides.</p>
-    </section>
+<div class="blue-banner">
+    <h1 style="margin: 0; font-size: 2.5rem;">Rajasthan e-Mitra Services</h1>
+    <p style="margin-top: 10px; opacity: 0.9;">Your one-stop destination for Government Services</p>
+</div>
 
-    <section class="portal-container">
-        <a href="gaming_website/index.html" class="portal-card">
-            <div>
-                <h2>🎮 Gaming Hub</h2>
-                <p>Interactive gaming content and the latest news from VIP Gaming.</p>
-            </div>
-            <span class="portal-btn">Enter Hub</span>
-        </a>
+<div class="cat-grid">
+    <a href="services.html?cat=ids" class="cat-card">
+        <span class="icon">🆔</span>
+        <h2>Govt IDs</h2>
+        <p>Jan Aadhaar, PAN Card, and Voter ID services.</p>
+    </a>
 
-        <a href="afflatus_classes/index.html" class="portal-card">
-            <div>
-                <h2>📚 Afflatus Classes</h2>
-                <p>Quality education and technical courses for digital excellence.</p>
-            </div>
-            <span class="portal-btn">View Courses</span>
-        </a>
+    <a href="services.html?cat=bills" class="cat-card">
+        <span class="icon">💸</span>
+        <h2>Utility Bills</h2>
+        <p>Electricity, Water, and Mobile Bill Payments.</p>
+    </a>
 
-        <a href="affiliated_website/index.html" class="portal-card">
-            <div>
-                <h2>🛒 Shop Deals</h2>
-                <p>Handpicked Amazon affiliate deals on top-tier gaming gear.</p>
-            </div>
-            <span class="portal-btn">View Deals</span>
-        </a>
-
-        <a href="emitra/index.html" class="portal-card">
-            <div>
-                <h2>📑 e-Mitra</h2>
-                <p>Rajasthan government services including Jan Aadhaar and bill payments.</p>
-            </div>
-            <span class="portal-btn">Access Services</span>
-        </a>
-
-        <a href="Travelling/index.html" class="portal-card">
-            <div>
-                <h2>✈️ Travel Site</h2>
-                <p>Explore beautiful destinations across India including Udaipur and Kashmir.</p>
-            </div>
-            <span class="portal-btn">Explore Now</span>
-        </a>
-    </section>
-</main>
-
-<footer style="text-align: center; padding: 30px; background: #232f3e; color: white; margin-top: 40px;">
-    <p>&copy; 2026 VIP Gaming - Afflatus Classes</p>
-</footer>
+    <a href="services.html?cat=edu" class="cat-card">
+        <span class="icon">🎓</span>
+        <h2>Education</h2>
+        <p>RSCIT Exam forms, Board Results, and Scholarships.</p>
+    </a>
+</div>
 
 </body>
 </html>

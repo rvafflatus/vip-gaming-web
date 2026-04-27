@@ -6,7 +6,28 @@
     <title>e-Mitra Services | VIP Portal</title>
     <link rel="stylesheet" href="../style.css">
     <style>
-        /* Navigation & Dropdown Styles */
+        /* Base Reset */
+        body { 
+            font-family: 'Segoe UI', sans-serif; 
+            text-align: center; 
+            background: #f9f9f9; 
+            margin: 0; 
+            padding: 0;
+        }
+
+        /* Fixed Navigation Header */
+        header.top-bar {
+            display: flex; 
+            align-items: center; 
+            justify-content: space-between; 
+            padding: 10px 5%; 
+            background: #ffffff; 
+            border-bottom: 1px solid #eee;
+            position: relative; /* Changed from absolute/fixed to stay in flow */
+            z-index: 1001; /* Higher than the blue header */
+        }
+
+        /* Navigation Styles */
         nav {
             display: flex;
             align-items: center;
@@ -23,12 +44,14 @@
             background: none;
             border: none;
             transition: color 0.3s;
+            font-family: inherit;
         }
 
         .nav-link:hover, .dropbtn:hover {
             color: #ff9900;
         }
 
+        /* Dropdown Logic */
         .dropdown {
             position: relative;
             display: inline-block;
@@ -40,7 +63,7 @@
             background-color: #ffffff;
             min-width: 200px;
             box-shadow: 0px 8px 16px rgba(0,0,0,0.1);
-            z-index: 1000;
+            z-index: 1002;
             border-radius: 8px;
             top: 100%;
             left: 0;
@@ -66,9 +89,13 @@
             display: block;
         }
 
-        /* e-Mitra Specific Styles */
-        body { font-family: 'Segoe UI', sans-serif; text-align: center; background: #f9f9f9; margin: 0; }
-        .header { background: #1a5f7a; color: white; padding: 40px 20px; }
+        /* e-Mitra Page Sections */
+        .blue-banner { 
+            background: #1a5f7a; 
+            color: white; 
+            padding: 60px 20px; 
+            margin: 0; /* Ensures no gap between nav and banner */
+        }
         
         .cat-grid { 
             display: grid; 
@@ -89,9 +116,14 @@
             display: flex;
             flex-direction: column;
             justify-content: center;
+            align-items: center;
         }
 
-        .cat-card:hover { transform: translateY(-10px); border: 2px solid #1a5f7a; }
+        .cat-card:hover { 
+            transform: translateY(-10px); 
+            border: 2px solid #1a5f7a; 
+        }
+
         .icon { font-size: 3rem; margin-bottom: 15px; display: block; }
 
         /* Mobile Adjustments */
@@ -103,24 +135,29 @@
             nav {
                 margin-top: 15px;
                 gap: 10px;
+                flex-wrap: wrap;
+                justify-content: center;
             }
             .dropdown-content {
                 position: static;
                 box-shadow: none;
                 border: none;
-                display: block;
+                display: none; /* Keep hidden until hover/click or set to block for mobile */
                 padding-left: 15px;
                 min-width: 100%;
+            }
+            .dropdown:hover .dropdown-content {
+                display: block;
             }
         }
     </style>
 </head>
 <body>
 
-<header class="top-bar" style="display: flex; align-items: center; justify-content: space-between; padding: 10px 5%; background: #fff; border-bottom: 1px solid #eee;">
+<header class="top-bar">
     <div class="logo-container" style="display: flex; align-items: center; gap: 10px;">
         <img src="../logo.png" alt="Afflatus Logo" style="height: 40px;">
-        <span style="font-weight: bold; font-size: 1.2rem;">Afflatus</span>
+        <span style="font-weight: bold; font-size: 1.2rem; color: #333;">Afflatus</span>
     </div>
     
     <nav>
@@ -140,9 +177,9 @@
     </nav>
 </header>
 
-<div class="header">
-    <h1>Rajasthan e-Mitra Services</h1>
-    <p>Your one-stop destination for Government Services</p>
+<div class="blue-banner">
+    <h1 style="margin: 0; font-size: 2.5rem;">Rajasthan e-Mitra Services</h1>
+    <p style="margin-top: 10px; opacity: 0.9;">Your one-stop destination for Government Services</p>
 </div>
 
 <div class="cat-grid">

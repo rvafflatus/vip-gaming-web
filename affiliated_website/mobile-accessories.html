@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mobile Accessories | VIP Shopping</title>
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <div class="header">
+        <h1>Mobile Accessories</h1>
+    </div>
+
+    <div id="products-grid" class="portal-container">
+        </div>
+
+    <script>
+        fetch('products.json')
+            .then(res => res.json())
+            .then(data => {
+                const container = document.getElementById('products-grid');
+                // Ensure this string matches exactly what you wrote in products.json
+                const filtered = data.filter(p => p.category === 'Mobile Accessories');
+
+                filtered.forEach(product => {
+                    container.innerHTML += `
+                        <div class="portal-card">
+                            <img src="${product.image}" alt="${product.name}" style="width:100px;">
+                            <h3>${product.name}</h3>
+                            <p>${product.price}</p>
+                            <a href="${product.link}" class="portal-btn">Buy Now</a>
+                        </div>
+                    `;
+                });
+            });
+    </script>
+</body>
+</html>

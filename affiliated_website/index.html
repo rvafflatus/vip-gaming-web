@@ -4,36 +4,182 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>VIP Shop | Best Deals</title>
+    <link rel="stylesheet" href="../style.css">
     <style>
-        body { font-family: 'Segoe UI', sans-serif; text-align: center; background: #f9f9f9; margin: 0; }
-        .shop-header { background: #232f3e; color: white; padding: 40px 20px; }
-        .cat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 25px; padding: 50px 10%; }
-        .cat-card { background: white; padding: 30px; border-radius: 15px; text-decoration: none; color: #333; box-shadow: 0 4px 12px rgba(0,0,0,0.1); transition: 0.3s; border: 2px solid transparent; }
-        .cat-card:hover { transform: translateY(-10px); border: 2px solid #ff9900; }
-        .icon { font-size: 3rem; margin-bottom: 15px; display: block; }
-        .back-home { display: inline-block; margin-top: 30px; text-decoration: none; color: #007185; font-weight: bold; }
+        /* Base Reset */
+        body { 
+            font-family: 'Segoe UI', sans-serif; 
+            text-align: center; 
+            background: #f9f9f9; 
+            margin: 0; 
+            padding: 0;
+        }
+
+        /* Navigation Header Logic */
+        header.top-bar {
+            display: flex; 
+            align-items: center; 
+            justify-content: space-between; 
+            padding: 10px 5%; 
+            background: #ffffff; 
+            border-bottom: 1px solid #eee;
+            position: relative; 
+            z-index: 1001; 
+        }
+
+        nav {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+        }
+
+        .nav-link, .dropbtn {
+            text-decoration: none;
+            color: #333;
+            font-size: 16px;
+            font-weight: 500;
+            padding: 10px;
+            cursor: pointer;
+            background: none;
+            border: none;
+            transition: color 0.3s;
+            font-family: inherit;
+        }
+
+        .nav-link:hover, .dropbtn:hover {
+            color: #ff9900;
+        }
+
+        /* Dropdown Functionality */
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #ffffff;
+            min-width: 200px;
+            box-shadow: 0px 8px 16px rgba(0,0,0,0.1);
+            z-index: 1002;
+            border-radius: 8px;
+            top: 100%;
+            left: 0;
+            border: 1px solid #eee;
+            overflow: hidden;
+        }
+
+        .dropdown-content a {
+            color: #333;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            text-align: left;
+        }
+
+        .dropdown-content a:hover {
+            background-color: #f8f9fa;
+            color: #ff9900;
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        /* Shop Section Styles */
+        .shop-header { 
+            background: #232f3e; 
+            color: white; 
+            padding: 60px 20px; 
+        }
+
+        .cat-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); 
+            gap: 25px; 
+            padding: 50px 10%; 
+        }
+
+        .cat-card { 
+            background: white; 
+            padding: 35px; 
+            border-radius: 15px; 
+            text-decoration: none; 
+            color: #333; 
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1); 
+            transition: 0.3s; 
+            border: 2px solid transparent; 
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .cat-card:hover { 
+            transform: translateY(-10px); 
+            border: 2px solid #ff9900; 
+        }
+
+        .icon { font-size: 3.5rem; margin-bottom: 15px; display: block; }
+
+        /* Mobile Optimization */
+        @media (max-width: 768px) {
+            header.top-bar { flex-direction: column; padding: 15px; }
+            nav { margin-top: 15px; gap: 10px; flex-wrap: wrap; justify-content: center; }
+            .dropdown-content { position: static; box-shadow: none; border: none; display: none; padding-left: 15px; min-width: 100%; }
+            .dropdown:hover .dropdown-content { display: block; }
+        }
     </style>
 </head>
 <body>
-    <div class="shop-header">
-        <h1>VIP Gaming Shopping Portal</h1>
-        <p>Top Rated Gear & Gadgets</p>
+
+<header class="top-bar">
+    <div class="logo-container" style="display: flex; align-items: center; gap: 10px;">
+        <img src="../logo.png" alt="Afflatus Logo" style="height: 40px;">
+        <span style="font-weight: bold; font-size: 1.2rem; color: #232f3e;">Afflatus</span>
     </div>
+    
+    <nav>
+        <a href="../index.html" class="nav-link">Home</a>
+        
+        <div class="dropdown">
+            <button class="dropbtn">Our Projects ▼</button>
+            <div class="dropdown-content">
+                <a href="../gaming_website/index.html">🎮 Gaming Hub</a>
+                <a href="index.html">🛒 Shop Deals</a>
+                <a href="../emitra/index.html">📑 e-Mitra Services</a>
+                <a href="../Travelling/index.html">✈️ Travel Site</a>
+            </div>
+        </div>
 
-    <div class="cat-grid">
-        <a href="gaming.html" class="cat-card">
-            <span class="icon">🎮</span>
-            <h2>Gaming Gear</h2>
-            <p>Mice, Keyboards, and RGB accessories.</p>
-        </a>
+        <a href="../contact.html" class="nav-link">Contact Us</a>
+    </nav>
+</header>
 
-        <a href="electronics.html" class="cat-card">
-            <span class="icon">📱</span>
-            <h2>Electronics</h2>
-            <p>Latest Smartphones from Samsung, OnePlus, Redmi & more.</p>
-        </a>
-    </div>
+<div class="shop-header">
+    <h1>VIP Gaming Shopping Portal</h1>
+    <p>Top Rated Gear & Gadgets</p>
+</div>
 
-    <a href="../index.html" class="back-home">← Back to Afflatus Classes</a>
+<div class="cat-grid">
+    <a href="gaming.html" class="cat-card">
+        <span class="icon">🎮</span>
+        <h2>Gaming Gear</h2>
+        <p>Mice, Keyboards, and RGB accessories.</p>
+    </a>
+
+    <a href="electronics.html" class="cat-card">
+        <span class="icon">📱</span>
+        <h2>Electronics</h2>
+        <p>Latest Smartphones from Samsung, OnePlus, Redmi & more.</p>
+    </a>
+
+    <a href="mobile-accessories.html" class="cat-card">
+        <span class="icon">🔌</span>
+        <h2>Mobile Accessories</h2>
+        <p>Cables, Chargers, Power Banks & Cases.</p>
+    </a>
+</div>
+
 </body>
 </html>

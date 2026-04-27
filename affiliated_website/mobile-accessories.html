@@ -3,36 +3,89 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mobile Accessories | VIP Shopping</title>
+    <title>Mobile Accessories | VIP Shop</title>
     <link rel="stylesheet" href="../style.css">
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; text-align: center; background: #f9f9f9; margin: 0; }
+        
+        /* Unified Header Style like Electronics page */
+        .shop-header { background: #232f3e; color: white; padding: 40px 20px; margin-bottom: 20px; }
+        
+        /* Product Grid Layout */
+        .portal-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            padding: 40px 5%;
+        }
+
+        /* Product Card Style */
+        .portal-card {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transition: 0.3s;
+            border: 1px solid #eee;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .portal-card:hover { transform: translateY(-8px); border-color: #ff9900; }
+
+        .product-img { width: 100%; max-height: 200px; object-fit: contain; border-radius: 10px; margin-bottom: 15px; }
+        
+        .price { font-size: 1.2rem; color: #B12704; font-weight: bold; margin: 10px 0; }
+
+        .buy-btn {
+            display: inline-block;
+            background: #ff9900;
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+            width: 80%;
+        }
+        
+        .buy-btn:hover { background: #e68a00; }
+    </style>
 </head>
 <body>
-    <div class="header">
+
+    <div class="shop-header">
         <h1>Mobile Accessories</h1>
+        <p>Premium Cables, Chargers & Power Banks</p>
     </div>
 
-    <div id="products-grid" class="portal-container">
-        </div>
+    <div id="products-grid" class="portal-container"></div>
 
     <script>
         fetch('products.json')
             .then(res => res.json())
             .then(data => {
                 const container = document.getElementById('products-grid');
-                // Ensure this string matches exactly what you wrote in products.json
+                // Filter specifically for Mobile Accessories
                 const filtered = data.filter(p => p.category === 'Mobile Accessories');
 
                 filtered.forEach(product => {
+                    // This HTML structure creates the card look from your screenshot
                     container.innerHTML += `
                         <div class="portal-card">
-                            <img src="${product.image}" alt="${product.name}" style="width:100px;">
-                            <h3>${product.name}</h3>
-                            <p>${product.price}</p>
-                            <a href="${product.link}" class="portal-btn">Buy Now</a>
+                            <img src="${product.image}" alt="${product.name}" class="product-img">
+                            <div style="padding: 10px;">
+                                <h3 style="font-size: 1.1rem; height: 3em; overflow: hidden;">${product.name}</h3>
+                                <p class="price">${product.price}</p>
+                                <a href="${product.link}" class="buy-btn" target="_blank">Buy Now</a>
+                            </div>
                         </div>
                     `;
                 });
-            });
+            })
+            .catch(err => console.error("Error loading products:", err));
     </script>
 </body>
 </html>

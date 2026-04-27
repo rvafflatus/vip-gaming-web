@@ -23,8 +23,9 @@
             padding: 10px 5%; 
             background: #ffffff; 
             border-bottom: 1px solid #eee;
-            position: relative; /* Changed from absolute/fixed to stay in flow */
-            z-index: 1001; /* Higher than the blue header */
+            /* relative keeps the header in the flow so it doesn't hide text */
+            position: relative; 
+            z-index: 1001; 
         }
 
         /* Navigation Styles */
@@ -94,7 +95,7 @@
             background: #1a5f7a; 
             color: white; 
             padding: 60px 20px; 
-            margin: 0; /* Ensures no gap between nav and banner */
+            margin: 0;
         }
         
         .cat-grid { 
@@ -142,7 +143,7 @@
                 position: static;
                 box-shadow: none;
                 border: none;
-                display: none; /* Keep hidden until hover/click or set to block for mobile */
+                display: none; 
                 padding-left: 15px;
                 min-width: 100%;
             }

@@ -6,10 +6,78 @@
     <title>Afflatus Classes | VIP Gaming Portal</title>
     <link rel="stylesheet" href="style.css">
     <style>
-        /* Mobile-Friendly Portal Layout */
+        /* --- Dropdown Logic --- */
+        nav {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .nav-item {
+            text-decoration: none; 
+            color: #333; 
+            padding: 8px 12px;
+            font-size: 16px;
+            transition: color 0.3s;
+        }
+
+        .nav-item:hover {
+            color: #ff9900;
+        }
+
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropbtn {
+            background: none;
+            border: none;
+            color: #333;
+            padding: 8px 12px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        .dropdown-content {
+            display: none; /* Hidden by default */
+            position: absolute;
+            background-color: #ffffff;
+            min-width: 180px;
+            box-shadow: 0px 8px 16px rgba(0,0,0,0.1);
+            z-index: 100;
+            border-radius: 8px;
+            top: 100%;
+            left: 0;
+            overflow: hidden;
+            border: 1px solid #eee;
+        }
+
+        .dropdown-content a {
+            color: #333;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            text-align: left;
+            font-size: 14px;
+            transition: background 0.2s;
+        }
+
+        .dropdown-content a:hover {
+            background-color: #f8f9fa;
+            color: #ff9900;
+        }
+
+        /* Show the dropdown menu on hover */
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        /* --- Portal Layout Styles --- */
         .portal-container {
             display: grid;
-            /* Cards will stack vertically on small screens and grid on large ones */
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 20px;
             padding: 40px 5%;
@@ -26,7 +94,6 @@
             color: #333;
             transition: all 0.3s ease;
             border: 1px solid #eee;
-            /* Ensures cards in the same row have equal height */
             display: flex;
             flex-direction: column;
             justify-content: space-between;
@@ -52,34 +119,29 @@
         /* MEDIA QUERIES FOR MOBILE DEVICES */
         @media (max-width: 768px) {
             header {
-                flex-direction: column; /* Stack logo and menu on phones */
+                flex-direction: column;
                 text-align: center;
                 padding: 15px;
             }
 
             nav {
-                display: flex;
-                flex-wrap: wrap; /* Allows links to go to a second line if too many */
-                justify-content: center;
-                gap: 8px;
                 margin-top: 15px;
+                flex-wrap: wrap;
+                justify-content: center;
             }
 
-            nav a {
-                font-size: 14px;
-                padding: 6px 12px;
+            .dropdown-content {
+                position: static;
+                display: block; /* Show links plainly on mobile for easier tapping */
+                box-shadow: none;
+                border: none;
+                background: #fdfdfd;
+                padding-left: 15px;
             }
-
-            .hero {
-                padding: 40px 20px;
-            }
-
-            .hero h1 {
-                font-size: 1.8rem;
-            }
-
-            .portal-container {
-                padding: 20px 5%;
+            
+            .dropbtn {
+                font-weight: bold;
+                color: #232f3e;
             }
         }
     </style>
@@ -92,12 +154,19 @@
         <span class="site-title" style="font-weight: bold; font-size: 1.2rem; color: #232f3e;">Afflatus</span>
     </div>
     <nav>
-        <a href="index.html" style="text-decoration: none; color: #333; padding: 5px 10px;">Home</a>
-        <a href="gaming_website/index.html" style="text-decoration: none; color: #333; padding: 5px 10px;">Gaming Hub</a>
-        <a href="affiliated_website/index.html" style="text-decoration: none; color: #333; padding: 5px 10px;">Shop Deals</a>
-        <a href="emitra/index.html" style="text-decoration: none; color: #333; padding: 5px 10px;">e-Mitra</a>
-        <a href="contact.html" style="text-decoration: none; color: #333; padding: 5px 10px;">Contact</a>
-        <a href="Travelling/index.html" style="text-decoration: none; color: #333; padding: 5px 10px;">Travel</a>
+        <a href="index.html" class="nav-item">Home</a>
+        
+        <div class="dropdown">
+            <button class="dropbtn">Our Projects ▼</button>
+            <div class="dropdown-content">
+                <a href="gaming_website/index.html">🎮 Gaming Hub</a>
+                <a href="affiliated_website/index.html">🛒 Shop Deals</a>
+                <a href="emitra/index.html">📑 e-Mitra Services</a>
+                <a href="Travelling/index.html">✈️ Travel Site</a>
+            </div>
+        </div>
+
+        <a href="contact.html" class="nav-item">Contact Us</a>
     </nav>
 </header>
 

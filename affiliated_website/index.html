@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VIP Shop | Best Deals</title>
+    <title>VIP Shop | Categories</title>
     <link rel="stylesheet" href="../style.css">
     <style>
         /* Base Reset */
@@ -15,7 +15,7 @@
             padding: 0;
         }
 
-        /* Navigation Header Logic */
+        /* Navigation Header */
         header.top-bar {
             display: flex; 
             align-items: center; 
@@ -46,21 +46,15 @@
             font-family: inherit;
         }
 
-        .nav-link:hover, .dropbtn:hover {
-            color: #ff9900;
-        }
+        .nav-link:hover, .dropbtn:hover { color: #ff9900; }
 
-        /* Dropdown Functionality */
-        .dropdown {
-            position: relative;
-            display: inline-block;
-        }
-
+        /* Dropdown - Cleaned as requested */
+        .dropdown { position: relative; display: inline-block; }
         .dropdown-content {
             display: none;
             position: absolute;
             background-color: #ffffff;
-            min-width: 220px;
+            min-width: 200px;
             box-shadow: 0px 8px 16px rgba(0,0,0,0.1);
             z-index: 1002;
             border-radius: 8px;
@@ -69,7 +63,6 @@
             border: 1px solid #eee;
             overflow: hidden;
         }
-
         .dropdown-content a {
             color: #333;
             padding: 12px 16px;
@@ -77,30 +70,17 @@
             display: block;
             text-align: left;
         }
+        .dropdown-content a:hover { background-color: #f8f9fa; color: #ff9900; }
+        .dropdown:hover .dropdown-content { display: block; }
 
-        .dropdown-content a:hover {
-            background-color: #f8f9fa;
-            color: #ff9900;
-        }
-
-        .dropdown:hover .dropdown-content {
-            display: block;
-        }
-
-        /* Shop Section Styles */
-        .shop-header { 
-            background: #232f3e; 
-            color: white; 
-            padding: 60px 20px; 
-        }
-
+        /* Shop Grid Styles */
+        .shop-header { background: #232f3e; color: white; padding: 60px 20px; }
         .cat-grid { 
             display: grid; 
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); 
             gap: 25px; 
             padding: 50px 10%; 
         }
-
         .cat-card { 
             background: white; 
             padding: 35px; 
@@ -113,43 +93,14 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            position: relative;
-            overflow: hidden;
         }
-
-        .cat-card:hover { 
-            transform: translateY(-10px); 
-            border: 2px solid #ff9900; 
-        }
-
-        /* New Highlight Style for Customized Items */
-        .cat-card.featured {
-            border: 2px solid #6366f1;
-        }
-        .cat-card.featured:hover {
-            border-color: #4f46e5;
-        }
-
-        .badge {
-            position: absolute;
-            top: 10px;
-            right: -30px;
-            background: #6366f1;
-            color: white;
-            padding: 5px 40px;
-            transform: rotate(45deg);
-            font-size: 0.7rem;
-            font-weight: bold;
-        }
-
+        .cat-card:hover { transform: translateY(-10px); border: 2px solid #ff9900; }
         .icon { font-size: 3.5rem; margin-bottom: 15px; display: block; }
 
         /* Mobile Optimization */
         @media (max-width: 768px) {
             header.top-bar { flex-direction: column; padding: 15px; }
             nav { margin-top: 15px; gap: 10px; flex-wrap: wrap; justify-content: center; }
-            .dropdown-content { position: static; box-shadow: none; border: none; display: none; padding-left: 15px; min-width: 100%; }
-            .dropdown:hover .dropdown-content { display: block; }
         }
     </style>
 </head>
@@ -169,8 +120,6 @@
             <div class="dropdown-content">
                 <a href="../gaming_website/index.html">🎮 Gaming Hub</a>
                 <a href="index.html">🛒 Shop Deals</a>
-                <!-- New Dropdown Link -->
-                <a href="customized.html">🎁 Customized Items</a>
                 <a href="../emitra/index.html">📑 e-Mitra Services</a>
                 <a href="../Travelling/index.html">✈️ Travel Site</a>
             </div>
@@ -181,31 +130,33 @@
 </header>
 
 <div class="shop-header">
-    <h1>VIP Gaming Shopping Portal</h1>
-    <p>Top Rated Gear & Local Customized Gifts</p>
+    <h1>VIP Shopping Categories</h1>
+    <p>Choose a category to explore the best deals</p>
 </div>
 
 <div class="cat-grid">
-    <!-- NEW CATEGORY CARD -->
-    <a href="customized.html" class="cat-card featured">
-        <div class="badge">TONK SPECIAL</div>
+    <!-- 1. Customized Category -->
+    <a href="customized.html" class="cat-card">
         <span class="icon">🎁</span>
         <h2>Customized Items</h2>
-        <p>Personalized Pillows, T-Shirts, Wallets & more with your Photo.</p>
+        <p>Personalized Pillows, T-Shirts, and Gifts with your Photo.</p>
     </a>
 
+    <!-- 2. Gaming Gear -->
     <a href="gaming.html" class="cat-card">
         <span class="icon">🎮</span>
         <h2>Gaming Gear</h2>
         <p>Mice, Keyboards, and RGB accessories.</p>
     </a>
 
+    <!-- 3. Electronics -->
     <a href="electronics.html" class="cat-card">
         <span class="icon">📱</span>
         <h2>Electronics</h2>
-        <p>Latest Smartphones from Samsung, OnePlus, Redmi & more.</p>
+        <p>Latest Smartphones and high-tech gadgets.</p>
     </a>
 
+    <!-- 4. Mobile Accessories -->
     <a href="mobile-accessories.html" class="cat-card">
         <span class="icon">🔌</span>
         <h2>Mobile Accessories</h2>

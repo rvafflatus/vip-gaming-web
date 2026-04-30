@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Afflatus Classes | VIP Gaming Portal</title>
     <link rel="stylesheet" href="style.css">
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         /* --- Navigation & Dropdown Styling --- */
         nav {
@@ -36,10 +38,10 @@
         }
 
         .dropdown-content {
-            display: none; /* Hidden by default */
+            display: none;
             position: absolute;
             background-color: #ffffff;
-            min-width: 200px;
+            min-width: 220px; /* Slightly wider for new category */
             box-shadow: 0px 8px 16px rgba(0,0,0,0.1);
             z-index: 1000;
             border-radius: 8px;
@@ -63,7 +65,6 @@
             color: #ff9900;
         }
 
-        /* Hover trigger for dropdown */
         .dropdown:hover .dropdown-content {
             display: block;
         }
@@ -71,7 +72,6 @@
         /* --- Portal Container & Card Styling --- */
         .portal-container {
             display: grid;
-            /* Responsive Grid: stacks on mobile, grid on desktop */
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 20px;
             padding: 40px 5%;
@@ -99,6 +99,11 @@
             border-color: #ff9900;
         }
 
+        /* Special highlight for Customized Card */
+        .custom-highlight {
+            border: 2px solid #6366f1;
+        }
+
         .portal-btn {
             display: inline-block;
             margin-top: 15px;
@@ -110,36 +115,35 @@
             font-weight: bold;
         }
 
-        /* --- Mobile Responsiveness --- */
+        /* WhatsApp Button */
+        .whatsapp-float {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #25d366;
+            color: white;
+            width: 60px;
+            height: 60px;
+            border-radius: 50px;
+            text-align: center;
+            font-size: 30px;
+            box-shadow: 2px 2px 10px rgba(0,0,0,0.2);
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.3s;
+        }
+        .whatsapp-float:hover {
+            transform: scale(1.1);
+            color: white;
+        }
+
         @media (max-width: 768px) {
-            header.main-header {
-                flex-direction: column;
-                padding: 15px;
-                text-align: center;
-            }
-
-            nav {
-                margin-top: 15px;
-                gap: 10px;
-                flex-wrap: wrap;
-                justify-content: center;
-            }
-
-            .dropdown-content {
-                position: static;
-                display: none; /* Can change to block if you want it always visible on mobile */
-                box-shadow: none;
-                border: none;
-                padding-left: 15px;
-            }
-            
-            .dropdown:hover .dropdown-content {
-                display: block;
-            }
-
-            .hero h1 {
-                font-size: 1.8rem;
-            }
+            header.main-header { flex-direction: column; padding: 15px; text-align: center; }
+            nav { margin-top: 15px; gap: 10px; flex-wrap: wrap; justify-content: center; }
+            .dropdown-content { position: static; display: none; }
+            .dropdown:hover .dropdown-content { display: block; }
         }
     </style>
 </head>
@@ -158,6 +162,8 @@
             <div class="dropdown-content">
                 <a href="gaming_website/index.html">🎮 Gaming Hub</a>
                 <a href="affiliated_website/index.html">🛒 Shop Deals</a>
+                <!-- NEW ADDITION -->
+                <a href="shop/customized.html" style="background: #f0f7ff; font-weight: bold;">🎁 Customized Items</a> 
                 <a href="emitra/index.html">📑 e-Mitra Services</a>
                 <a href="Travelling/index.html">✈️ Travel Site</a>
             </div>
@@ -170,10 +176,20 @@
 <main>
     <section class="hero" style="text-align: center; padding: 60px 20px; background: #232f3e; color: white;">
         <h1 style="margin-bottom: 10px;">Welcome to Afflatus Classes</h1>
-        <p style="opacity: 0.9;">Your portal for Education, Gaming, and Global Travel Guides.</p>
+        <p style="opacity: 0.9;">Your portal for Education, Gaming, and Local Customized Printing.</p>
     </section>
 
     <section class="portal-container">
+        <!-- NEW CARD: Customized Products (Placed first to drive earnings) -->
+        <a href="shop/customized.html" class="portal-card custom-highlight">
+            <div>
+                <div style="background: #eef2ff; color: #6366f1; padding: 5px 15px; border-radius: 20px; display: inline-block; font-size: 0.8rem; font-weight: bold; margin-bottom: 10px;">LOCAL TONK DELIVERY</div>
+                <h2>🎁 Customized Gifts</h2>
+                <p>Personalized Cushions, T-shirts, and Bottles. Printed locally for you.</p>
+            </div>
+            <span class="portal-btn" style="background: #6366f1;">Order Custom</span>
+        </a>
+
         <a href="gaming_website/index.html" class="portal-card">
             <div>
                 <h2>🎮 Gaming Hub</h2>
@@ -215,6 +231,11 @@
         </a>
     </section>
 </main>
+
+<!-- WhatsApp Sticky Button -->
+<a href="https://wa.me/919610147688?text=Hello%20Afflatus,%20Can%20I%20have%20a%20chat%20with%20you." class="whatsapp-float" target="_blank">
+    <i class="fab fa-whatsapp"></i>
+</a>
 
 <footer style="text-align: center; padding: 30px; background: #232f3e; color: white; margin-top: 40px;">
     <p>&copy; 2026 VIP Gaming - Afflatus Classes</p>

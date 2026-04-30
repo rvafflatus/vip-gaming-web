@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customized Gifts | Afflatus Shop</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .product-card:hover img { transform: scale(1.05); }
+    </style>
+</head>
+<body class="bg-gray-50 font-sans">
+
+    <header class="bg-indigo-700 text-white py-12 px-6 text-center shadow-lg">
+        <h1 class="text-4xl font-bold mb-2">🎁 Personalized Just For You</h1>
+        <p class="text-indigo-100">Customized cushions, shirts, and gifts with high-quality printing.</p>
+        <div class="mt-4 inline-block bg-white text-indigo-700 px-4 py-1 rounded-full text-sm font-bold uppercase tracking-wider">
+            Fast Delivery in Tonk
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 py-12">
+        <div id="product-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+            <p class="text-center col-span-full text-gray-500">Loading custom products...</p>
+        </div>
+    </main>
+
+    <footer class="bg-white border-t border-gray-200 py-8 text-center text-gray-500 text-sm">
+        <p>&copy; 2026 Afflatus Shop. All Rights Reserved.</p>
+    </footer>
+
+    <script>
+        // Fetch and Filter Data
+        async function loadCustomProducts() {
+            const grid = document.getElementById('product-grid');
+            
+            try {
+                // Adjust path if your JSON is in a different folder (e.g., '../product.json')
+                const response = await fetch('product.json');
+                const products = await response.json();
+
+                // Filter for "customized" category only
+                const customItems = products.filter(item => item.category === 'customized');
+
+                if (customItems.length === 0) {
+                    grid.innerHTML = '<p class="col-span-full text-center py-10">No customized products found.</p>';
+                    return;
+                }
+
+                grid.innerHTML = customItems.map(product => `
+                    <div class="product-card bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden flex flex-col transition-all duration-300 hover:shadow-xl">
+                        <div class="relative overflow-hidden h-64 bg-gray-200">
+                            <img src="${product.image}" alt="${product.title}" class="w-full h-full object-cover transition-transform duration-500">
+                            <div class="absolute top-3 right-3 bg-white/90 backdrop-blur px-2 py-1 rounded-md text-xs font-bold text-indigo-700 shadow-sm">
+                                Premium Print
+                            </div>
+                        </div>
+
+                        <div class="p-5 flex flex-col flex-grow">
+                            <h2 class="text-gray-800 font-bold text-lg mb-2 line-clamp-2 h-14">${product.title}</h2>
+                            
+                            <div class="flex items-center justify-between mt-auto pt-4">
+                                <div>
+                                    <span class="text-sm text-gray-500 line-through">₹${Math.round(product.price * 1.5)}</span>
+                                    <span class="text-2xl font-black text-indigo-600 ml-1">₹${product.price}</span>
+                                </div>
+                                <a href="${product.link}" target="_blank" 
+                                   class="bg-[#25D366] hover:bg-[#128C7E] text-white p-3 rounded-xl transition-colors shadow-md flex items-center justify-center">
+                                    <i class="fab fa-whatsapp text-xl"></i>
+                                </a>
+                            </div>
+                            <p class="text-[10px] text-gray-400 mt-2 text-center">Click WhatsApp to send your photo for customization</p>
+                        </div>
+                    </div>
+                `).join('');
+
+            } catch (error) {
+                console.error('Error loading JSON:', error);
+                grid.innerHTML = '<p class="col-span-full text-center text-red-500">Error loading products. Please check if product.json exists.</p>';
+            }
+        }
+
+        // Initialize
+        loadCustomProducts();
+    </script>
+</body>
+</html>

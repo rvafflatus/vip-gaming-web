@@ -61,8 +61,8 @@
     async function loadCustomItems() {
         const container = document.getElementById('product-container');
         
-        // AUTO-DETECTION: It tries to look for the JSON in the root folder first
-        const possiblePaths = ['../product.json', 'product.json', '../products.json', 'products.json'];
+        // Prioritize products.json in the current folder for better local reliability
+        const possiblePaths = ['products.json', '../products.json', 'product.json', '../product.json'];
         let data = null;
 
         for (const path of possiblePaths) {
@@ -70,10 +70,11 @@
                 const response = await fetch(path);
                 if (response.ok) {
                     data = await response.json();
-                    console.log("Found JSON at: " + path);
+                    console.log("Success! Loaded JSON from: " + path);
                     break;
                 }
             } catch (e) {
+                console.warn("Skipping path: " + path);
                 continue; 
             }
         }
@@ -81,8 +82,8 @@
         if (!data) {
             container.innerHTML = `
                 <div style="grid-column: 1/-1; text-align: center; color: red; padding: 20px; border: 1px solid red; background: #fff1f1;">
-                    <p><strong>⚠️ Path Error: product.json not found.</strong></p>
-                    <p style="font-size: 0.8rem;">Ensure product.json is in the main folder. If opening via file (double-click), Chrome may block it. Try using "Live Server" in VS Code.</p>
+                    <p><strong>⚠️ Error: Data File Not Found</strong></p>
+                    <p style="font-size: 0.8rem;">Ensure 'products.json' is inside the 'affiliated_website' folder.</p>
                 </div>`;
             return;
         }
@@ -90,7 +91,7 @@
         const customProducts = data.filter(item => item.category === "customized");
 
         if (customProducts.length === 0) {
-            container.innerHTML = "<p style='grid-column: 1/-1; text-align: center;'>No products found with category 'customized' in your JSON.</p>";
+            container.innerHTML = "<p style='grid-column: 1/-1; text-align: center;'>No products found with category 'customized'.</p>";
             return;
         }
 

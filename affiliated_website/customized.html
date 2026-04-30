@@ -21,21 +21,17 @@
             display: flex; flex-direction: column; justify-content: space-between; text-align: center;
         }
         .product-card:hover { transform: translateY(-5px); }
-        .product-card img { max-width: 100%; height: 200px; object-fit: contain; margin-bottom: 15px; border-radius: 5px; background: #f9f9f9; }
-        .product-card h3 { font-size: 1.1rem; margin: 10px 0; color: #333; height: 3em; overflow: hidden; line-height: 1.4; }
+        .product-card img { max-width: 100%; height: 200px; object-fit: contain; margin-bottom: 15px; border-radius: 5px; }
+        .product-card h3 { font-size: 1.1rem; margin: 10px 0; color: #333; height: 3em; overflow: hidden; }
         .price { font-size: 1.3rem; font-weight: bold; color: #B12704; margin-bottom: 15px; }
         .buy-btn { 
-            background: #25D366; color: white; text-decoration: none; 
-            padding: 12px; border-radius: 5px; font-weight: bold; 
-            display: flex; align-items: center; justify-content: center; gap: 10px;
+            background: #25D366; color: white; text-decoration: none; padding: 12px; 
+            border-radius: 5px; font-weight: bold; display: flex; align-items: center; justify-content: center; gap: 10px;
         }
         .buy-btn:hover { background: #128C7E; }
         header.top-bar { display: flex; align-items: center; justify-content: space-between; padding: 10px 5%; background: white; border-bottom: 1px solid #eee; }
         nav { display: flex; gap: 20px; }
         .nav-link { text-decoration: none; color: #333; font-weight: 500; }
-        
-        /* Error Box Styling */
-        .error-msg { background: #fee2e2; color: #b91c1c; padding: 20px; border-radius: 8px; border: 1px solid #f87171; grid-column: 1 / -1; }
     </style>
 </head>
 <body>
@@ -65,33 +61,32 @@
     async function loadCustomItems() {
         const container = document.getElementById('product-container');
         
-        // List of possible paths to find the JSON
-        const paths = ['../product.json', 'product.json', './product.json'];
+        // AUTO-DETECTION: It tries to look for the JSON in the root folder first
+        const possiblePaths = ['../product.json', 'product.json', '../products.json', 'products.json'];
         let data = null;
 
-        for (const path of paths) {
+        for (const path of possiblePaths) {
             try {
                 const response = await fetch(path);
                 if (response.ok) {
                     data = await response.json();
-                    console.log("Successfully loaded from: " + path);
-                    break; 
+                    console.log("Found JSON at: " + path);
+                    break;
                 }
             } catch (e) {
-                console.warn("Could not load from " + path);
+                continue; 
             }
         }
 
         if (!data) {
             container.innerHTML = `
-                <div class="error-msg">
-                    <p><strong>⚠️ Error: Could not find product.json</strong></p>
-                    <p>Please ensure 'product.json' is in your main folder. If you are opening this file directly from a folder, try using a local server (VS Code Live Server) or move the JSON into the 'affiliated_website' folder temporarily.</p>
+                <div style="grid-column: 1/-1; text-align: center; color: red; padding: 20px; border: 1px solid red; background: #fff1f1;">
+                    <p><strong>⚠️ Path Error: product.json not found.</strong></p>
+                    <p style="font-size: 0.8rem;">Ensure product.json is in the main folder. If opening via file (double-click), Chrome may block it. Try using "Live Server" in VS Code.</p>
                 </div>`;
             return;
         }
 
-        // Filter for ONLY customized products
         const customProducts = data.filter(item => item.category === "customized");
 
         if (customProducts.length === 0) {

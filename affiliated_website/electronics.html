@@ -3,91 +3,66 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Electronics Deals | VIP Shop</title>
+    <title>Electronics | VIP Shop</title>
+    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        :root { --amazon-orange: #ff9900; --text-dark: #232f3e; }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f4f7f9; margin: 0; }
-        .header { background: var(--text-dark); color: white; padding: 20px; text-align: center; }
-        
-        .product-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 25px;
-            padding: 40px 10%;
-        }
-
-        .product-card {
-            background: white;
-            border-radius: 12px;
-            padding: 20px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-            transition: transform 0.3s ease;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            border: 1px solid #eef0f2;
-        }
-
-        .product-card:hover { transform: translateY(-8px); box-shadow: 0 8px 25px rgba(0,0,0,0.1); }
-        .product-card img { width: 100%; height: 200px; object-fit: contain; border-radius: 8px; margin-bottom: 15px; }
-        .product-card h4 { margin: 10px 0; color: var(--text-dark); font-size: 1.1rem; height: 3em; overflow: hidden; }
+        body { font-family: 'Segoe UI', sans-serif; background: #f4f4f4; margin: 0; padding: 0; }
+        .category-header { background: #232f3e; color: white; padding: 40px 20px; text-align: center; }
+        .product-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; padding: 40px 5%; }
+        .product-card { background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); transition: 0.3s; display: flex; flex-direction: column; justify-content: space-between; text-align: center; }
+        .product-card:hover { transform: translateY(-5px); }
+        .product-card img { max-width: 100%; height: 200px; object-fit: contain; margin-bottom: 15px; border-radius: 5px; }
+        .product-card h3 { font-size: 1.1rem; margin: 10px 0; color: #333; height: 3em; overflow: hidden; }
         .price { font-size: 1.3rem; font-weight: bold; color: #B12704; margin-bottom: 15px; }
-
-        .buy-btn {
-            background: var(--amazon-orange);
-            color: white;
-            text-align: center;
-            padding: 12px;
-            text-decoration: none;
-            border-radius: 25px;
-            font-weight: bold;
-            transition: background 0.3s;
-        }
-        .buy-btn:hover { background: #e68a00; }
-        .back-link { display: block; text-align: center; margin-top: 20px; color: #007185; text-decoration: none; }
+        .buy-btn { background: #ff9900; color: white; text-decoration: none; padding: 12px; border-radius: 5px; font-weight: bold; display: flex; align-items: center; justify-content: center; gap: 10px; }
+        header.top-bar { display: flex; align-items: center; justify-content: space-between; padding: 10px 5%; background: white; border-bottom: 1px solid #eee; }
+        nav { display: flex; gap: 20px; }
+        .nav-link { text-decoration: none; color: #333; font-weight: 500; }
     </style>
 </head>
 <body>
+    <header class="top-bar">
+        <div class="logo-container" style="display: flex; align-items: center; gap: 10px;">
+            <img src="../logo.png" alt="Logo" style="height: 30px;" onerror="this.src='https://via.placeholder.com/30'">
+            <span style="font-weight: bold;">Afflatus</span>
+        </div>
+        <nav>
+            <a href="../index.html" class="nav-link">Home</a>
+            <a href="index.html" class="nav-link">Shop Hub</a>
+            <a href="../contact.html" class="nav-link">Contact</a>
+        </nav>
+    </header>
 
-<div class="header">
-    <h1>Latest Electronics</h1>
-    <p>Premium smartphones and gadgets at the best prices</p>
-</div>
-
-<div id="electronics-container" class="product-grid">
+    <div class="category-header">
+        <h1>Premium Electronics</h1>
+        <p>The latest gadgets and high-performance hardware</p>
     </div>
 
-<a href="index.html" class="back-link">← Back to Categories</a>
+    <div id="product-container" class="product-grid">
+        <p style="grid-column: 1/-1; text-align: center;">Loading electronics...</p>
+    </div>
 
-<script>
-    // Fetch data from the shared JSON file
-    fetch('products.json')
-        .then(response => response.json())
-        .then(data => {
-            const container = document.getElementById('electronics-container');
-            
-            // FILTER: Only show products where category is 'Electronics'
-            const electronicsItems = data.filter(item => item.category === 'Electronics');
-
-            electronicsItems.forEach(item => {
-                container.innerHTML += `
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
+    <script>
+        const sheetURL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vROgG5rCiBGxWhLS-sen2CvY-OCXpDQ_12H3QGkYFBSaXD03LoQ65MJGTjrh2cR8INAGQbEDI4OaDI2/pub?gid=0&single=true&output=csv";
+        
+        Papa.parse(sheetURL, {
+            download: true,
+            header: true,
+            skipEmptyLines: true,
+            complete: function(results) {
+                const container = document.getElementById('product-container');
+                container.innerHTML = results.data.map(item => `
                     <div class="product-card">
-                        <img src="${item.image}" alt="${item.name}">
-                        <div>
-                            <h4>${item.name}</h4>
-                            <p class="price">${item.price}</p>
-                        </div>
-                        <a href="${item.link}" target="_blank" class="buy-btn">Buy Now</a>
+                        <img src="${item.image}" alt="${item.title}" onerror="this.src='https://via.placeholder.com/200'">
+                        <h3>${item.title} (${item.id})</h3>
+                        <p class="price">₹${item.price}</p>
+                        <a href="${item.link}" target="_blank" class="buy-btn">View on Amazon</a>
                     </div>
-                `;
-            });
-            
-            if(electronicsItems.length === 0) {
-                container.innerHTML = "<p style='text-align:center; grid-column: 1/-1;'>No electronics products found in database.</p>";
+                `).join('');
             }
-        })
-        .catch(error => console.error('Error loading electronics:', error));
-</script>
-
+        });
+    </script>
 </body>
 </html>

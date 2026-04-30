@@ -5,87 +5,64 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mobile Accessories | VIP Shop</title>
     <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        body { font-family: 'Segoe UI', sans-serif; text-align: center; background: #f9f9f9; margin: 0; }
-        
-        /* Unified Header Style like Electronics page */
-        .shop-header { background: #232f3e; color: white; padding: 40px 20px; margin-bottom: 20px; }
-        
-        /* Product Grid Layout */
-        .portal-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 25px;
-            padding: 40px 5%;
-        }
-
-        /* Product Card Style */
-        .portal-card {
-            background: white;
-            padding: 20px;
-            border-radius: 15px;
-            text-align: center;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-            transition: 0.3s;
-            border: 1px solid #eee;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .portal-card:hover { transform: translateY(-8px); border-color: #ff9900; }
-
-        .product-img { width: 100%; max-height: 200px; object-fit: contain; border-radius: 10px; margin-bottom: 15px; }
-        
-        .price { font-size: 1.2rem; color: #B12704; font-weight: bold; margin: 10px 0; }
-
-        .buy-btn {
-            display: inline-block;
-            background: #ff9900;
-            color: #fff;
-            padding: 10px 20px;
-            border-radius: 5px;
-            text-decoration: none;
-            font-weight: bold;
-            width: 80%;
-        }
-        
-        .buy-btn:hover { background: #e68a00; }
+        body { font-family: 'Segoe UI', sans-serif; background: #f4f4f4; margin: 0; padding: 0; }
+        .category-header { background: #232f3e; color: white; padding: 40px 20px; text-align: center; }
+        .product-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; padding: 40px 5%; }
+        .product-card { background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); transition: 0.3s; display: flex; flex-direction: column; justify-content: space-between; text-align: center; }
+        .product-card:hover { transform: translateY(-5px); }
+        .product-card img { max-width: 100%; height: 200px; object-fit: contain; margin-bottom: 15px; border-radius: 5px; }
+        .product-card h3 { font-size: 1.1rem; margin: 10px 0; color: #333; height: 3em; overflow: hidden; }
+        .price { font-size: 1.3rem; font-weight: bold; color: #B12704; margin-bottom: 15px; }
+        .buy-btn { background: #ff9900; color: white; text-decoration: none; padding: 12px; border-radius: 5px; font-weight: bold; display: flex; align-items: center; justify-content: center; gap: 10px; }
+        header.top-bar { display: flex; align-items: center; justify-content: space-between; padding: 10px 5%; background: white; border-bottom: 1px solid #eee; }
+        nav { display: flex; gap: 20px; }
+        .nav-link { text-decoration: none; color: #333; font-weight: 500; }
     </style>
 </head>
 <body>
+    <header class="top-bar">
+        <div class="logo-container" style="display: flex; align-items: center; gap: 10px;">
+            <img src="../logo.png" alt="Logo" style="height: 30px;" onerror="this.src='https://via.placeholder.com/30'">
+            <span style="font-weight: bold;">Afflatus</span>
+        </div>
+        <nav>
+            <a href="../index.html" class="nav-link">Home</a>
+            <a href="index.html" class="nav-link">Shop Hub</a>
+            <a href="../contact.html" class="nav-link">Contact</a>
+        </nav>
+    </header>
 
-    <div class="shop-header">
+    <div class="category-header">
         <h1>Mobile Accessories</h1>
-        <p>Premium Cables, Chargers & Power Banks</p>
+        <p>Premium chargers, cases, and more for your devices</p>
     </div>
 
-    <div id="products-grid" class="portal-container"></div>
+    <div id="product-container" class="product-grid">
+        <p style="grid-column: 1/-1; text-align: center;">Loading accessories...</p>
+    </div>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
     <script>
-        fetch('products.json')
-            .then(res => res.json())
-            .then(data => {
-                const container = document.getElementById('products-grid');
-                // Filter specifically for Mobile Accessories
-                const filtered = data.filter(p => p.category === 'Mobile Accessories');
-
-                filtered.forEach(product => {
-                    // This HTML structure creates the card look from your screenshot
-                    container.innerHTML += `
-                        <div class="portal-card">
-                            <img src="${product.image}" alt="${product.name}" class="product-img">
-                            <div style="padding: 10px;">
-                                <h3 style="font-size: 1.1rem; height: 3em; overflow: hidden;">${product.name}</h3>
-                                <p class="price">${product.price}</p>
-                                <a href="${product.link}" class="buy-btn" target="_blank">Buy Now</a>
-                            </div>
-                        </div>
-                    `;
-                });
-            })
-            .catch(err => console.error("Error loading products:", err));
+        const sheetURL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vROgG5rCiBGxWhLS-sen2CvY-OCXpDQ_12H3QGkYFBSaXD03LoQ65MJGTjrh2cR8INAGQbEDI4OaDI2/pub?gid=410903985&single=true&output=csv";
+        
+        Papa.parse(sheetURL, {
+            download: true,
+            header: true,
+            skipEmptyLines: true,
+            complete: function(results) {
+                const container = document.getElementById('product-container');
+                container.innerHTML = results.data.map(item => `
+                    <div class="product-card">
+                        <img src="${item.image}" alt="${item.title}" onerror="this.src='https://via.placeholder.com/200'">
+                        <h3>${item.title} (${item.id})</h3>
+                        <p class="price">₹${item.price}</p>
+                        <a href="${item.link}" target="_blank" class="buy-btn">View on Amazon</a>
+                    </div>
+                `).join('');
+            }
+        });
     </script>
 </body>
 </html>

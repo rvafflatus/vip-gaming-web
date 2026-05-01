@@ -35,7 +35,8 @@
 <body>
     <header class="top-bar">
         <div class="logo-container" style="display: flex; align-items: center; gap: 10px;">
-            <img src="../logo.png" alt="Logo" style="height: 30px;" onerror="this.src='https://via.placeholder.com/30'">
+            <!-- Removed the problematic onerror attribute -->
+            <img src="../logo.png" alt="Logo" style="height: 30px;">
             <span style="font-weight: bold;">Afflatus</span>
         </div>
         <nav>
@@ -50,7 +51,6 @@
         <p>Premium chargers, cases, and more for your devices</p>
     </div>
 
-    <!-- Search Input Area -->
     <div class="search-container">
         <input type="text" id="productSearch" class="search-input" placeholder="Search accessories by name or ID (e.g. 100001)...">
     </div>
@@ -61,10 +61,9 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
     <script>
-        // Specific CSV link for Mobile Accessories (gid=410903985)
         const sheetURL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vROgG5rCiBGxWhLS-sen2CvY-OCXpDQ_12H3QGkYFBSaXD03LoQ65MJGTjrh2cR8INAGQbEDI4OaDI2/pub?gid=410903985&single=true&output=csv";
         
-        let allAccessories = []; // Variable to store the full list
+        let allAccessories = []; 
 
         function displayAccessories(products) {
             const container = document.getElementById('product-container');
@@ -73,14 +72,22 @@
                 return;
             }
 
-            container.innerHTML = products.map(item => `
-                <div class="product-card">
-                    <img src="${item.image}" alt="${item.title}" onerror="this.src='https://via.placeholder.com/200'">
-                    <h3>${item.title} (${item.id})</h3>
-                    <p class="price">₹${item.price}</p>
-                    <a href="${item.link}" target="_blank" class="buy-btn">View on Amazon</a>
-                </div>
-            `).join('');
+            container.innerHTML = products.map(item => {
+                const title = item.title || "Accessory";
+                const id = item.id || "N/A";
+                const image = item.image || "https://via.placeholder.com/200?text=No+Image";
+                const price = item.price || "0";
+                const link = item.link || "#";
+
+                return `
+                    <div class="product-card">
+                        <img src="${image}" alt="${title}">
+                        <h3>${title} (${id})</h3>
+                        <p class="price">₹${price}</p>
+                        <a href="${link}" target="_blank" class="buy-btn">View on Amazon</a>
+                    </div>
+                `;
+            }).join('');
         }
 
         Papa.parse(sheetURL, {
@@ -91,14 +98,14 @@
                 allAccessories = results.data;
                 displayAccessories(allAccessories);
 
-                // Search Event Listener
                 const searchInput = document.getElementById('productSearch');
                 searchInput.addEventListener('input', (e) => {
                     const searchTerm = e.target.value.toLowerCase();
-                    const filtered = allAccessories.filter(item => 
-                        item.title.toLowerCase().includes(searchTerm) || 
-                        item.id.toLowerCase().includes(searchTerm)
-                    );
+                    const filtered = allAccessories.filter(item => {
+                        const titleMatch = (item.title || "").toLowerCase().includes(searchTerm);
+                        const idMatch = (item.id || "").toLowerCase().includes(searchTerm);
+                        return titleMatch || idMatch;
+                    });
                     displayAccessories(filtered);
                 });
             }

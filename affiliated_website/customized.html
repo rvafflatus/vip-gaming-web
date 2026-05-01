@@ -35,7 +35,8 @@
 <body>
     <header class="top-bar">
         <div class="logo-container" style="display: flex; align-items: center; gap: 10px;">
-            <img src="../logo.png" alt="Logo" style="height: 30px;" onerror="this.src='https://via.placeholder.com/30'">
+            <!-- Fix: Removed loop-causing onerror -->
+            <img src="../logo.png" alt="Logo" style="height: 30px;">
             <span style="font-weight: bold;">Afflatus</span>
         </div>
         <nav>
@@ -50,7 +51,6 @@
         <p>Hand-printed items delivered within 30km of Tonk</p>
     </div>
 
-    <!-- Step 1: Added Search Input Field -->
     <div class="search-container">
         <input type="text" id="productSearch" class="search-input" placeholder="Search by name or Aff-ID (e.g. 100001)...">
     </div>
@@ -63,7 +63,7 @@
     <script>
         const sheetURL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vROgG5rCiBGxWhLS-sen2CvY-OCXpDQ_12H3QGkYFBSaXD03LoQ65MJGTjrh2cR8INAGQbEDI4OaDI2/pub?gid=351853424&single=true&output=csv";
         
-        let allProducts = []; // Global variable to store sheet data
+        let allProducts = []; 
 
         function displayProducts(products) {
             const container = document.getElementById('product-container');
@@ -72,16 +72,25 @@
                 return;
             }
 
-            container.innerHTML = products.map(item => `
-                <div class="product-card">
-                    <img src="${item.image}" alt="${item.title}" onerror="this.src='https://via.placeholder.com/200'">
-                    <h3>${item.title} (${item.id})</h3>
-                    <p class="price">₹${item.price}</p>
-                    <a href="${item.link}" target="_blank" class="buy-btn">
-                        <i class="fab fa-whatsapp"></i> Order on WhatsApp
-                    </a>
-                </div>
-            `).join('');
+            container.innerHTML = products.map(item => {
+                // Defensive checks for data stability
+                const title = item.title || "Customized Product";
+                const id = item.id || "N/A";
+                const image = item.image || "https://via.placeholder.com/200?text=No+Image";
+                const price = item.price || "0";
+                const link = item.link || "#";
+
+                return `
+                    <div class="product-card">
+                        <img src="${image}" alt="${title}">
+                        <h3>${title} (${id})</h3>
+                        <p class="price">₹${price}</p>
+                        <a href="${link}" target="_blank" class="buy-btn">
+                            <i class="fab fa-whatsapp"></i> Order on WhatsApp
+                        </a>
+                    </div>
+                `;
+            }).join('');
         }
 
         Papa.parse(sheetURL, {
@@ -92,14 +101,14 @@
                 allProducts = results.data;
                 displayProducts(allProducts);
 
-                // Step 2: Added Input Listener for Search
                 const searchInput = document.getElementById('productSearch');
                 searchInput.addEventListener('input', (e) => {
                     const searchTerm = e.target.value.toLowerCase();
-                    const filtered = allProducts.filter(item => 
-                        item.title.toLowerCase().includes(searchTerm) || 
-                        item.id.toLowerCase().includes(searchTerm)
-                    );
+                    const filtered = allProducts.filter(item => {
+                        const titleMatch = (item.title || "").toLowerCase().includes(searchTerm);
+                        const idMatch = (item.id || "").toLowerCase().includes(searchTerm);
+                        return titleMatch || idMatch;
+                    });
                     displayProducts(filtered);
                 });
             }

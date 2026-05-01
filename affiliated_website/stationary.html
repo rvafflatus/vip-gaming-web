@@ -9,13 +9,13 @@
 </head>
 <body class="bg-gray-50">
 
-    <!-- Navigation (Update links as needed) -->
+    <!-- Navigation -->
     <nav class="bg-white shadow-md p-4 sticky top-0 z-50">
         <div class="container mx-auto flex justify-between items-center">
-            <h1 class="text-2xl font-bold text-blue-600">Afflatus Inventory</h1>
+            <h1 class="text-2xl font-bold text-blue-600">Afflatus</h1>
             <div class="space-x-6">
-                <a href="index.html" class="text-gray-600 hover:text-blue-600">Home</a>
-                <a href="electronics.html" class="text-gray-600 hover:text-blue-600">Electronics</a>
+                <a href="../index.html" class="text-gray-600 hover:text-blue-600">Home</a>
+                <a href="index.html" class="text-gray-600 hover:text-blue-600">Shop Hub</a>
                 <a href="stationary.html" class="text-blue-600 font-semibold border-b-2 border-blue-600">Stationary</a>
             </div>
         </div>
@@ -24,63 +24,92 @@
     <!-- Header Section -->
     <header class="bg-blue-600 py-12 text-center text-white">
         <h2 class="text-4xl font-bold">Stationary & Office Supplies</h2>
-        <p class="mt-2 text-blue-100">Browse our latest collection of premium stationary</p>
+        <p class="mt-2 text-blue-100">Premium stationary for your home and office</p>
     </header>
+
+    <!-- Search Section -->
+    <div class="bg-white shadow-sm border-b sticky top-[72px] z-40">
+        <div class="container mx-auto py-4 px-4 text-center">
+            <input type="text" id="productSearch" placeholder="Search stationary by name or ID (e.g. 100001)..." 
+                   class="w-full max-width-md lg:w-1/2 p-3 px-6 rounded-full border-2 border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-300 shadow-sm transition-all">
+        </div>
+    </div>
 
     <!-- Product Grid -->
     <main class="container mx-auto py-10 px-4">
         <div id="stationary-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            <!-- Loading State -->
             <div class="col-span-full text-center py-20">
                 <p class="text-gray-500 animate-pulse text-lg">Loading inventory items...</p>
             </div>
         </div>
     </main>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
     <script>
         const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vROgG5rCiBGxWhLS-sen2CvY-OCXpDQ_12H3QGkYFBSaXD03LoQ65MJGTjrh2cR8INAGQbEDI4OaDI2/pub?gid=1881892522&single=true&output=csv';
+        let allStationary = [];
 
-        async function fetchStationary() {
-            try {
-                const response = await fetch(CSV_URL);
-                const data = await response.text();
-                const rows = data.split('\n').slice(1); // Skip header row
-                const grid = document.getElementById('stationary-grid');
-                grid.innerHTML = ''; // Clear loading state
-
-                rows.forEach(row => {
-                    const columns = row.split(',');
-                    // Mapping columns: 0:ID, 1:Category, 2:Title, 3:Price, 4:Image, 5:Link, 6:Brand
-                    if (columns.length >= 6) {
-                        const [id, category, title, price, image, link, brand] = columns;
-                        
-                        grid.innerHTML += `
-                            <div class="bg-white rounded-xl shadow-sm hover:shadow-lg transition-shadow border border-gray-100 overflow-hidden">
-                                <div class="h-48 overflow-hidden bg-gray-200">
-                                    <img src="${image.trim()}" alt="${title}" class="w-full h-full object-cover" onerror="this.src='https://via.placeholder.com/300x200?text=No+Image'">
-                                </div>
-                                <div class="p-5">
-                                    <span class="text-xs font-bold text-blue-500 uppercase tracking-widest">${brand}</span>
-                                    <h3 class="text-lg font-bold mt-1 text-gray-800">${title}</h3>
-                                    <p class="text-gray-500 text-sm mt-1">ID: ${id}</p>
-                                    <div class="flex items-center justify-between mt-4">
-                                        <span class="text-xl font-bold text-gray-900">₹${price}</span>
-                                        <a href="${link.trim()}" target="_blank" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 text-sm transition-colors">
-                                            View Product
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        `;
-                    }
-                });
-            } catch (error) {
-                console.error('Error fetching data:', error);
-                document.getElementById('stationary-grid').innerHTML = '<p class="col-span-full text-center text-red-500">Failed to load stationary inventory. Please check data source.</p>';
+        function displayProducts(products) {
+            const grid = document.getElementById('stationary-grid');
+            if (products.length === 0) {
+                grid.innerHTML = '<p class="col-span-full text-center py-10 text-gray-500">No matching stationary items found.</p>';
+                return;
             }
+
+            grid.innerHTML = products.map(item => {
+                // Defensive checks for data
+                const title = item.title || "Stationary Item";
+                const id = item.id || "N/A";
+                const image = item.image || "https://via.placeholder.com/300x200?text=No+Image";
+                const price = item.price || "0";
+                const link = item.link || "#";
+                const brand = item.brand || "Stationary";
+
+                return `
+                    <div class="bg-white rounded-xl shadow-sm hover:shadow-lg transition-shadow border border-gray-100 overflow-hidden flex flex-col h-full">
+                        <div class="h-48 overflow-hidden bg-gray-100">
+                            <img src="${image}" alt="${title}" class="w-full h-full object-contain p-2">
+                        </div>
+                        <div class="p-5 flex flex-col flex-grow">
+                            <span class="text-xs font-bold text-blue-500 uppercase tracking-widest">${brand}</span>
+                            <h3 class="text-lg font-bold mt-1 text-gray-800 line-clamp-2 h-14">${title}</h3>
+                            <p class="text-gray-500 text-sm mt-1">ID: (${id})</p>
+                            <div class="mt-auto pt-4 flex items-center justify-between">
+                                <span class="text-xl font-bold text-gray-900">₹${price}</span>
+                                <a href="${link}" target="_blank" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 text-sm transition-colors">
+                                    Order Now
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
         }
 
-        fetchStationary();
+        Papa.parse(CSV_URL, {
+            download: true,
+            header: true,
+            skipEmptyLines: true,
+            complete: function(results) {
+                allStationary = results.data;
+                displayProducts(allStationary);
+
+                const searchInput = document.getElementById('productSearch');
+                searchInput.addEventListener('input', (e) => {
+                    const searchTerm = e.target.value.toLowerCase();
+                    const filtered = allStationary.filter(item => 
+                        ((item.title || "").toLowerCase().includes(searchTerm)) || 
+                        ((item.id || "").toLowerCase().includes(searchTerm)) ||
+                        ((item.brand || "").toLowerCase().includes(searchTerm))
+                    );
+                    displayProducts(filtered);
+                });
+            },
+            error: function(err) {
+                console.error('Error fetching data:', err);
+                document.getElementById('stationary-grid').innerHTML = '<p class="col-span-full text-center text-red-500">Failed to load stationary inventory.</p>';
+            }
+        });
     </script>
 </body>
 </html>

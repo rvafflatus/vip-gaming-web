@@ -9,6 +9,15 @@
     <style>
         body { font-family: 'Segoe UI', sans-serif; background: #f4f4f4; margin: 0; padding: 0; }
         .category-header { background: #232f3e; color: white; padding: 40px 20px; text-align: center; }
+        
+        /* Search Bar Styling */
+        .search-container { padding: 20px 5%; text-align: center; background: #fff; border-bottom: 1px solid #eee; }
+        .search-input { 
+            width: 100%; max-width: 500px; padding: 12px 20px; 
+            border-radius: 30px; border: 2px solid #232f3e; 
+            outline: none; font-size: 1rem; box-shadow: 0 4px 6px rgba(0,0,0,0.1); 
+        }
+
         .product-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; padding: 40px 5%; }
         .product-card { background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); transition: 0.3s; display: flex; flex-direction: column; justify-content: space-between; text-align: center; }
         .product-card:hover { transform: translateY(-5px); }
@@ -17,6 +26,7 @@
         .price { font-size: 1.3rem; font-weight: bold; color: #B12704; margin-bottom: 15px; }
         .buy-btn { background: #25D366; color: white; text-decoration: none; padding: 12px; border-radius: 5px; font-weight: bold; display: flex; align-items: center; justify-content: center; gap: 10px; transition: 0.3s; }
         .buy-btn:hover { background: #128C7E; }
+        
         header.top-bar { display: flex; align-items: center; justify-content: space-between; padding: 10px 5%; background: white; border-bottom: 1px solid #eee; }
         nav { display: flex; gap: 20px; }
         .nav-link { text-decoration: none; color: #333; font-weight: 500; }
@@ -40,6 +50,11 @@
         <p>Hand-printed items delivered within 30km of Tonk</p>
     </div>
 
+    <!-- Step 1: Added Search Input Field -->
+    <div class="search-container">
+        <input type="text" id="productSearch" class="search-input" placeholder="Search by name or Aff-ID (e.g. 100001)...">
+    </div>
+
     <div id="product-container" class="product-grid">
         <p style="grid-column: 1/-1; text-align: center;">Loading customized products...</p>
     </div>
@@ -48,22 +63,45 @@
     <script>
         const sheetURL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vROgG5rCiBGxWhLS-sen2CvY-OCXpDQ_12H3QGkYFBSaXD03LoQ65MJGTjrh2cR8INAGQbEDI4OaDI2/pub?gid=351853424&single=true&output=csv";
         
+        let allProducts = []; // Global variable to store sheet data
+
+        function displayProducts(products) {
+            const container = document.getElementById('product-container');
+            if (products.length === 0) {
+                container.innerHTML = "<p style='grid-column: 1/-1; text-align: center; padding: 20px;'>No products found matching your search.</p>";
+                return;
+            }
+
+            container.innerHTML = products.map(item => `
+                <div class="product-card">
+                    <img src="${item.image}" alt="${item.title}" onerror="this.src='https://via.placeholder.com/200'">
+                    <h3>${item.title} (${item.id})</h3>
+                    <p class="price">₹${item.price}</p>
+                    <a href="${item.link}" target="_blank" class="buy-btn">
+                        <i class="fab fa-whatsapp"></i> Order on WhatsApp
+                    </a>
+                </div>
+            `).join('');
+        }
+
         Papa.parse(sheetURL, {
             download: true,
             header: true,
             skipEmptyLines: true,
             complete: function(results) {
-                const container = document.getElementById('product-container');
-                container.innerHTML = results.data.map(item => `
-                    <div class="product-card">
-                        <img src="${item.image}" alt="${item.title}" onerror="this.src='https://via.placeholder.com/200'">
-                        <h3>${item.title} (${item.id})</h3>
-                        <p class="price">₹${item.price}</p>
-                        <a href="${item.link}" target="_blank" class="buy-btn">
-                            <i class="fab fa-whatsapp"></i> Order on WhatsApp
-                        </a>
-                    </div>
-                `).join('');
+                allProducts = results.data;
+                displayProducts(allProducts);
+
+                // Step 2: Added Input Listener for Search
+                const searchInput = document.getElementById('productSearch');
+                searchInput.addEventListener('input', (e) => {
+                    const searchTerm = e.target.value.toLowerCase();
+                    const filtered = allProducts.filter(item => 
+                        item.title.toLowerCase().includes(searchTerm) || 
+                        item.id.toLowerCase().includes(searchTerm)
+                    );
+                    displayProducts(filtered);
+                });
             }
         });
     </script>

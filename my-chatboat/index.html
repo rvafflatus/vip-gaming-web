@@ -6,63 +6,17 @@
     <title>Afflatus Assistant</title>
     <style>
         :root { --primary: #2563eb; --bot-msg: #f1f5f9; --user-msg: #2563eb; }
-        
-        /* Forces the chatbot to fill the entire iframe window */
-        html, body { 
-            margin: 0; 
-            padding: 0; 
-            height: 100%; 
-            width: 100%; 
-            overflow: hidden; 
-            font-family: 'Inter', sans-serif; 
-        }
-        
-        #chat-container { 
-            display: flex; 
-            flex-direction: column; 
-            height: 100vh; /* Full height of popup */
-            width: 100vw;  /* Full width of popup */
-            background: white; 
-        }
-        
-        #chat-header { 
-            background: var(--primary); 
-            color: white; 
-            padding: 16px; 
-            display: flex; 
-            align-items: center; 
-            gap: 10px; 
-            font-weight: 600;
-            flex-shrink: 0; /* Prevents header from shrinking */
-        }
-        
-        #chat-messages { 
-            flex: 1; 
-            overflow-y: auto; 
-            padding: 20px; 
-            display: flex; 
-            flex-direction: column; 
-            gap: 12px; 
-            background-color: #f8fafc;
-        }
-        
+        html, body { margin: 0; padding: 0; height: 100%; width: 100%; overflow: hidden; font-family: 'Inter', sans-serif; }
+        #chat-container { display: flex; flex-direction: column; height: 100vh; width: 100vw; background: white; }
+        #chat-header { background: var(--primary); color: white; padding: 16px; display: flex; align-items: center; gap: 10px; font-weight: 600; flex-shrink: 0; }
+        #chat-messages { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 12px; background-color: #f8fafc; }
         .msg { padding: 12px 16px; border-radius: 12px; max-width: 80%; font-size: 14px; line-height: 1.5; position: relative; word-wrap: break-word; }
         .user { background: var(--user-msg); color: white; align-self: flex-end; border-bottom-right-radius: 2px; }
         .bot { background: var(--bot-msg); color: #1e293b; align-self: flex-start; border-bottom-left-radius: 2px; border: 1px solid #e2e8f0; }
-        
-        #input-area { 
-            padding: 15px; 
-            border-top: 1px solid #e2e8f0; 
-            display: flex; 
-            gap: 10px; 
-            background: white; 
-            flex-shrink: 0; /* Prevents input area from shrinking */
-        }
-        
+        #input-area { padding: 15px; border-top: 1px solid #e2e8f0; display: flex; gap: 10px; background: white; flex-shrink: 0; }
         input { flex: 1; border: 1px solid #cbd5e1; padding: 10px; border-radius: 8px; outline: none; transition: border 0.2s; font-size: 14px; }
         input:focus { border-color: var(--primary); }
         button { background: var(--primary); color: white; border: none; padding: 10px 18px; border-radius: 8px; cursor: pointer; font-weight: 600; }
-        
         .typing { font-style: italic; color: #64748b; font-size: 12px; display: none; padding: 5px 20px; background: #f8fafc; }
     </style>
 </head>
@@ -82,7 +36,7 @@
 </div>
 
 <script type="module">
-    // IMPORTANT: Keep your API key safe
+    // --- YOUR DATA ---
     const API_KEY = "AIzaSyCfxHFGZO2jBI8Ur3tf8cXPkPJ9MEgZLuc"; 
     const SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vR7qQWOeRWwpBCDp65s17U7vPN0S-MGQwD8Ja63AQYbcs7GxDFmWa2QbU4UWwv1GDkgAVrdHkRZkuh-/pub?output=csv";
 
@@ -96,45 +50,58 @@
     async function initBot() {
         try {
             const res = await fetch(SHEET_URL);
+            if (!res.ok) throw new Error("Sheet fetch failed");
             inventoryData = await res.text();
             appendMessage('bot', "Namaste! I'm your Afflatus Assistant. How can I help you today?");
         } catch (e) {
-            appendMessage('bot', "System Error: Unable to fetch inventory data.");
+            appendMessage('bot', "System: Ready! (Note: Limited access to specific product list)");
         }
     }
 
     async function getAIResponse(userText) {
         typingIndicator.style.display = "block";
-        const prompt = `You are the official AI for Afflatus (vipgaming.in). 
-        You have access to the following inventory data in CSV format:
-        ${inventoryData}
 
-        INSTRUCTIONS:
-        - If the user asks for a product, check the data and give the Price, Category, and any details found.
-        - If the user asks about delivery or policies, answer based on the data.
-        - If the data doesn't have the answer, politely ask them to contact support on WhatsApp.
-        - Keep answers friendly and under 50 words.
-        - Do not mention the CSV or technical details to the user.
-
-        USER QUESTION: ${userText}`;
+        // Structured request for Gemini 1.5 Flash
+        const payload = {
+            contents: [{
+                parts: [{ 
+                    text: `You are the support AI for vipgaming.in. 
+                    Inventory Data: ${inventoryData}
+                    Question: ${userText}
+                    Answer briefly using the data above. If not found, tell them to WhatsApp +919610147688.` 
+                }]
+            }],
+            safetySettings: [
+                { category: "HARM_CATEGORY_HARASSMENT", threshold: "BLOCK_NONE" },
+                { category: "HARM_CATEGORY_HATE_SPEECH", threshold: "BLOCK_NONE" },
+                { category: "HARM_CATEGORY_SEXUALLY_EXPLICIT", threshold: "BLOCK_NONE" },
+                { category: "HARM_CATEGORY_DANGEROUS_CONTENT", threshold: "BLOCK_NONE" }
+            ]
+        };
 
         try {
             const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+                body: JSON.stringify(payload)
             });
-            const json = await response.json();
+
+            const data = await response.json();
             typingIndicator.style.display = "none";
-            
-            if (json.candidates && json.candidates[0].content.parts[0].text) {
-                return json.candidates[0].content.parts[0].text;
+
+            if (data.error) {
+                console.error("API Error:", data.error.message);
+                return "I'm having a small technical issue. Please try again or WhatsApp us.";
+            }
+
+            if (data.candidates && data.candidates[0].content) {
+                return data.candidates[0].content.parts[0].text;
             } else {
-                throw new Error("Invalid Response");
+                return "I'm not sure about that. Can you please message our team on WhatsApp for details?";
             }
         } catch (e) {
             typingIndicator.style.display = "none";
-            return "I'm having trouble connecting. Please try again or message us on WhatsApp.";
+            return "Connection timeout. Please check your internet or contact us on WhatsApp.";
         }
     }
 

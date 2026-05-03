@@ -7,7 +7,7 @@
     <style>
         :root { --primary: #1a73e8; --bg: #f8fafc; }
         
-        /* Force remove margins and fill container perfectly */
+        /* Ensures the chatbot fills the popup container perfectly */
         html, body { 
             margin: 0 !important; 
             padding: 0 !important; 
@@ -83,7 +83,7 @@
 </div>
 
 <script type="module">
-    // --- SETTINGS ---
+    // --- Configuration ---
     const API_KEY = "AIzaSyA414iCGmDarBL5jE7F8V9gehlTHUkeQDk"; 
     const SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vR7qQWOeRWwpBCDp65s17U7vPN0S-MGQwD8Ja63AQYbcs7GxDFmWa2QbU4UWwv1GDkgAVrdHkRZkuh-/pub?output=csv";
 
@@ -116,11 +116,11 @@
     async function getResponse(query) {
         loader.style.display = "block";
         
-        // Updated payload and URL to use stable v1 endpoint
-        const endpoint = `https://generativelanguage.googleapis.com/v1/models/gemini-pro:generateContent?key=${API_KEY}`;
+        // Stable endpoint for Gemini 1.5 Flash
+        const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`;
         
         const body = {
-            contents: [{ parts: [{ text: `You are the AI for vipgaming.in. Context: ${catalog}. Question: ${query}` }] }]
+            contents: [{ parts: [{ text: `You are the AI for vipgaming.in. Data: ${catalog}\nQuestion: ${query}` }] }]
         };
 
         try {
@@ -141,10 +141,10 @@
                 return data.candidates[0].content.parts[0].text;
             }
             
-            return "I'm sorry, I couldn't process that. Please contact support on WhatsApp.";
+            return "I'm sorry, I couldn't process that. Please contact support on WhatsApp at +919610147688.";
         } catch (e) {
             loader.style.display = "none";
-            return "Connection error. Please try again or WhatsApp us at +919610147688.";
+            return "Connection error. Please try again later.";
         }
     }
 

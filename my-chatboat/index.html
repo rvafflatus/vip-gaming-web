@@ -7,7 +7,7 @@
     <style>
         :root { --primary: #1a73e8; --bg: #f8fafc; }
         
-        /* Ensures the chatbot fills the popup container perfectly */
+        /* Force remove all margins/padding to fit your 350x500 container */
         html, body { 
             margin: 0 !important; 
             padding: 0 !important; 
@@ -83,7 +83,7 @@
 </div>
 
 <script type="module">
-    // --- Configuration ---
+    // --- Developer Settings ---
     const API_KEY = "AIzaSyA414iCGmDarBL5jE7F8V9gehlTHUkeQDk"; 
     const SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vR7qQWOeRWwpBCDp65s17U7vPN0S-MGQwD8Ja63AQYbcs7GxDFmWa2QbU4UWwv1GDkgAVrdHkRZkuh-/pub?output=csv";
 
@@ -102,21 +102,21 @@
         msgBox.scrollTop = msgBox.scrollHeight;
     }
 
-    // Initialize Catalog from Google Sheet
+    // Initialize Catalog from your Google Sheet
     async function start() {
         try {
             const res = await fetch(SHEET_URL);
             catalog = await res.text();
             addMessage('bot', "Namaste! I am the Afflatus AI. Ask me about our courses, gaming hub, or product prices.");
         } catch (e) {
-            addMessage('bot', "Hello! How can I help you today?");
+            addMessage('bot', "Namaste! How can I help you today?");
         }
     }
 
     async function getResponse(query) {
         loader.style.display = "block";
         
-        // Stable endpoint for Gemini 1.5 Flash
+        // This endpoint uses the v1beta with the specific gemini-1.5-flash identifier
         const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`;
         
         const body = {
@@ -134,6 +134,7 @@
             loader.style.display = "none";
 
             if (data.error) {
+                console.error("API Error:", data.error.message);
                 return "Technical Error: " + data.error.message;
             }
 
@@ -144,7 +145,7 @@
             return "I'm sorry, I couldn't process that. Please contact support on WhatsApp at +919610147688.";
         } catch (e) {
             loader.style.display = "none";
-            return "Connection error. Please try again later.";
+            return "Connection error. Please try again or WhatsApp us.";
         }
     }
 

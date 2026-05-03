@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Afflatus Assistant</title>
+    <title>Afflatus AI Assistant</title>
     <style>
         :root { --primary: #1a73e8; --bg: #f8fafc; }
         
-        /* Force remove all margins/padding to fit your 350x500 container */
+        /* Remove all margins to fit the 350x500 popup perfectly */
         html, body { 
             margin: 0 !important; 
             padding: 0 !important; 
@@ -77,13 +77,13 @@
     <div id="chat-messages"></div>
     <div id="loader">Assistant is thinking...</div>
     <div id="input-area">
-        <input type="text" id="user-input" placeholder="Type your question...">
+        <input type="text" id="user-input" placeholder="Ask about products or services...">
         <button id="send-btn">Send</button>
     </div>
 </div>
 
 <script type="module">
-    // --- Developer Settings ---
+    // --- LATEST CONFIGURATION ---
     const API_KEY = "AIzaSyA414iCGmDarBL5jE7F8V9gehlTHUkeQDk"; 
     const SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vR7qQWOeRWwpBCDp65s17U7vPN0S-MGQwD8Ja63AQYbcs7GxDFmWa2QbU4UWwv1GDkgAVrdHkRZkuh-/pub?output=csv";
 
@@ -102,50 +102,49 @@
         msgBox.scrollTop = msgBox.scrollHeight;
     }
 
-    // Initialize Catalog from your Google Sheet
+    // Load inventory from Google Sheet
     async function start() {
         try {
             const res = await fetch(SHEET_URL);
             catalog = await res.text();
-            addMessage('bot', "Namaste! I am the Afflatus AI. Ask me about our courses, gaming hub, or product prices.");
+            addMessage('bot', "Namaste! I am the Afflatus AI. How can I help you today?");
         } catch (e) {
-            addMessage('bot', "Namaste! How can I help you today?");
+            addMessage('bot', "Namaste! Catalog ready. How can I help?");
         }
     }
 
     async function getResponse(query) {
         loader.style.display = "block";
         
-        // This endpoint uses the v1beta with the specific gemini-1.5-flash identifier
+        // v1beta is the specific required version for gemini-1.5-flash
         const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`;
         
-        const body = {
-            contents: [{ parts: [{ text: `You are the AI for vipgaming.in. Data: ${catalog}\nQuestion: ${query}` }] }]
+        const payload = {
+            contents: [{ parts: [{ text: `Store Data: ${catalog}\nCustomer: ${query}` }] }]
         };
 
         try {
             const response = await fetch(endpoint, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(body)
+                body: JSON.stringify(payload)
             });
 
             const data = await response.json();
             loader.style.display = "none";
 
             if (data.error) {
-                console.error("API Error:", data.error.message);
-                return "Technical Error: " + data.error.message;
+                return "System Note: " + data.error.message;
             }
 
             if (data.candidates && data.candidates[0].content) {
                 return data.candidates[0].content.parts[0].text;
             }
             
-            return "I'm sorry, I couldn't process that. Please contact support on WhatsApp at +919610147688.";
+            return "I'm not sure about that. Please WhatsApp us at +919610147688.";
         } catch (e) {
             loader.style.display = "none";
-            return "Connection error. Please try again or WhatsApp us.";
+            return "Connection error. Please try again later.";
         }
     }
 

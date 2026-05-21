@@ -233,12 +233,48 @@
             cursor: pointer;
             color: #888;
         }
-        .drawer-img {
+        
+        /* --- Gallery Carousel Slider Layout --- */
+        .drawer-gallery-wrapper {
+            width: 100%;
+            background: #232f3e;
+            position: relative;
+        }
+        .drawer-main-img-box {
             width: 100%;
             aspect-ratio: 16/10;
-            object-fit: cover;
-            background: #232f3e;
+            overflow: hidden;
         }
+        .drawer-main-img-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .drawer-thumbs-strip {
+            display: flex;
+            gap: 6px;
+            padding: 10px;
+            background: rgba(0,0,0,0.4);
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+        .drawer-thumbs-strip::-webkit-scrollbar { display: none; }
+        .thumb-nav-item {
+            width: 50px;
+            height: 40px;
+            border-radius: 4px;
+            object-fit: cover;
+            cursor: pointer;
+            border: 2px solid transparent;
+            opacity: 0.6;
+            transition: all 0.2s;
+            flex-shrink: 0;
+        }
+        .thumb-nav-item.active-thumb, .thumb-nav-item:hover {
+            opacity: 1;
+            border-color: #ff9900;
+        }
+
         .drawer-body {
             padding: 20px;
             flex-grow: 1;
@@ -284,7 +320,53 @@
             padding: 12px;
             border-radius: 8px;
             border-left: 4px solid #ff9900;
+            margin-bottom: 20px;
         }
+
+        /* --- 🔒 SECRET ADMIN LOCK VIEW BOX --- */
+        .admin-private-box {
+            display: none; /* Hidden by default from standard buyers */
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 15px;
+        }
+        .admin-private-box h4 {
+            font-size: 13px;
+            color: #1e40af;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .admin-private-info {
+            font-size: 14px;
+            color: #1e3a8a;
+            margin-bottom: 10px;
+            line-height: 1.4;
+        }
+        .admin-action-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+        .admin-call-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            padding: 8px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 12px;
+            font-weight: bold;
+            text-align: center;
+        }
+        .btn-phone { background: #1a73e8; color: white; }
+        .btn-wa { background: #25d366; color: white; }
+
         .drawer-footer {
             padding: 15px;
             border-top: 1px solid #eee;
@@ -367,58 +449,45 @@
             color: #ff9900;
         }
 
-        /* --- Image Upload Area & Preview Box --- */
+        /* --- Image Grid Multi Upload Style --- */
         .image-upload-box {
             border: 2px dashed #ff9900;
             background: #fffcf7;
-            padding: 20px;
+            padding: 18px;
             border-radius: 8px;
             text-align: center;
             cursor: pointer;
-            position: relative;
             transition: background 0.2s;
         }
-        .image-upload-box:hover {
-            background: #fff5e6;
-        }
-        .image-upload-box i {
-            font-size: 28px;
-            color: #ff9900;
-            margin-bottom: 8px;
-        }
-        .image-upload-box p {
-            font-size: 12px;
-            color: #666;
-        }
-        .upload-preview-container {
+        .image-upload-box:hover { background: #fff5e6; }
+        .image-upload-box i { font-size: 26px; color: #ff9900; margin-bottom: 6px; }
+        .image-upload-box p { font-size: 12px; color: #666; }
+        
+        .multi-preview-scroll {
             display: none;
             margin-top: 10px;
+            gap: 8px;
+            overflow-x: auto;
+            padding-bottom: 5px;
+        }
+        .preview-thumb-wrap {
             position: relative;
-            aspect-ratio: 16/10;
-            border-radius: 8px;
+            width: 70px;
+            height: 55px;
+            border-radius: 6px;
             overflow: hidden;
-            border: 1px solid #ddd;
+            border: 1px solid #ccc;
+            flex-shrink: 0;
         }
-        .upload-preview-container img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .submit-btn {
-            width: 100%;
-            background: #ff9900;
-            color: white;
-            border: none;
-            padding: 14px;
-            border-radius: 8px;
-            font-size: 15px;
+        .preview-thumb-wrap img { width: 100%; height: 100%; object-fit: cover; }
+        .photo-count-badge {
+            font-size: 11px;
+            color: #ff9900;
             font-weight: bold;
-            cursor: pointer;
-            box-shadow: 0 4px 10px rgba(255,153,0,0.2);
-            margin-top: 10px;
+            margin-top: 4px;
+            display: block;
+            text-align: right;
         }
-        .submit-btn:active { transform: scale(0.98); }
 
         @media (max-width: 768px) {
             .showroom-grid {
@@ -450,7 +519,7 @@
         </div>
 
         <div class="showroom-grid" id="vehiclesGrid">
-            <div class="product-card" data-category="Tractors" onclick="showProductDetails('Mahindra Arjun 555 DI', '₹5,42,000', 'Tractors', 'https://images.unsplash.com/photo-1594913785162-e6785b423cb1?auto=format&fit=crop&w=600&q=80', '2022', '1st Owner', 'Jaipur', 'Perfect engine health, original showroom tires with 85% life. Fully verified documentation with clearance certificate.')">
+            <div class="product-card" data-category="Tractors" onclick="openVehicleSpecs('Mahindra Arjun 555 DI', '₹5,42,000', 'Tractors', ['https://images.unsplash.com/photo-1594913785162-e6785b423cb1?auto=format&fit=crop&w=600&q=80'], '2022', '1st Owner', 'Jaipur', 'Perfect engine health, original showroom tires with 85% life.', 'Ramesh Kumar', '9610147688')">
                 <div class="img-container">
                     <img src="https://images.unsplash.com/photo-1594913785162-e6785b423cb1?auto=format&fit=crop&w=500&q=80" alt="Tractor">
                     <span class="category-badge">Tractors</span>
@@ -462,23 +531,6 @@
                     </div>
                     <div class="card-pricing">
                         <span class="card-price">₹5,42,000</span>
-                        <span class="card-action-text">Details →</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="product-card" data-category="Cars" onclick="showProductDetails('Maruti Suzuki Swift VXI', '₹4,85,000', 'Cars', 'https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?auto=format&fit=crop&w=600&q=80', '2020', '2nd Owner', 'Tonk', 'Neat family car. Power steering, ice cold AC, power windows, non-accidental guarantee with active third party insurance.')">
-                <div class="img-container">
-                    <img src="https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?auto=format&fit=crop&w=500&q=80" alt="Car">
-                    <span class="category-badge">Cars</span>
-                </div>
-                <div class="card-details">
-                    <div>
-                        <h3>Maruti Suzuki Swift VXI</h3>
-                        <div class="card-meta">Model: 2020 • 42K Km</div>
-                    </div>
-                    <div class="card-pricing">
-                        <span class="card-price">₹4,85,000</span>
                         <span class="card-action-text">Details →</span>
                     </div>
                 </div>
@@ -532,24 +584,36 @@
 
                 <div class="form-group">
                     <label>Location / City Name*</label>
-                    <input type="text" id="fLoc" required placeholder="e.g., Jaipur, Ajmer" class="form-input">
+                    <input type="text" id="fLoc" required placeholder="e.g., Tonk, Jaipur" class="form-input">
                 </div>
 
                 <div class="form-group">
                     <label>Condition Notes / Additional Features</label>
-                    <textarea id="fDesc" rows="3" placeholder="e.g., Mint condition body line, authorized agency records available..." class="form-input" style="resize:none;"></textarea>
+                    <textarea id="fDesc" rows="3" placeholder="e.g., Mint condition body line, agency records available..." class="form-input" style="resize:none;"></textarea>
+                </div>
+
+                <div style="background: #f0f7ff; padding: 12px; border-radius: 8px; border: 1px dashed #1a73e8; margin-bottom: 15px;">
+                    <label style="display:block; font-size:12px; font-weight:800; color:#1a73e8; text-transform:uppercase; margin-bottom:10px;"><i class="fas fa-user-shield"></i> Internal Office Details (Private)</label>
+                    
+                    <div class="form-group">
+                        <label style="color:#333;">Actual Owner Full Name*</label>
+                        <input type="text" id="fPrivName" required placeholder="e.g., Rajesh Sharma" class="form-input" style="border-color:#b4d5ff">
+                    </div>
+                    <div class="form-group" style="margin-bottom:0;">
+                        <label style="color:#333;">Owner Contact Number*</label>
+                        <input type="tel" id="fPrivPhone" required placeholder="e.g., 98XXXXXXXX" class="form-input" style="border-color:#b4d5ff">
+                    </div>
                 </div>
 
                 <div class="form-group">
-                    <label>Vehicle Picture*</label>
+                    <label>Upload Vehicle Images (Max 10 Photos)*</label>
                     <div class="image-upload-box" onclick="document.getElementById('fImageInput').click()">
-                        <i class="fas fa-camera"></i>
-                        <p><strong>Click to Take Photo</strong> or Choose from Gallery</p>
-                        <input type="file" id="fImageInput" accept="image/*" style="display:none;" onchange="previewUploadedImage(this)">
+                        <i class="fas fa-images"></i>
+                        <p><strong>Click to Choose Multiple Images</strong></p>
+                        <input type="file" id="fImageInput" accept="image/*" multiple style="display:none;" onchange="processMultipleImages(this)">
                     </div>
-                    <div class="upload-preview-container" id="previewContainer">
-                        <img id="formImgPreview" src="" alt="Upload Preview">
-                    </div>
+                    <span class="photo-count-badge" id="photoCountLbl">0 / 10 images loaded</span>
+                    <div class="multi-preview-scroll" id="multiPreviewBox"></div>
                 </div>
 
                 <button type="submit" class="submit-btn">🚀 Add Item to Live Grid</button>
@@ -557,15 +621,20 @@
         </div>
     </main>
 
-    <div class="drawer-overlay" id="detailDrawer" onclick="hideProductDetails()">
+    <div class="drawer-overlay" id="detailDrawer" onclick="closeVehicleDrawer()">
         <div class="drawer-container" id="drawerSheet" onclick="event.stopPropagation()">
             <div>
                 <div class="drawer-header">
                     <span id="dBadge" class="category-badge" style="position:static;">Category</span>
-                    <button class="drawer-close-btn" onclick="hideProductDetails()">&times;</button>
+                    <button class="drawer-close-btn" onclick="closeVehicleDrawer()">&times;</button>
                 </div>
                 
-                <img id="dImg" src="" class="drawer-img" alt="Showcase Product">
+                <div class="drawer-gallery-wrapper">
+                    <div class="drawer-main-img-box">
+                        <img id="dMainImg" src="" alt="Main Preview Picture">
+                    </div>
+                    <div class="drawer-thumbs-strip" id="dThumbsStrip"></div>
+                </div>
                 
                 <div class="drawer-body">
                     <h2 id="dTitle" class="drawer-v-title">Vehicle Name</h2>
@@ -587,6 +656,19 @@
                     </div>
                     
                     <div id="dDesc" class="drawer-desc-box">No additional notes uploaded.</div>
+
+                    <div class="admin-private-box" id="secureAdminBox">
+                        <h4><i class="fas fa-user-lock"></i> Private Record Details</h4>
+                        <div class="admin-private-info">
+                            <strong>Owner Name:</strong> <span id="dPrivNameTxt">-</span><br>
+                            <strong>Phone Number:</strong> <span id="dPrivPhoneTxt">-</span>
+                        </div>
+                        <div class="admin-action-row">
+                            <a id="adminCallLink" href="#" class="admin-call-btn btn-phone"><i class="fas fa-phone-alt"></i> Call Owner</a>
+                            <a id="adminWaLink" href="#" target="_blank" class="admin-call-btn btn-wa"><i class="fab fa-whatsapp"></i> WhatsApp</a>
+                        </div>
+                    </div>
+
                 </div>
             </div>
             
@@ -599,12 +681,11 @@
     </div>
 
     <script>
-        // --- ADMIN LOGIN GATEWAY CONFIGURATION ---
         const ADMIN_ID = "admin";
         const ADMIN_PASSWORD = "vip786";
 
         let currentMode = "buyer"; 
-        let uploadedImageBase64 = ""; // Holds the local uploaded file stream data string
+        let uploadedImagesArray = []; // Stores Base64 string list of the uploaded images
         
         function switchView() {
             const bView = document.getElementById('buyer-view');
@@ -614,7 +695,6 @@
             if (currentMode === "buyer") {
                 let enteredId = prompt("👤 Enter Admin Username ID:");
                 if (enteredId === null) return;
-
                 let enteredPass = prompt("🔒 Enter Admin Password:");
                 if (enteredPass === null) return;
 
@@ -634,17 +714,33 @@
             }
         }
 
-        // Convert the input image into browser data local references instantly
-        function previewUploadedImage(input) {
-            const file = input.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    uploadedImageBase64 = e.target.result; 
-                    document.getElementById('formImgPreview').src = uploadedImageBase64;
-                    document.getElementById('previewContainer').style.display = 'block';
-                }
-                reader.readAsDataURL(file);
+        // Processing files up to 10 photos loop array map
+        function processMultipleImages(input) {
+            const files = Array.from(input.files);
+            const previewBox = document.getElementById('multiPreviewBox');
+            
+            // Limit files reading count array allocation safely to 10 items
+            const filesToProcess = files.slice(0, 10);
+            uploadedImagesArray = []; // Empty baseline
+            previewBox.innerHTML = ""; // Clear display logs
+
+            if (filesToProcess.length > 0) {
+                previewBox.style.display = 'flex';
+                document.getElementById('photoCountLbl').innerText = `${filesToProcess.length} / 10 images loaded`;
+                
+                filesToProcess.forEach(file => {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        uploadedImagesArray.push(e.target.result);
+                        
+                        // Render miniature preview thumb squares inside input panel rows
+                        const thumbWrap = document.createElement('div');
+                        thumbWrap.className = 'preview-thumb-wrap';
+                        thumbWrap.innerHTML = `<img src="${e.target.result}">`;
+                        previewBox.appendChild(thumbWrap);
+                    }
+                    reader.readAsDataURL(file);
+                });
             }
         }
 
@@ -670,18 +766,57 @@
             document.getElementById('fCategory').value = value;
         }
 
-        function showProductDetails(title, price, category, img, year, owner, location, description) {
+        // Open detailed specification sheets view overlay loop drawer maps
+        function openVehicleSpecs(title, price, category, imagesList, year, owner, location, description, secretName, secretPhone) {
             document.getElementById('dTitle').innerText = title;
             document.getElementById('dPrice').innerText = price;
             document.getElementById('dBadge').innerText = category;
-            document.getElementById('dImg').src = img;
             document.getElementById('dSpecYear').innerText = year;
             document.getElementById('dSpecOwner').innerText = owner;
             document.getElementById('dSpecLoc').innerText = location + ", Rajasthan";
             document.getElementById('dDesc').innerText = description || "Verified evaluation complete.";
 
-            const encodedText = encodeURIComponent(`Hello! I want more info regarding this vehicle entry:\n\n🚙 *${title}*\n💰 Price: ${price}\n📅 Year: ${year}\n📍 City: ${location}`);
-            document.getElementById('dWaBtn').href = `https://wa.me/919610147688?text=${encodedText}`;
+            // 1. Image Gallery Initialization
+            const mainImgElement = document.getElementById('dMainImg');
+            const thumbsStrip = document.getElementById('dThumbsStrip');
+            thumbsStrip.innerHTML = ""; // Clear legacy thumbnail renders
+
+            if(!imagesList || imagesList.length === 0) {
+                // If zero photos provided, pull a generic fallback cover placeholder
+                imagesList = ["https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?auto=format&fit=crop&w=500&q=80"];
+            }
+
+            mainImgElement.src = imagesList[0]; // Active main viewing asset slot
+
+            // Build individual click filters if multiple layout images exist
+            imagesList.forEach((src, idx) => {
+                const thumbImg = document.createElement('img');
+                thumbImg.src = src;
+                thumbImg.className = 'thumb-nav-item' + (idx === 0 ? ' active-thumb' : '');
+                thumbImg.onclick = function() {
+                    mainImgElement.src = src;
+                    document.querySelectorAll('.thumb-nav-item').forEach(t => t.classList.remove('active-thumb'));
+                    thumbImg.classList.add('active-thumb');
+                };
+                thumbsStrip.appendChild(thumbImg);
+            });
+
+            // 2. Security Gate Check: Display internal owner details ONLY if logged in as Admin
+            const adminBox = document.getElementById('secureAdminBox');
+            if (currentMode === "seller") { 
+                // Show private fields only if the active top app bar session mode is "Admin Panel"
+                adminBox.style.display = 'block';
+                document.getElementById('dPrivNameTxt').innerText = secretName;
+                document.getElementById('dPrivPhoneTxt').innerText = secretPhone;
+                document.getElementById('adminCallLink').href = `tel:${secretPhone}`;
+                document.getElementById('adminWaLink').href = `https://wa.me/91${secretPhone}?text=Hello%20${encodeURIComponent(secretName)},%20regarding%20your%20vehicle%20${encodeURIComponent(title)}.`;
+            } else {
+                adminBox.style.display = 'none'; // Lock away out of reach from common buyers
+            }
+
+            // Public Customer Communication routing logic string
+            const customerMsg = encodeURIComponent(`Hello! I want more info regarding this vehicle entry:\n\n🚙 *${title}*\n💰 Price: ${price}\n📅 Year: ${year}\n📍 City: ${location}`);
+            document.getElementById('dWaBtn').href = `https://wa.me/919610147688?text=${customerMsg}`;
 
             const overlay = document.getElementById('detailDrawer');
             const sheet = document.getElementById('drawerSheet');
@@ -691,7 +826,7 @@
             document.body.style.overflow = 'hidden';
         }
 
-        function hideProductDetails() {
+        function closeVehicleDrawer() {
             const overlay = document.getElementById('detailDrawer');
             const sheet = document.getElementById('drawerSheet');
             sheet.style.transform = 'translateX(100%)';
@@ -708,16 +843,23 @@
             const owner = document.getElementById('fOwner').value;
             const location = document.getElementById('fLoc').value;
             const desc = document.getElementById('fDesc').value;
+            
+            // Collect the new Private Office strings
+            const secretName = document.getElementById('fPrivName').value;
+            const secretPhone = document.getElementById('fPrivPhone').value;
 
             if(!price.startsWith('₹')) { price = '₹' + price; }
 
-            let finalVehicleImg = uploadedImageBase64;
-            if (!finalVehicleImg) {
-                finalVehicleImg = "https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?auto=format&fit=crop&w=500&q=80"; // car placeholder fallback
+            // Copy items list state references
+            const itemImagesCopy = [...uploadedImagesArray];
+            let primaryDisplayCover = itemImagesCopy[0];
+
+            if (!primaryDisplayCover) {
+                primaryDisplayCover = "https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?auto=format&fit=crop&w=500&q=80"; // car fallback
                 if (category === "Tractors") {
-                    finalVehicleImg = "https://images.unsplash.com/photo-1594913785162-e6785b423cb1?auto=format&fit=crop&w=500&q=80";
+                    primaryDisplayCover = "https://images.unsplash.com/photo-1594913785162-e6785b423cb1?auto=format&fit=crop&w=500&q=80";
                 } else if (category === "Commercial") {
-                    finalVehicleImg = "https://images.unsplash.com/photo-1601584115197-04ecc0da31d7?auto=format&fit=crop&w=500&q=80";
+                    primaryDisplayCover = "https://images.unsplash.com/photo-1601584115197-04ecc0da31d7?auto=format&fit=crop&w=500&q=80";
                 }
             }
 
@@ -727,12 +869,12 @@
             card.setAttribute('data-category', category);
             
             card.onclick = function() {
-                showProductDetails(title, price, category, finalVehicleImg, year, owner, location, desc);
+                openVehicleSpecs(title, price, category, itemImagesCopy, year, owner, location, desc, secretName, secretPhone);
             };
 
             card.innerHTML = `
                 <div class="img-container">
-                    <img src="${finalVehicleImg}" alt="Vehicle">
+                    <img src="${primaryDisplayCover}" alt="Vehicle">
                     <span class="category-badge">${category}</span>
                 </div>
                 <div class="card-details">
@@ -749,16 +891,17 @@
 
             grid.insertBefore(card, grid.firstChild);
             
-            // Cleanup state flags and empty preview blocks completely
+            // Form formatting clean slate metrics adjustments
             document.getElementById('vehicleForm').reset();
-            document.getElementById('previewContainer').style.display = 'none';
-            uploadedImageBase64 = ""; 
+            document.getElementById('multiPreviewBox').style.display = 'none';
+            document.getElementById('photoCountLbl').innerText = "0 / 10 images loaded";
+            uploadedImagesArray = []; 
             
-            alert("🚀 Entry published successfully with your custom image!");
+            alert("🚀 Vehicle entry with custom image gallery & hidden admin records added live!");
             switchView(); 
         }
 
-        // --- PWA SERVICE WORKER REGISTER LOGIC ---
+        // --- PWA SERVICE WORKER COUPLING REGISTER LOGIC ---
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('./sw.js')

@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Afflatus Classes | VIP Gaming Portal</title>
     <link rel="stylesheet" href="style.css">
-    <!-- Font Awesome for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         /* --- Navigation & Dropdown Styling --- */
@@ -72,7 +71,7 @@
         /* --- Portal Container & Card Styling --- */
         .portal-container {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 20px;
             padding: 40px 5%;
             background: #f8f9fa;
@@ -109,281 +108,6 @@
             text-decoration: none;
             font-weight: bold;
         }
-
-        /* --- NEW: E-Commerce Showroom Custom Layout Styling --- */
-        .showroom-section {
-            padding: 50px 5%;
-            background: #ffffff;
-            font-family: inherit;
-        }
-
-        .showroom-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-end;
-            border-bottom: 2px solid #f0f0f0;
-            padding-bottom: 15px;
-            margin-bottom: 30px;
-        }
-
-        .showroom-title h2 {
-            font-size: 28px;
-            color: #232f3e;
-            margin: 0 0 5px 0;
-        }
-
-        .showroom-title p {
-            color: #666;
-            margin: 0;
-            font-size: 14px;
-        }
-
-        .filter-tabs {
-            display: flex;
-            gap: 10px;
-        }
-
-        .filter-btn {
-            padding: 8px 18px;
-            border: 1px solid #ddd;
-            background: white;
-            border-radius: 20px;
-            cursor: pointer;
-            font-weight: bold;
-            font-size: 13px;
-            color: #555;
-            transition: all 0.2s ease;
-        }
-
-        .filter-btn.active, .filter-btn:hover {
-            background: #ff9900;
-            color: white;
-            border-color: #ff9900;
-        }
-
-        .vehicle-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
-            gap: 25px;
-        }
-
-        .vehicle-card {
-            background: #fff;
-            border: 1px solid #e0e0e0;
-            border-radius: 12px;
-            overflow: hidden;
-            cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
-
-        .vehicle-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.08);
-            border-color: #ff9900;
-        }
-
-        .v-img-box {
-            position: relative;
-            aspect-ratio: 4/3;
-            background: #f5f5f5;
-        }
-
-        .v-img-box img {
-            width: 100%;
-            height: 100%;
-            object-cover: cover;
-            object-fit: cover;
-        }
-
-        .v-badge {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            background: rgba(35, 47, 62, 0.85);
-            color: white;
-            font-size: 11px;
-            font-weight: bold;
-            padding: 4px 10px;
-            border-radius: 4px;
-            text-transform: uppercase;
-        }
-
-        .v-details {
-            padding: 15px;
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
-
-        .v-details h3 {
-            margin: 0 0 5px 0;
-            font-size: 16px;
-            color: #232f3e;
-            line-height: 1.3;
-        }
-
-        .v-meta {
-            font-size: 12px;
-            color: #777;
-            margin-bottom: 15px;
-        }
-
-        .v-pricing {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-top: 1px solid #f5f5f5;
-            padding-top: 10px;
-        }
-
-        .v-price {
-            font-size: 18px;
-            font-weight: 800;
-            color: #ff9900;
-        }
-
-        .v-action-text {
-            font-size: 12px;
-            color: #1a73e8;
-            font-weight: bold;
-        }
-
-        /* --- NEW: Slide-out Detail Drawer Panel --- */
-        .drawer-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.5);
-            backdrop-filter: blur(2px);
-            z-index: 20000;
-            display: none;
-            justify-content: flex-end;
-        }
-
-        .drawer-container {
-            width: 100%;
-            max-width: 480px;
-            background: white;
-            height: 100%;
-            box-shadow: -5px 0 25px rgba(0,0,0,0.15);
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            transform: translateX(100%);
-            transition: transform 0.3s ease-in-out;
-            overflow-y: auto;
-        }
-
-        .drawer-header {
-            padding: 15px 20px;
-            border-bottom: 1px solid #eee;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: sticky;
-            top: 0;
-            background: white;
-            z-index: 10;
-        }
-
-        .drawer-close {
-            background: none;
-            border: none;
-            font-size: 24px;
-            cursor: pointer;
-            color: #888;
-        }
-
-        .drawer-close:hover { color: #333; }
-
-        .drawer-hero-img {
-            width: 100%;
-            aspect-ratio: 16/10;
-            object-fit: cover;
-            background: #232f3e;
-        }
-
-        .drawer-body {
-            padding: 25px 20px;
-            flex-grow: 1;
-        }
-
-        .drawer-price {
-            font-size: 26px;
-            font-weight: 800;
-            color: #ff9900;
-            margin: 10px 0;
-        }
-
-        .spec-matrix {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-            margin: 20px 0;
-        }
-
-        .spec-item {
-            background: #f8f9fa;
-            padding: 10px 15px;
-            border-radius: 8px;
-            border: 1px solid #eee;
-        }
-
-        .spec-label {
-            font-size: 11px;
-            color: #999;
-            display: block;
-            margin-bottom: 2px;
-        }
-
-        .spec-val {
-            font-size: 14px;
-            font-weight: bold;
-            color: #333;
-        }
-
-        .drawer-description {
-            font-size: 14px;
-            color: #555;
-            line-height: 1.6;
-            background: #fff8f0;
-            padding: 15px;
-            border-radius: 8px;
-            border-left: 4px solid #ff9900;
-        }
-
-        .drawer-footer-action {
-            padding: 15px 20px;
-            border-top: 1px solid #eee;
-            background: white;
-            position: sticky;
-            bottom: 0;
-        }
-
-        .drawer-wa-btn {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            background: #25d366;
-            color: white;
-            text-decoration: none;
-            padding: 14px;
-            border-radius: 10px;
-            font-weight: bold;
-            text-align: center;
-            font-size: 16px;
-            box-shadow: 0 4px 12px rgba(37,211,102,0.2);
-            transition: background 0.2s;
-        }
-
-        .drawer-wa-btn:hover { background: #20ba59; }
 
         /* --- WhatsApp Button (MOVED TO LEFT) --- */
         .whatsapp-float {
@@ -452,10 +176,6 @@
             .dropdown-content { position: static; display: none; }
             .dropdown:hover .dropdown-content { display: block; }
             #ai-chat-box { width: 90%; right: 5%; bottom: 90px; }
-            .showroom-header { flex-direction: column; align-items: flex-start; gap: 15px; }
-            .vehicle-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
-            .v-details h3 { font-size: 14px; }
-            .v-price { font-size: 15px; }
         }
     </style>
 </head>
@@ -473,8 +193,8 @@
             <button class="dropbtn">Our Projects ▼</button>
             <div class="dropdown-content">
                 <a href="gaming_website/index.html">🎮 Gaming Hub</a>
+                <a href="vehicle_marketplace/index.html">🚗 Vehicle Bazaar</a>
                 <a href="affiliated_website/index.html">🛒 Shop Deals</a>
-                <a href="#marketplace">🚗 Vehicle Marketplace</a>
                 <a href="emitra/index.html">📑 e-Mitra Services</a>
                 <a href="Travelling/index.html">✈️ Travel Site</a>
             </div>
@@ -487,7 +207,7 @@
 <main>
     <section class="hero" style="text-align: center; padding: 60px 20px; background: #232f3e; color: white;">
         <h1 style="margin-bottom: 10px;">Welcome to Afflatus Classes</h1>
-        <p style="opacity: 0.9;">Your portal for Education, Gaming, and Commercial Services.</p>
+        <p style="opacity: 0.9;">Your portal for Education, Gaming, and Local Services.</p>
     </section>
 
     <section class="portal-container">
@@ -499,10 +219,10 @@
             <span class="portal-btn">Enter Hub</span>
         </a>
 
-        <a href="#marketplace" class="portal-card" style="border-color: #ff9900;">
+        <a href="vehicle_marketplace/index.html" class="portal-card" style="border-color: #ff9900;">
             <div>
                 <h2>🚗 Vehicle Bazaar</h2>
-                <p>Buy & sell verified secondary cars, tractors, and loaded loading trucks.</p>
+                <p>Buy & sell verified pre-owned cars, tractors, and commercial vehicles.</p>
             </div>
             <span class="portal-btn" style="background: #ff9900;">Explore Bazaar</span>
         </a>
@@ -539,138 +259,16 @@
             <span class="portal-btn">Explore Now</span>
         </a>
     </section>
-
-    <!-- ======================================================== -->
-    <!-- NEW: VEHICLE BUYING AND SELLING INTERACTIVE SHOWROOM      -->
-    <!-- ======================================================== -->
-    <section id="marketplace" class="showroom-section">
-        <div class="showroom-header">
-            <div class="showroom-title">
-                <h2>Commercial Vehicles & Cars Bazaar</h2>
-                <p>Click on any vehicle card to view live photos, owner history, and mechanical metrics.</p>
-            </div>
-            <div class="filter-tabs">
-                <button class="filter-btn active">All Stock</button>
-                <button class="filter-btn">Cars</button>
-                <button class="filter-btn">Tractors</button>
-                <button class="filter-btn">Commercial</button>
-            </div>
-        </div>
-
-        <div class="vehicle-grid">
-            <!-- Product Item 1 -->
-            <div class="vehicle-card" onclick="launchVehicleDetails('Mahindra Arjun 555 DI', '₹5,42,000', 'Tractors', 'https://images.unsplash.com/photo-1594913785162-e6785b423cb1?auto=format&fit=crop&w=800&q=80', '2022', '1st Owner', 'Jaipur, RJ', 'Engine condition is solid, original factory tires have 85% tread remaining. Serviced strictly on schedule at authorized service centers. Heavy duty hitch setup installed.')">
-                <div class="v-img-box">
-                    <img src="https://images.unsplash.com/photo-1594913785162-e6785b423cb1?auto=format&fit=crop&w=500&q=80" alt="Tractor for sale">
-                    <span class="v-badge">Tractors</span>
-                </div>
-                <div class="v-details">
-                    <div>
-                        <h3>Mahindra Arjun 555 DI</h3>
-                        <div class="v-meta">Model: 2022 • 1st Owner</div>
-                    </div>
-                    <div class="v-pricing">
-                        <span class="v-price">₹5,42,000</span>
-                        <span class="v-action-text">View Details →</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Product Item 2 -->
-            <div class="vehicle-card" onclick="launchVehicleDetails('Maruti Suzuki Swift VXI', '₹4,85,000', 'Cars', 'https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?auto=format&fit=crop&w=800&q=80', '2020', '2nd Owner', 'Tonk, RJ', 'Neat, non-accidental chassis, completely scratchless bumpers. Chilling AC unit, stock stereo system, complete zero-depreciation insurance active up to December.')">
-                <div class="v-img-box">
-                    <img src="https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?auto=format&fit=crop&w=500&q=80" alt="Car for sale">
-                    <span class="v-badge">Cars</span>
-                </div>
-                <div class="v-details">
-                    <div>
-                        <h3>Maruti Suzuki Swift VXI</h3>
-                        <div class="v-meta">Model: 2020 • 42,000 KM</div>
-                    </div>
-                    <div class="v-pricing">
-                        <span class="v-price">₹4,85,000</span>
-                        <span class="v-action-text">View Details →</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Product Item 3 -->
-            <div class="vehicle-card" onclick="launchVehicleDetails('Tata Ace Gold Diesel', '₹3,95,000', 'Commercial', 'https://images.unsplash.com/photo-1601584115197-04ecc0da31d7?auto=format&fit=crop&w=800&q=80', '2021', '1st Owner', 'Pratap Nagar, Jaipur', 'Chota Hathi in mint condition. Heavy-duty leaf spring suspensions added for weight management. Passing and documentation up to date, ready for instant payload business.')">
-                <div class="v-img-box">
-                    <img src="https://images.unsplash.com/photo-1601584115197-04ecc0da31d7?auto=format&fit=crop&w=500&q=80" alt="Commercial Vehicle">
-                    <span class="v-badge">Commercial</span>
-                </div>
-                <div class="v-details">
-                    <div>
-                        <h3>Tata Ace Gold (Chota Hathi)</h3>
-                        <div class="v-meta">Model: 2021 • Diesel variant</div>
-                    </div>
-                    <div class="v-pricing">
-                        <span class="v-price">₹3,95,000</span>
-                        <span class="v-action-text">View Details →</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
 </main>
 
-<!-- ======================================================== -->
-<!-- NEW: SLIDE OUT INTERACTIVE MODAL DETAIL COMPONENT        -->
-<!-- ======================================================== -->
-<div class="drawer-overlay" id="vehicleDrawer" onclick="hideVehicleDetails(event)">
-    <div class="drawer-container" id="drawerContainer" onclick="event.stopPropagation()">
-        <div>
-            <div class="drawer-header">
-                <span id="dVBadge" class="v-badge" style="position:static;">Category</span>
-                <button class="drawer-close" onclick="closeDrawerDirectly()">&times;</button>
-            </div>
-            
-            <img id="dVImg" src="" alt="Showcase Image" class="drawer-hero-img">
-            
-            <div class="drawer-body">
-                <h3 id="dVTitle" style="margin:0; font-size:22px; color:#232f3e;">Vehicle Title</h3>
-                <div id="dVPrice" class="drawer-price">₹0,00,000</div>
-                
-                <div class="spec-matrix">
-                    <div class="spec-item">
-                        <span class="spec-label">Model Year</span>
-                        <span class="spec-val" id="dVSpecYear">-</span>
-                    </div>
-                    <div class="spec-item">
-                        <span class="spec-label">History / Use</span>
-                        <span class="spec-val" id="dVSpecOwner">-</span>
-                    </div>
-                    <div class="spec-item" style="grid-span: 2; grid-column: span 2;">
-                        <span class="spec-label">Stock Inspection Location</span>
-                        <span class="spec-val" id="dVSpecLoc">-</span>
-                    </div>
-                </div>
-                
-                <h4 style="margin:20px 0 8px 0; font-size:14px; color:#232f3e; text-transform:uppercase;">Vehicle Summary</h4>
-                <p id="dVDesc" class="drawer-description">Loading description notes...</p>
-            </div>
-        </div>
-        
-        <div class="drawer-footer-action">
-            <a id="dVWhatsAppBtn" href="#" target="_blank" class="drawer-hero-img drawer-wa-btn">
-                <i class="fab fa-whatsapp" style="font-size:20px;"></i> Chat to Lock Final Price
-            </a>
-        </div>
-    </div>
-</div>
-
-<!-- AI Chatbot Toggle Button -->
 <button class="ai-btn-float" id="ai-toggle">
     <i class="fas fa-robot"></i>
 </button>
 
-<!-- AI Chatbot Box -->
 <div id="ai-chat-box">
     <iframe src="my-chatboat/index.html" style="width: 100%; height: 100%; border: none;"></iframe>
 </div>
 
-<!-- WhatsApp Sticky Button -->
 <a href="https://wa.me/919610147688?text=Hello%20Afflatus,%20Can%20I%20have%20a%20chat%20with%20you." class="whatsapp-float" target="_blank">
     <i class="fab fa-whatsapp"></i>
 </a>
@@ -680,7 +278,6 @@
 </footer>
 
 <script>
-    /* --- AI Bot Toggle Trigger --- */
     const aiToggle = document.getElementById('ai-toggle');
     const aiChatBox = document.getElementById('ai-chat-box');
 
@@ -693,46 +290,6 @@
             aiToggle.innerHTML = '<i class="fas fa-robot"></i>';
         }
     };
-
-    /* --- Showroom Interactive Detail Functions --- */
-    function launchVehicleDetails(title, price, category, img, year, owner, location, description) {
-        document.getElementById('dVTitle').innerText = title;
-        document.getElementById('dVPrice').innerText = price;
-        document.getElementById('dVBadge').innerText = category;
-        document.getElementById('dVImg').src = img;
-        document.getElementById('dVSpecYear').innerText = year;
-        document.getElementById('dVSpecOwner').innerText = owner;
-        document.getElementById('dVSpecLoc').innerText = location;
-        document.getElementById('dVDesc').innerText = description;
-        
-        // Dynamic WhatsApp query builder (Points to primary platform support cell)
-        const waText = encodeURIComponent(`Hello Afflatus! I am interested in checking out this vehicle:\n\n🚗 *${title}*\n💰 Listed Price: ${price}\n📅 Registration Year: ${year}\n📍 Location: ${location}\n\nPlease let me know if it's available for a physical test drive.`);
-        document.getElementById('dVWhatsAppBtn').href = `https://wa.me/919610147688?text=${waText}`;
-
-        const overlay = document.getElementById('vehicleDrawer');
-        const drawer = document.getElementById('drawerContainer');
-        
-        overlay.style.display = 'flex';
-        setTimeout(() => {
-            drawer.style.transform = 'translateX(0)';
-        }, 10);
-        document.body.style.overflow = 'hidden';
-    }
-
-    function closeDrawerDirectly() {
-        const overlay = document.getElementById('vehicleDrawer');
-        const drawer = document.getElementById('drawerContainer');
-        
-        drawer.style.transform = 'translateX(100%)';
-        setTimeout(() => {
-            overlay.style.display = 'none';
-            document.body.style.overflow = '';
-        }, 300);
-    }
-
-    function hideVehicleDetails(event) {
-        closeDrawerDirectly();
-    }
 </script>
 
 </body>

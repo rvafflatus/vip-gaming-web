@@ -37,6 +37,9 @@
             text-decoration: none;
             font-size: 14px;
             font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 5px;
         }
 
         .app-title {
@@ -55,6 +58,9 @@
             font-weight: bold;
             cursor: pointer;
             transition: background 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 5px;
         }
         .admin-toggle-btn:hover {
             background: #ff9900;
@@ -63,12 +69,12 @@
         /* --- View Containers --- */
         .view-section {
             padding: 20px 5%;
-            max-w: 1200px;
+            max-width: 1200px;
             margin: 0 auto;
         }
 
         #seller-view {
-            display: none; /* Hidden initially, toggled by admin button */
+            display: none;
             max-width: 500px;
         }
 
@@ -289,7 +295,7 @@
             background: #25d366;
             color: white;
             text-decoration: none;
-            padding: 12px;
+            padding: 14px;
             border-radius: 8px;
             font-weight: bold;
             font-size: 15px;
@@ -334,7 +340,6 @@
             border-color: #ff9900;
             background: #fff;
         }
-        /* Mobile Segmented Category Input Pickers */
         .category-picker {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -371,7 +376,6 @@
         }
         .submit-btn:active { transform: scale(0.98); }
 
-        /* --- Responsive Media View Breakpoints --- */
         @media (max-width: 768px) {
             .showroom-grid {
                 grid-template-columns: repeat(2, 1fr);
@@ -389,7 +393,7 @@
         <a href="../index.html" class="back-home"><i class="fas fa-arrow-left"></i> Hub</a>
         <div class="app-title">🚗 Vehicle Bazaar</div>
         <button class="admin-toggle-btn" id="toggleViewBtn" onclick="switchView()">
-            <i class="fas fa-cog"></i> Admin Panel
+            <i class="fas fa-lock"></i> Admin Panel
         </button>
     </header>
 
@@ -445,7 +449,7 @@
                 
                 <div class="form-group">
                     <label>Vehicle Title / Name*</label>
-                    <input type="text" id="fTitle" required placeholder="e.g., Bolero Maxi Truck, Splendor Plus" class="form-input">
+                    <input type="text" id="fTitle" required placeholder="e.g., Mahindra Bolero, Honda City" class="form-input">
                 </div>
 
                 <div class="form-group">
@@ -474,12 +478,12 @@
 
                 <div class="form-group">
                     <label>Model Registration Year*</label>
-                    <input type="number" id="fYear" required placeholder="e.g., 2021" class="form-input">
+                    <input type="number" id="fYear" required placeholder="e.g., 2023" class="form-input">
                 </div>
 
                 <div class="form-group">
                     <label>Owner Details / Mileage*</label>
-                    <input type="text" id="fOwner" required placeholder="e.g., 1st Owner or 35,000 Km" class="form-input">
+                    <input type="text" id="fOwner" required placeholder="e.g., 1st Owner, 25k KM" class="form-input">
                 </div>
 
                 <div class="form-group">
@@ -489,7 +493,7 @@
 
                 <div class="form-group">
                     <label>Condition Notes / Additional Features</label>
-                    <textarea id="fDesc" rows="3" placeholder="e.g., Insurance active, clean engine, brand new seat covers..." class="form-input" style="resize:none;"></textarea>
+                    <textarea id="fDesc" rows="3" placeholder="e.g., Mint condition body line, authorized agency records available..." class="form-input" style="resize:none;"></textarea>
                 </div>
 
                 <button type="submit" class="submit-btn">🚀 Add Item to Live Grid</button>
@@ -539,28 +543,45 @@
     </div>
 
     <script>
-        let currentMode = "buyer"; // Tracks view mode state
+        // --- ADMIN LOGIN GATEWAY CONFIGURATION ---
+        const ADMIN_ID = "admin";
+        const ADMIN_PASSWORD = "vip786";
+
+        let currentMode = "buyer"; 
         
-        // Switch layout between Buyer Storefront and Seller Mobile PWA Form
+        // Secure Switch Handler with Prompt Verification
         function switchView() {
             const bView = document.getElementById('buyer-view');
             const sView = document.getElementById('seller-view');
             const btn = document.getElementById('toggleViewBtn');
 
             if (currentMode === "buyer") {
-                bView.style.display = 'none';
-                sView.style.display = 'block';
-                btn.innerHTML = '<i class="fas fa-eye"></i> Show Storefront';
-                currentMode = "seller";
+                // 1. Ask for credentials
+                let enteredId = prompt("👤 Enter Admin Username ID:");
+                if (enteredId === null) return; // Cancel trigger safely
+
+                let enteredPass = prompt("🔒 Enter Admin Password:");
+                if (enteredPass === null) return; // Cancel trigger safely
+
+                // 2. Validate Match
+                if (enteredId.trim() === ADMIN_ID && enteredPass === ADMIN_PASSWORD) {
+                    bView.style.display = 'none';
+                    sView.style.display = 'block';
+                    btn.innerHTML = '<i class="fas fa-eye"></i> Storefront View';
+                    currentMode = "seller";
+                } else {
+                    alert("❌ Invalid Credentials! Access Denied.");
+                }
             } else {
+                // Exit form mode back to listing index seamlessly
                 sView.style.display = 'none';
                 bView.style.display = 'block';
-                btn.innerHTML = '<i class="fas fa-cog"></i> Admin Panel';
+                btn.innerHTML = '<i class="fas fa-lock"></i> Admin Panel';
                 currentMode = "buyer";
             }
         }
 
-        // Storefront Category Filter tabs handler
+        // Category filtration filters click handler
         function filterCategory(category, element) {
             const chips = document.querySelectorAll('.filter-chip');
             chips.forEach(c => c.classList.remove('active'));
@@ -576,7 +597,7 @@
             });
         }
 
-        // Segmented Radio Buttons styling logic on Admin form
+        // Sets dynamic field values based on custom phone picker tap grids
         function selectCategoryInput(value, element) {
             const options = document.querySelectorAll('.picker-option');
             options.forEach(opt => opt.classList.remove('selected'));
@@ -584,7 +605,7 @@
             document.getElementById('fCategory').value = value;
         }
 
-        // Launch side drawer showing vehicle specs sheet
+        // Pull details sheet drawer on screen view
         function showProductDetails(title, price, category, img, year, owner, location, description) {
             document.getElementById('dTitle').innerText = title;
             document.getElementById('dPrice').innerText = price;
@@ -593,10 +614,10 @@
             document.getElementById('dSpecYear').innerText = year;
             document.getElementById('dSpecOwner').innerText = owner;
             document.getElementById('dSpecLoc').innerText = location + ", Rajasthan";
-            document.getElementById('dDesc').innerText = description || "Vehicle is checked and verified by our evaluation experts.";
+            document.getElementById('dDesc').innerText = description || "Verified evaluation complete.";
 
-            // Generates pre-written text message to the platform cell number
-            const encodedText = encodeURIComponent(`Hello! I want more information about the listed vehicle:\n\n🚙 *${title}*\n💰 Demand: ${price}\n📅 Year: ${year}\n📍 Location: ${location}`);
+            // Dynamic WhatsApp intent builder targeting the project link number
+            const encodedText = encodeURIComponent(`Hello! I want more info regarding this vehicle entry:\n\n🚙 *${title}*\n💰 Price: ${price}\n📅 Year: ${year}\n📍 City: ${location}`);
             document.getElementById('dWaBtn').href = `https://wa.me/919610147688?text=${encodedText}`;
 
             const overlay = document.getElementById('detailDrawer');
@@ -614,7 +635,7 @@
             setTimeout(() => { overlay.style.display = 'none'; document.body.style.overflow = ''; }, 250);
         }
 
-        // Handles Admin mobile form submission and injects product onto the active view
+        // Pushes the user form inputs onto the display store layout live
         function handleFormSubmit(event) {
             event.preventDefault();
 
@@ -628,21 +649,19 @@
 
             if(!price.startsWith('₹')) { price = '₹' + price; }
 
-            // Auto-assign high-quality catalog image mock covers based on category choice
-            let fallbackImg = "https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?auto=format&fit=crop&w=500&q=80"; // car
+            // Dynamic high-res stock photo allocations
+            let fallbackImg = "https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?auto=format&fit=crop&w=500&q=80";
             if (category === "Tractors") {
                 fallbackImg = "https://images.unsplash.com/photo-1594913785162-e6785b423cb1?auto=format&fit=crop&w=500&q=80";
             } else if (category === "Commercial") {
                 fallbackImg = "https://images.unsplash.com/photo-1601584115197-04ecc0da31d7?auto=format&fit=crop&w=500&q=80";
             }
 
-            // Create new product element structure directly using DOM
             const grid = document.getElementById('vehiclesGrid');
             const card = document.createElement('div');
             card.className = 'product-card';
             card.setAttribute('data-category', category);
             
-            // Inject dynamic content securely 
             card.onclick = function() {
                 showProductDetails(title, price, category, fallbackImg, year, owner, location, desc);
             };
@@ -664,12 +683,9 @@
                 </div>
             `;
 
-            // Prepend item to top of layout catalog stack
             grid.insertBefore(card, grid.firstChild);
-
-            // Reset fields and instantly route seller back to see their live creation
             document.getElementById('vehicleForm').reset();
-            alert("🚀 Success! Entry published live on the grid.");
+            alert("🚀 Entry published successfully onto the storefront catalog grid!");
             switchView(); 
         }
     </script>

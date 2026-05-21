@@ -361,6 +361,45 @@
             background: #fff8f0;
             color: #ff9900;
         }
+
+        /* --- Image Upload Area & Preview Box --- */
+        .image-upload-box {
+            border: 2px dashed #ff9900;
+            background: #fffcf7;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            position: relative;
+            transition: background 0.2s;
+        }
+        .image-upload-box:hover {
+            background: #fff5e6;
+        }
+        .image-upload-box i {
+            font-size: 28px;
+            color: #ff9900;
+            margin-bottom: 8px;
+        }
+        .image-upload-box p {
+            font-size: 12px;
+            color: #666;
+        }
+        .upload-preview-container {
+            display: none;
+            margin-top: 10px;
+            position: relative;
+            aspect-ratio: 16/10;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid #ddd;
+        }
+        .upload-preview-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
         .submit-btn {
             width: 100%;
             background: #ff9900;
@@ -496,6 +535,18 @@
                     <textarea id="fDesc" rows="3" placeholder="e.g., Mint condition body line, authorized agency records available..." class="form-input" style="resize:none;"></textarea>
                 </div>
 
+                <div class="form-group">
+                    <label>Vehicle Picture*</label>
+                    <div class="image-upload-box" onclick="document.getElementById('fImageInput').click()">
+                        <i class="fas fa-camera"></i>
+                        <p><strong>Click to Take Photo</strong> or Choose from Gallery</p>
+                        <input type="file" id="fImageInput" accept="image/*" style="display:none;" onchange="previewUploadedImage(this)">
+                    </div>
+                    <div class="upload-preview-container" id="previewContainer">
+                        <img id="formImgPreview" src="" alt="Upload Preview">
+                    </div>
+                </div>
+
                 <button type="submit" class="submit-btn">🚀 Add Item to Live Grid</button>
             </form>
         </div>
@@ -548,22 +599,20 @@
         const ADMIN_PASSWORD = "vip786";
 
         let currentMode = "buyer"; 
+        let uploadedImageBase64 = ""; // Holds the dynamic image data string
         
-        // Secure Switch Handler with Prompt Verification
         function switchView() {
             const bView = document.getElementById('buyer-view');
             const sView = document.getElementById('seller-view');
             const btn = document.getElementById('toggleViewBtn');
 
             if (currentMode === "buyer") {
-                // 1. Ask for credentials
                 let enteredId = prompt("👤 Enter Admin Username ID:");
-                if (enteredId === null) return; // Cancel trigger safely
+                if (enteredId === null) return;
 
                 let enteredPass = prompt("🔒 Enter Admin Password:");
-                if (enteredPass === null) return; // Cancel trigger safely
+                if (enteredPass === null) return;
 
-                // 2. Validate Match
                 if (enteredId.trim() === ADMIN_ID && enteredPass === ADMIN_PASSWORD) {
                     bView.style.display = 'none';
                     sView.style.display = 'block';
@@ -573,7 +622,6 @@
                     alert("❌ Invalid Credentials! Access Denied.");
                 }
             } else {
-                // Exit form mode back to listing index seamlessly
                 sView.style.display = 'none';
                 bView.style.display = 'block';
                 btn.innerHTML = '<i class="fas fa-lock"></i> Admin Panel';
@@ -581,7 +629,20 @@
             }
         }
 
-        // Category filtration filters click handler
+        // Handle file selection and convert to temporary URL data line
+        function previewUploadedImage(input) {
+            const file = input.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    uploadedImageBase64 = e.target.result; // Saves image conversion data
+                    document.getElementById('formImgPreview').src = uploadedImageBase64;
+                    document.getElementById('previewContainer').style.display = 'block';
+                }
+                reader.readAsDataURL(file);
+            }
+        }
+
         function filterCategory(category, element) {
             const chips = document.querySelectorAll('.filter-chip');
             chips.forEach(c => c.classList.remove('active'));
@@ -597,7 +658,6 @@
             });
         }
 
-        // Sets dynamic field values based on custom phone picker tap grids
         function selectCategoryInput(value, element) {
             const options = document.querySelectorAll('.picker-option');
             options.forEach(opt => opt.classList.remove('selected'));
@@ -605,7 +665,6 @@
             document.getElementById('fCategory').value = value;
         }
 
-        // Pull details sheet drawer on screen view
         function showProductDetails(title, price, category, img, year, owner, location, description) {
             document.getElementById('dTitle').innerText = title;
             document.getElementById('dPrice').innerText = price;
@@ -616,7 +675,6 @@
             document.getElementById('dSpecLoc').innerText = location + ", Rajasthan";
             document.getElementById('dDesc').innerText = description || "Verified evaluation complete.";
 
-            // Dynamic WhatsApp intent builder targeting the project link number
             const encodedText = encodeURIComponent(`Hello! I want more info regarding this vehicle entry:\n\n🚙 *${title}*\n💰 Price: ${price}\n📅 Year: ${year}\n📍 City: ${location}`);
             document.getElementById('dWaBtn').href = `https://wa.me/919610147688?text=${encodedText}`;
 
@@ -635,7 +693,6 @@
             setTimeout(() => { overlay.style.display = 'none'; document.body.style.overflow = ''; }, 250);
         }
 
-        // Pushes the user form inputs onto the display store layout live
         function handleFormSubmit(event) {
             event.preventDefault();
 
@@ -649,12 +706,15 @@
 
             if(!price.startsWith('₹')) { price = '₹' + price; }
 
-            // Dynamic high-res stock photo allocations
-            let fallbackImg = "https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?auto=format&fit=crop&w=500&q=80";
-            if (category === "Tractors") {
-                fallbackImg = "https://images.unsplash.com/photo-1594913785162-e6785b423cb1?auto=format&fit=crop&w=500&q=80";
-            } else if (category === "Commercial") {
-                fallbackImg = "https://images.unsplash.com/photo-1601584115197-04ecc0da31d7?auto=format&fit=crop&w=500&q=80";
+            // Check if user uploaded a custom photo, otherwise look up category stock default
+            let finalVehicleImg = uploadedImageBase64;
+            if (!finalVehicleImg) {
+                finalVehicleImg = "https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?auto=format&fit=crop&w=500&q=80"; // car fallback
+                if (category === "Tractors") {
+                    finalVehicleImg = "https://images.unsplash.com/photo-1594913785162-e6785b423cb1?auto=format&fit=crop&w=500&q=80";
+                } else if (category === "Commercial") {
+                    finalVehicleImg = "https://images.unsplash.com/photo-1601584115197-04ecc0da31d7?auto=format&fit=crop&w=500&q=80";
+                }
             }
 
             const grid = document.getElementById('vehiclesGrid');
@@ -663,12 +723,12 @@
             card.setAttribute('data-category', category);
             
             card.onclick = function() {
-                showProductDetails(title, price, category, fallbackImg, year, owner, location, desc);
+                showProductDetails(title, price, category, finalVehicleImg, year, owner, location, desc);
             };
 
             card.innerHTML = `
                 <div class="img-container">
-                    <img src="${fallbackImg}" alt="Vehicle">
+                    <img src="${finalVehicleImg}" alt="Vehicle">
                     <span class="category-badge">${category}</span>
                 </div>
                 <div class="card-details">
@@ -684,8 +744,13 @@
             `;
 
             grid.insertBefore(card, grid.firstChild);
+            
+            // Clean up states and reset form fields
             document.getElementById('vehicleForm').reset();
-            alert("🚀 Entry published successfully onto the storefront catalog grid!");
+            document.getElementById('previewContainer').style.display = 'none';
+            uploadedImageBase64 = ""; 
+            
+            alert("🚀 Entry published successfully with your custom image!");
             switchView(); 
         }
     </script>

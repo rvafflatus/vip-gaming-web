@@ -1,0 +1,21 @@
+{
+  "short_name": "VehicleBazaar",
+  "name": "Vehicle Bazaar Admin & Showroom",
+  "icons": [
+    {
+      "src": "https://img.icons8.com/color/192/delivery-van.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "https://img.icons8.com/color/512/delivery-van.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": "./index.html",
+  "background_color": "#232f3e",
+  "theme_color": "#232f3e",
+  "display": "standalone",
+  "orientation": "portrait"
+}

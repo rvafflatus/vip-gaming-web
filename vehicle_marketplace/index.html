@@ -4,7 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Vehicle Bazaar | Afflatus Marketplace</title>
+    
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#232f3e">
+    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
     <style>
         * {
             box-sizing: border-box;
@@ -599,7 +604,7 @@
         const ADMIN_PASSWORD = "vip786";
 
         let currentMode = "buyer"; 
-        let uploadedImageBase64 = ""; // Holds the dynamic image data string
+        let uploadedImageBase64 = ""; // Holds the local uploaded file stream data string
         
         function switchView() {
             const bView = document.getElementById('buyer-view');
@@ -629,13 +634,13 @@
             }
         }
 
-        // Handle file selection and convert to temporary URL data line
+        // Convert the input image into browser data local references instantly
         function previewUploadedImage(input) {
             const file = input.files[0];
             if (file) {
                 const reader = new FileReader();
                 reader.onload = function(e) {
-                    uploadedImageBase64 = e.target.result; // Saves image conversion data
+                    uploadedImageBase64 = e.target.result; 
                     document.getElementById('formImgPreview').src = uploadedImageBase64;
                     document.getElementById('previewContainer').style.display = 'block';
                 }
@@ -706,10 +711,9 @@
 
             if(!price.startsWith('₹')) { price = '₹' + price; }
 
-            // Check if user uploaded a custom photo, otherwise look up category stock default
             let finalVehicleImg = uploadedImageBase64;
             if (!finalVehicleImg) {
-                finalVehicleImg = "https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?auto=format&fit=crop&w=500&q=80"; // car fallback
+                finalVehicleImg = "https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?auto=format&fit=crop&w=500&q=80"; // car placeholder fallback
                 if (category === "Tractors") {
                     finalVehicleImg = "https://images.unsplash.com/photo-1594913785162-e6785b423cb1?auto=format&fit=crop&w=500&q=80";
                 } else if (category === "Commercial") {
@@ -745,13 +749,22 @@
 
             grid.insertBefore(card, grid.firstChild);
             
-            // Clean up states and reset form fields
+            // Cleanup state flags and empty preview blocks completely
             document.getElementById('vehicleForm').reset();
             document.getElementById('previewContainer').style.display = 'none';
             uploadedImageBase64 = ""; 
             
             alert("🚀 Entry published successfully with your custom image!");
             switchView(); 
+        }
+
+        // --- PWA SERVICE WORKER REGISTER LOGIC ---
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js')
+                    .then(reg => console.log('🚀 PWA Service Worker Registered!', reg))
+                    .catch(err => console.log('❌ Service Worker Registration Failed:', err));
+            });
         }
     </script>
 </body>

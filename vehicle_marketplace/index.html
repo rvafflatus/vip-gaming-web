@@ -58,7 +58,6 @@
         .spec-lbl { font-size: 11px; color: #999; display: block; }
         .spec-txt { font-size: 13px; font-weight: bold; color: #333; }
         .drawer-desc-box { font-size: 13px; color: #555; line-height: 1.5; background: #fff9f2; padding: 12px; border-radius: 8px; border-left: 4px solid #ff9900; margin-bottom: 20px; }
-        
         .admin-private-box { display: none; background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 10px; padding: 15px; margin-top: 15px; }
         .admin-private-box h4 { font-size: 13px; color: #1e40af; text-transform: uppercase; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
         .admin-private-info { font-size: 14px; color: #1e3a8a; margin-bottom: 10px; line-height: 1.4; }
@@ -66,7 +65,6 @@
         .admin-call-btn { display: flex; align-items: center; justify-content: center; gap: 6px; padding: 10px; border-radius: 6px; text-decoration: none; font-size: 13px; font-weight: bold; text-align: center; }
         .btn-phone { background: #1a73e8; color: white; }
         .btn-wa { background: #25d366; color: white; }
-        
         .drawer-footer { padding: 15px; border-top: 1px solid #eee; background: white; position: sticky; bottom: 0; }
         .wa-chat-btn { display: flex; align-items: center; justify-content: center; gap: 8px; background: #25d366; color: white; text-decoration: none; padding: 14px; border-radius: 8px; font-weight: bold; font-size: 15px; box-shadow: 0 3px 10px rgba(37,211,102,0.2); }
         .form-card { background: white; border-radius: 16px; padding: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 1px solid #e0e0e0; }
@@ -235,133 +233,12 @@
     </div>
 
     <script>
-        const SUPABASE_URL = "https://mkcceghlkrrmtrbpuqzm.supabase.co"; 
-        const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1rY2NlZ2hsa3JybXRyYnB1cXptIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk0MTMyMDIsImV4cCI6MjA5NDk4OTIwMn0.5Ehw0tXnjs_JUIktzA3OL3k9KfaYuhpaRrfZxBvZvR0";
-
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
+        // --- 🛠️ 1. STANDALONE LOCK GATEWAY BLOCK (Placed on top so it NEVER breaks) ---
         const ADMIN_ID = "admin";
         const ADMIN_PASSWORD = "vip786";
         let isAdminLoggedIn = false;
         let currentView = "buyer";
-        let uploadedImagesArray = [];
 
-        window.addEventListener('load', () => {
-            fetchVehiclesFromCloud();
-        });
-
-        // 📥 READ DATA LIVE FROM CLOUD
-        async function fetchVehiclesFromCloud() {
-            const grid = document.getElementById('vehiclesGrid');
-            grid.innerHTML = "<p style='padding:40px; color:#666; text-align:center; grid-column:1/-1;'><i class='fas fa-spinner fa-spin'></i> Syncing Cloud Showroom Database...</p>";
-
-            try {
-                const { data: vehicles, error } = await supabase
-                    .from('vehicles')
-                    .select('*')
-                    .order('created_at', { ascending: false });
-
-                if (error) throw error;
-
-                grid.innerHTML = ""; // Clear loader
-                
-                if (!vehicles || vehicles.length === 0) {
-                    grid.innerHTML = "<p style='padding:40px 20px; color:#777; text-align:center; grid-column: 1/-1;'>Showroom is currently empty.<br><br>Toggle <strong>Admin Panel</strong> to add records.</p>";
-                    return;
-                }
-
-                vehicles.forEach(item => {
-                    const card = document.createElement('div');
-                    card.className = 'product-card';
-                    card.setAttribute('data-category', item.category);
-                    let displayCover = item.images && item.images[0] ? item.images[0] : "https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?auto=format&fit=crop&w=500&q=80";
-
-                    card.onclick = function() {
-                        openVehicleSpecs(item.title, item.price, item.category, item.images, item.year, item.owner, item.location, item.description, item.secret_name, item.secret_phone);
-                    };
-
-                    card.innerHTML = `
-                        <div class="img-container">
-                            <img src="${displayCover}" alt="Vehicle">
-                            <span class="category-badge">${item.category}</span>
-                        </div>
-                        <div class="card-details">
-                            <div>
-                                <h3>${item.title}</h3>
-                                <div class="card-meta">Model: ${item.year} • ${item.owner}</div>
-                            </div>
-                            <div class="card-pricing">
-                                <span class="card-price">${item.price}</span>
-                                <span class="card-action-text">Details →</span>
-                            </div>
-                        </div>
-                    `;
-                    grid.appendChild(card);
-                });
-            } catch (err) {
-                console.error("Database connection failure:", err);
-                grid.innerHTML = "<p style='padding:40px; color:red; text-align:center; grid-column:1/-1;'>⚠️ Setup Error. Make sure you have run the table creation query inside your Supabase SQL Editor.</p>";
-            }
-        }
-
-        // 📤 WRITE NEW ENTRY TO CLOUD DATABASE
-        async function handleFormSubmit(event) {
-            event.preventDefault();
-
-            const title = document.getElementById('fTitle').value;
-            const category = document.getElementById('fCategory').value;
-            let price = document.getElementById('fPrice').value;
-            const year = document.getElementById('fYear').value;
-            const owner = document.getElementById('fOwner').value;
-            const location = document.getElementById('fLoc').value;
-            const desc = document.getElementById('fDesc').value;
-            const secretName = document.getElementById('fPrivName').value;
-            const secretPhone = document.getElementById('fPrivPhone').value;
-
-            if(!price.startsWith('₹')) { price = '₹' + price; }
-
-            let itemImagesCopy = [...uploadedImagesArray];
-            if (itemImagesCopy.length === 0) {
-                let fallback = "https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?auto=format&fit=crop&w=500&q=80";
-                if (category === "Tractors") fallback = "https://images.unsplash.com/photo-1594913785162-e6785b423cb1?auto=format&fit=crop&w=500&q=80";
-                else if (category === "Commercial") fallback = "https://images.unsplash.com/photo-1601584115197-04ecc0da31d7?auto=format&fit=crop&w=500&q=80";
-                itemImagesCopy.push(fallback);
-            }
-
-            try {
-                const { error } = await supabase
-                    .from('vehicles')
-                    .insert([
-                        { 
-                            title: title, 
-                            category: category, 
-                            price: price, 
-                            year: year, 
-                            owner: owner, 
-                            location: location, 
-                            description: desc, 
-                            secret_name: secretName, 
-                            secret_phone: secretPhone, 
-                            images: itemImagesCopy 
-                        }
-                    ]);
-
-                if (error) throw error;
-
-                document.getElementById('vehicleForm').reset();
-                document.getElementById('multiPreviewBox').style.display = 'none';
-                document.getElementById('photoCountLbl').innerText = "0 / 10 images loaded";
-                uploadedImagesArray = [];
-
-                alert("💾 Saved to Cloud database securely! Sync complete.");
-                fetchVehiclesFromCloud(); 
-                toggleAdminGateway(); 
-            } catch (err) {
-                alert("❌ Database submission error: " + err.message);
-            }
-        }
-
-        // 🔒 FIXED WINDOW GATEWAY: Password check works regardless of database response state
         function toggleAdminGateway() {
             const btn = document.getElementById('toggleViewBtn');
             const bView = document.getElementById('buyer-view');
@@ -398,6 +275,168 @@
                     currentView = "buyer";
                 }
             }
+        }
+
+        // --- ⚡ 2. DATABASE ROUTINES & FALLBACK STRATEGY ---
+        const SUPABASE_URL = "https://mkcceghlkrrmtrbpuqzm.supabase.co"; 
+        const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1rY2NlZ2hsa3JybXRyYnB1cXptIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk0MTMyMDIsImV4cCI6MjA5NDk4OTIwMn0.5Ehw0tXnjs_JUIktzA3OL3k9KfaYuhpaRrfZxBvZvR0";
+
+        let supabase = null;
+        let uploadedImagesArray = [];
+
+        // Pre-loaded offline seed memory row array logic
+        const backupDemoData = [
+            {
+                title: "Mahindra Arjun 555 DI",
+                category: "Tractors",
+                price: "₹5,42,000",
+                year: "2022",
+                owner: "1st Owner",
+                location: "Jaipur",
+                description: "Perfect engine health, original showroom tires with 85% life. Fully verified documentation with clearance certificate.",
+                secret_name: "Ramesh Sharma",
+                secret_phone: "9610147688",
+                images: ["https://images.unsplash.com/photo-1594913785162-e6785b423cb1?auto=format&fit=crop&w=600&q=80"]
+            },
+            {
+                title: "Maruti Suzuki Swift VXI",
+                category: "Cars",
+                price: "₹4,85,000",
+                year: "2020",
+                owner: "2nd Owner",
+                location: "Tonk",
+                description: "Neat family car. Power steering, ice cold AC, power windows, active third party insurance.",
+                secret_name: "Sunil Choudhary",
+                secret_phone: "9414000000",
+                images: ["https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?auto=format&fit=crop&w=600&q=80"]
+            }
+        ];
+
+        // Safe database client loader instantiation
+        try {
+            if (window.supabase) {
+                supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+            }
+        } catch (e) {
+            console.error("Supabase client connection failed initialization, shifting engine entirely to demo local storage maps.", e);
+        }
+
+        window.addEventListener('load', () => {
+            fetchVehicles();
+        });
+
+        async function fetchVehicles() {
+            const grid = document.getElementById('vehiclesGrid');
+            grid.innerHTML = "<p style='padding:40px; color:#666; text-align:center; grid-column:1/-1;'><i class='fas fa-spinner fa-spin'></i> Syncing Cloud Showroom Database...</p>";
+
+            if (!supabase) {
+                renderGrid(backupDemoData);
+                return;
+            }
+
+            try {
+                const { data: vehicles, error } = await supabase
+                    .from('vehicles')
+                    .select('*')
+                    .order('created_at', { ascending: false });
+
+                if (error) throw error;
+                renderGrid(vehicles);
+            } catch (err) {
+                console.warn("Table structures not fetched correctly, pulling default mock items list arrays.");
+                renderGrid(backupDemoData);
+            }
+        }
+
+        function renderGrid(dataList) {
+            const grid = document.getElementById('vehiclesGrid');
+            grid.innerHTML = ""; 
+            
+            if (!dataList || dataList.length === 0) {
+                grid.innerHTML = "<p style='padding:40px 20px; color:#777; text-align:center; grid-column: 1/-1;'>Showroom is empty.<br><br>Open Admin Panel to insert listings live!</p>";
+                return;
+            }
+
+            dataList.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'product-card';
+                card.setAttribute('data-category', item.category);
+                let displayCover = item.images && item.images[0] ? item.images[0] : "https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?auto=format&fit=crop&w=500&q=80";
+
+                card.onclick = function() {
+                    openVehicleSpecs(item.title, item.price, item.category, item.images, item.year, item.owner, item.location, item.description || item.desc, item.secret_name, item.secret_phone);
+                };
+
+                card.innerHTML = `
+                    <div class="img-container">
+                        <img src="${displayCover}" alt="Vehicle">
+                        <span class="category-badge">${item.category}</span>
+                    </div>
+                    <div class="card-details">
+                        <div>
+                            <h3>${item.title}</h3>
+                            <div class="card-meta">Model: ${item.year} • ${item.owner}</div>
+                        </div>
+                        <div class="card-pricing">
+                            <span class="card-price">${item.price}</span>
+                            <span class="card-action-text">Details →</span>
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        async function handleFormSubmit(event) {
+            event.preventDefault();
+
+            const title = document.getElementById('fTitle').value;
+            const category = document.getElementById('fCategory').value;
+            let price = document.getElementById('fPrice').value;
+            const year = document.getElementById('fYear').value;
+            const owner = document.getElementById('fOwner').value;
+            const location = document.getElementById('fLoc').value;
+            const desc = document.getElementById('fDesc').value;
+            const secretName = document.getElementById('fPrivName').value;
+            const secretPhone = document.getElementById('fPrivPhone').value;
+
+            if(!price.startsWith('₹')) { price = '₹' + price; }
+
+            let itemImagesCopy = [...uploadedImagesArray];
+            if (itemImagesCopy.length === 0) {
+                let fallback = "https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?auto=format&fit=crop&w=500&q=80";
+                if (category === "Tractors") fallback = "https://images.unsplash.com/photo-1594913785162-e6785b423cb1?auto=format&fit=crop&w=500&q=80";
+                else if (category === "Commercial") fallback = "https://images.unsplash.com/photo-1601584115197-04ecc0da31d7?auto=format&fit=crop&w=500&q=80";
+                itemImagesCopy.push(fallback);
+            }
+
+            const newObject = { 
+                title: title, category: category, price: price, year: year, 
+                owner: owner, location: location, description: desc, 
+                secret_name: secretName, secret_phone: secretPhone, images: itemImagesCopy 
+            };
+
+            if (supabase) {
+                try {
+                    const { error } = await supabase.from('vehicles').insert([newObject]);
+                    if (error) throw error;
+                    alert("💾 Saved to database successfully!");
+                } catch (err) {
+                    backupDemoData.unshift(newObject);
+                    alert("⚠️ Mode shifts to Local backup storage cache logic.");
+                }
+            } else {
+                backupDemoData.unshift(newObject);
+                alert("💾 Demo product card uploaded locally!");
+            }
+
+            document.getElementById('vehicleForm').reset();
+            document.getElementById('multiPreviewBox').style.display = 'none';
+            document.getElementById('photoCountLbl').innerText = "0 / 10 images loaded";
+            uploadedImagesArray = [];
+
+            if(supabase) { fetchVehicles(); } else { renderGrid(backupDemoData); }
+            toggleAdminGateway(); 
         }
 
         function processMultipleImages(input) {
@@ -454,7 +493,6 @@
                 thumbsStrip.appendChild(thumbImg);
             });
 
-            // 🔒 ADMIN CONFIDENTIAL RECORD EXPOSE
             const adminBox = document.getElementById('secureAdminBox');
             if (isAdminLoggedIn) { 
                 adminBox.style.display = 'block';

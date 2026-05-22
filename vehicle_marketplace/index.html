@@ -295,42 +295,12 @@
         const SUPABASE_URL = "https://mkcceghlkrrmtrbpuqzm.supabase.co"; 
         const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1rY2NlZ2hsa3JybXRyYnB1cXptIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk0MTMyMDIsImV4cCI6MjA5NDk4OTIwMn0.5Ehw0tXnjs_JUIktzA3OL3k9KfaYuhpaRrfZxBvZvR0";
 
-        let supabase = null;
+        let supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         let uploadedImagesArray = [];
-
-        const backupDemoData = [
-            {
-                title: "Mahindra Arjun 555 DI",
-                category: "Tractors",
-                price: "₹5,42,000",
-                year: "2022",
-                owner: "1st Owner",
-                location: "Jaipur",
-                description: "Perfect engine health, original showroom tires with 85% life.",
-                secret_name: "Ramesh Sharma",
-                secret_phone: "9610147688",
-                images: ["https://images.unsplash.com/photo-1594913785162-e6785b423cb1?auto=format&fit=crop&w=600&q=80"]
-            }
-        ];
-
-        try {
-            if (window.supabase) {
-                supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-            }
-        } catch (e) { console.error("Database connection failure", e); }
-
-        window.addEventListener('load', () => {
-            fetchVehicles();
-        });
 
         async function fetchVehicles() {
             const grid = document.getElementById('vehiclesGrid');
             grid.innerHTML = "<p style='padding:40px; color:#666; text-align:center; grid-column:1/-1;'><i class='fas fa-spinner fa-spin'></i> Syncing Cloud Showroom Database...</p>";
-
-            if (!supabase) {
-                renderGrid(backupDemoData);
-                return;
-            }
 
             try {
                 const { data: vehicles, error } = await supabase
@@ -341,8 +311,8 @@
                 if (error) throw error;
                 renderGrid(vehicles);
             } catch (err) {
-                console.warn("Database connection issue. Pulling native temporary array list.");
-                renderGrid(backupDemoData);
+                console.error("Data pipeline load exception profile trace:", err);
+                grid.innerHTML = "<p style='padding:40px; color:red; text-align:center; grid-column:1/-1;'>⚠️ Setup Missing. Run step 1 query inside Supabase window.</p>";
             }
         }
 
@@ -351,7 +321,7 @@
             grid.innerHTML = ""; 
             
             if (!dataList || dataList.length === 0) {
-                grid.innerHTML = "<p style='padding:40px 20px; color:#777; text-align:center; grid-column: 1/-1;'>Showroom is completely empty.</p>";
+                grid.innerHTML = "<p style='padding:40px; color:#777; text-align:center; grid-column:1/-1;'>Showroom is empty.</p>";
                 return;
             }
 
@@ -393,7 +363,7 @@
 
             if (files.length > 0) {
                 previewBox.style.display = 'flex';
-                document.getElementById('photoCountLbl').innerText = `Processing ${files.length} photos...`;
+                document.getElementById('photoCountLbl').innerText = `Compressing ${files.length} photos...`;
                 
                 files.forEach(file => {
                     const reader = new FileReader();
@@ -402,7 +372,7 @@
                         img.src = e.target.result;
                         img.onload = function() {
                             const canvas = document.createElement('canvas');
-                            const MAX_WIDTH = 500; // Compressed dimension parameters
+                            const MAX_WIDTH = 400; 
                             const scaleSize = MAX_WIDTH / img.width;
                             canvas.width = MAX_WIDTH;
                             canvas.height = img.height * scaleSize;
@@ -410,7 +380,7 @@
                             const ctx = canvas.getContext('2d');
                             ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
 
-                            const compressedBase64 = canvas.toDataURL('image/jpeg', 0.5); 
+                            const compressedBase64 = canvas.toDataURL('image/jpeg', 0.4); 
                             uploadedImagesArray.push(compressedBase64);
 
                             const thumbWrap = document.createElement('div');
@@ -430,7 +400,7 @@
             event.preventDefault();
             const btn = document.getElementById('submitFormBtn');
             btn.disabled = true;
-            btn.innerText = "Syncing Cloud Database...";
+            btn.innerText = "Saving to Cloud...";
 
             const title = document.getElementById('fTitle').value;
             const category = document.getElementById('fCategory').value;
@@ -451,35 +421,40 @@
                 itemImagesCopy.push(fallback);
             }
 
-            const newObject = { 
-                title: title, category: category, price: price, year: year, 
-                owner: owner, location: location, description: description, 
-                secret_name: secret_name, secret_phone: secret_phone, images: itemImagesCopy 
-            };
+            try {
+                const { error } = await supabase
+                    .from('vehicles')
+                    .insert([
+                        { 
+                            title: title, 
+                            category: category, 
+                            price: price, 
+                            year: year, 
+                            owner: owner, 
+                            location: location, 
+                            description: description, 
+                            secret_name: secret_name, 
+                            secret_phone: secret_phone, 
+                            images: itemImagesCopy 
+                        }
+                    ]);
 
-            if (supabase) {
-                try {
-                    const { error } = await supabase.from('vehicles').insert([newObject]);
-                    if (error) throw error;
-                    alert("💾 Permanent Success! Vehicle details written to cloud backend.");
-                } catch (err) {
-                    console.error("Insert fail:", err);
-                    backupDemoData.unshift(newObject);
-                    alert("⚠️ Saved to local layout cache grid profile.");
-                }
-            } else {
-                backupDemoData.unshift(newObject);
+                if (error) throw error;
+
+                alert("💾 Success! Record synchronized live over the cloud database.");
+                document.getElementById('vehicleForm').reset();
+                document.getElementById('multiPreviewBox').style.display = 'none';
+                document.getElementById('photoCountLbl').innerText = "0 / 10 images loaded";
+                uploadedImagesArray = [];
+                
+                fetchVehicles(); 
+                toggleAdminGateway(); 
+            } catch (err) {
+                alert("❌ Database Submission Error: " + err.message);
+            } finally {
+                btn.disabled = false;
+                btn.innerText = "🚀 Add Item Cloud Live";
             }
-
-            document.getElementById('vehicleForm').reset();
-            document.getElementById('multiPreviewBox').style.display = 'none';
-            document.getElementById('photoCountLbl').innerText = "0 / 10 images loaded";
-            uploadedImagesArray = [];
-            btn.disabled = false;
-            btn.innerText = "🚀 Add Item Cloud Live";
-
-            if(supabase) { fetchVehicles(); } else { renderGrid(backupDemoData); }
-            toggleAdminGateway(); 
         }
 
         function openVehicleSpecs(title, price, category, imagesList, year, owner, location, description, secretName, secretPhone) {

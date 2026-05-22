@@ -317,7 +317,7 @@
             if (window.supabase) {
                 supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
             }
-        } catch (e) { console.error("Supabase fail", e); }
+        } catch (e) { console.error("Database connection failure", e); }
 
         window.addEventListener('load', () => {
             fetchVehicles();
@@ -341,6 +341,7 @@
                 if (error) throw error;
                 renderGrid(vehicles);
             } catch (err) {
+                console.warn("Database connection issue. Pulling native temporary array list.");
                 renderGrid(backupDemoData);
             }
         }
@@ -350,7 +351,7 @@
             grid.innerHTML = ""; 
             
             if (!dataList || dataList.length === 0) {
-                grid.innerHTML = "<p style='padding:40px; color:#777; text-align:center; grid-column:1/-1;'>Showroom is completely empty.</p>";
+                grid.innerHTML = "<p style='padding:40px 20px; color:#777; text-align:center; grid-column: 1/-1;'>Showroom is completely empty.</p>";
                 return;
             }
 
@@ -361,7 +362,7 @@
                 let displayCover = item.images && item.images[0] ? item.images[0] : "https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?auto=format&fit=crop&w=500&q=80";
 
                 card.onclick = function() {
-                    openVehicleSpecs(item.title, item.price, item.category, item.images, item.year, item.owner, item.location, item.description || item.desc, item.secret_name, item.secret_phone);
+                    openVehicleSpecs(item.title, item.price, item.category, item.images, item.year, item.owner, item.location, item.description, item.secret_name, item.secret_phone);
                 };
 
                 card.innerHTML = `
@@ -384,7 +385,6 @@
             });
         }
 
-        // 📸 FAST AUTOMATIC PHONE PHOTO COMPRESSION ROUTINE
         function processMultipleImages(input) {
             const files = Array.from(input.files).slice(0, 10);
             const previewBox = document.getElementById('multiPreviewBox');
@@ -401,9 +401,8 @@
                         const img = new Image();
                         img.src = e.target.result;
                         img.onload = function() {
-                            // Shrink image dimensions down to an optimized canvas bounding size
                             const canvas = document.createElement('canvas');
-                            const MAX_WIDTH = 600;
+                            const MAX_WIDTH = 500; // Compressed dimension parameters
                             const scaleSize = MAX_WIDTH / img.width;
                             canvas.width = MAX_WIDTH;
                             canvas.height = img.height * scaleSize;
@@ -411,8 +410,7 @@
                             const ctx = canvas.getContext('2d');
                             ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
 
-                            // Compress the binary canvas to a lightweight JPEG string
-                            const compressedBase64 = canvas.toDataURL('image/jpeg', 0.6); 
+                            const compressedBase64 = canvas.toDataURL('image/jpeg', 0.5); 
                             uploadedImagesArray.push(compressedBase64);
 
                             const thumbWrap = document.createElement('div');
@@ -440,9 +438,9 @@
             const year = document.getElementById('fYear').value;
             const owner = document.getElementById('fOwner').value;
             const location = document.getElementById('fLoc').value;
-            const desc = document.getElementById('fDesc').value;
-            const secretName = document.getElementById('fPrivName').value;
-            const secretPhone = document.getElementById('fPrivPhone').value;
+            const description = document.getElementById('fDesc').value;
+            const secret_name = document.getElementById('fPrivName').value;
+            const secret_phone = document.getElementById('fPrivPhone').value;
 
             if(!price.startsWith('₹')) { price = '₹' + price; }
 
@@ -455,8 +453,8 @@
 
             const newObject = { 
                 title: title, category: category, price: price, year: year, 
-                owner: owner, location: location, description: desc, 
-                secret_name: secretName, secret_phone: secretPhone, images: itemImagesCopy 
+                owner: owner, location: location, description: description, 
+                secret_name: secret_name, secret_phone: secret_phone, images: itemImagesCopy 
             };
 
             if (supabase) {
@@ -465,8 +463,9 @@
                     if (error) throw error;
                     alert("💾 Permanent Success! Vehicle details written to cloud backend.");
                 } catch (err) {
+                    console.error("Insert fail:", err);
                     backupDemoData.unshift(newObject);
-                    alert("⚠️ Saved to local screen display.");
+                    alert("⚠️ Saved to local layout cache grid profile.");
                 }
             } else {
                 backupDemoData.unshift(newObject);

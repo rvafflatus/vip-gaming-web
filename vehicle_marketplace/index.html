@@ -67,8 +67,20 @@
             align-items: center;
             gap: 5px;
         }
-        .admin-toggle-btn:hover {
+        .admin-toggle-btn:hover, .admin-toggle-btn.logged-in {
             background: #ff9900;
+        }
+
+        /* --- Admin Notification Indicator Strip --- */
+        .admin-status-bar {
+            display: none;
+            background: #ff9900;
+            color: #232f3e;
+            text-align: center;
+            padding: 6px;
+            font-size: 12px;
+            font-weight: bold;
+            box-shadow: inset 0 -2px 5px rgba(0,0,0,0.1);
         }
 
         /* --- View Containers --- */
@@ -323,9 +335,9 @@
             margin-bottom: 20px;
         }
 
-        /* --- 🔒 SECRET ADMIN LOCK VIEW BOX --- */
+        /* --- 🔒 PRIVATE ADMIN ONLY RECORD BOX --- */
         .admin-private-box {
-            display: none; /* Hidden by default from standard buyers */
+            display: none; /* Stays completely invisible from regular online customers */
             background: #eff6ff;
             border: 1px solid #bfdbfe;
             border-radius: 10px;
@@ -357,10 +369,10 @@
             align-items: center;
             justify-content: center;
             gap: 6px;
-            padding: 8px;
+            padding: 10px;
             border-radius: 6px;
             text-decoration: none;
-            font-size: 12px;
+            font-size: 13px;
             font-weight: bold;
             text-align: center;
         }
@@ -505,10 +517,14 @@
     <header class="app-header">
         <a href="../index.html" class="back-home"><i class="fas fa-arrow-left"></i> Hub</a>
         <div class="app-title">🚗 Vehicle Bazaar</div>
-        <button class="admin-toggle-btn" id="toggleViewBtn" onclick="switchView()">
+        <button class="admin-toggle-btn" id="toggleViewBtn" onclick="toggleAdminGateway()">
             <i class="fas fa-lock"></i> Admin Panel
         </button>
     </header>
+
+    <div class="admin-status-bar" id="adminStatusBar">
+        🔑 SECURE ADMIN SESSION ACTIVE — PRIVATE OWNER RECORDS REVEALED
+    </div>
 
     <main class="view-section" id="buyer-view">
         <div class="filter-container">
@@ -519,23 +535,7 @@
         </div>
 
         <div class="showroom-grid" id="vehiclesGrid">
-            <div class="product-card" data-category="Tractors" onclick="openVehicleSpecs('Mahindra Arjun 555 DI', '₹5,42,000', 'Tractors', ['https://images.unsplash.com/photo-1594913785162-e6785b423cb1?auto=format&fit=crop&w=600&q=80'], '2022', '1st Owner', 'Jaipur', 'Perfect engine health, original showroom tires with 85% life.', 'Ramesh Kumar', '9610147688')">
-                <div class="img-container">
-                    <img src="https://images.unsplash.com/photo-1594913785162-e6785b423cb1?auto=format&fit=crop&w=500&q=80" alt="Tractor">
-                    <span class="category-badge">Tractors</span>
-                </div>
-                <div class="card-details">
-                    <div>
-                        <h3>Mahindra Arjun 555 DI</h3>
-                        <div class="card-meta">Model: 2022 • 1st Owner</div>
-                    </div>
-                    <div class="card-pricing">
-                        <span class="card-price">₹5,42,000</span>
-                        <span class="card-action-text">Details →</span>
-                    </div>
-                </div>
             </div>
-        </div>
     </main>
 
     <main class="view-section" id="seller-view">
@@ -593,15 +593,15 @@
                 </div>
 
                 <div style="background: #f0f7ff; padding: 12px; border-radius: 8px; border: 1px dashed #1a73e8; margin-bottom: 15px;">
-                    <label style="display:block; font-size:12px; font-weight:800; color:#1a73e8; text-transform:uppercase; margin-bottom:10px;"><i class="fas fa-user-shield"></i> Internal Office Details (Private)</label>
+                    <label style="display:block; font-size:12px; font-weight:800; color:#1a73e8; text-transform:uppercase; margin-bottom:10px;"><i class="fas fa-user-shield"></i> Office Use Only (Private Records)</label>
                     
                     <div class="form-group">
                         <label style="color:#333;">Actual Owner Full Name*</label>
-                        <input type="text" id="fPrivName" required placeholder="e.g., Rajesh Sharma" class="form-input" style="border-color:#b4d5ff">
+                        <input type="text" id="fPrivName" required placeholder="e.g., Ramesh Sharma" class="form-input" style="border-color:#b4d5ff">
                     </div>
                     <div class="form-group" style="margin-bottom:0;">
                         <label style="color:#333;">Owner Contact Number*</label>
-                        <input type="tel" id="fPrivPhone" required placeholder="e.g., 98XXXXXXXX" class="form-input" style="border-color:#b4d5ff">
+                        <input type="tel" id="fPrivPhone" required placeholder="e.g., 9610147688" class="form-input" style="border-color:#b4d5ff">
                     </div>
                 </div>
 
@@ -658,7 +658,7 @@
                     <div id="dDesc" class="drawer-desc-box">No additional notes uploaded.</div>
 
                     <div class="admin-private-box" id="secureAdminBox">
-                        <h4><i class="fas fa-user-lock"></i> Private Record Details</h4>
+                        <h4><i class="fas fa-user-lock"></i> Private Record Details (Admin Only)</h4>
                         <div class="admin-private-info">
                             <strong>Owner Name:</strong> <span id="dPrivNameTxt">-</span><br>
                             <strong>Phone Number:</strong> <span id="dPrivPhoneTxt">-</span>
@@ -684,56 +684,146 @@
         const ADMIN_ID = "admin";
         const ADMIN_PASSWORD = "vip786";
 
-        let currentMode = "buyer"; 
-        let uploadedImagesArray = []; // Stores Base64 string list of the uploaded images
-        
-        function switchView() {
+        let isAdminLoggedIn = false; // Persistent login session toggle flag
+        let currentView = "buyer"; // Tracks which page section layout is open
+        let uploadedImagesArray = []; // Stores Base64 string list of images
+
+        // Default item array to show if localStorage is fresh and empty
+        const defaultStockData = [
+            {
+                id: "default_1",
+                title: "Mahindra Arjun 555 DI",
+                category: "Tractors",
+                price: "₹5,42,000",
+                year: "2022",
+                owner: "1st Owner",
+                location: "Jaipur",
+                desc: "Perfect engine health, original showroom tires with 85% life. Fully verified documentation with clearance certificate.",
+                secretName: "Ramesh Kumar",
+                secretPhone: "9610147688",
+                images: ["https://images.unsplash.com/photo-1594913785162-e6785b423cb1?auto=format&fit=crop&w=600&q=80"]
+            },
+            {
+                id: "default_2",
+                title: "Maruti Suzuki Swift VXI",
+                category: "Cars",
+                price: "₹4,85,000",
+                year: "2020",
+                owner: "2nd Owner",
+                location: "Tonk",
+                desc: "Neat family car. Power steering, ice cold AC, power windows, active third party insurance.",
+                secretName: "Sunil Choudhary",
+                secretPhone: "9414000000",
+                images: ["https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?auto=format&fit=crop&w=600&q=80"]
+            }
+        ];
+
+        // Core initializer loader
+        window.addEventListener('load', () => {
+            if (!localStorage.getItem('bazaar_inventory')) {
+                localStorage.setItem('bazaar_inventory', JSON.stringify(defaultStockData));
+            }
+            renderGridFromStorage();
+        });
+
+        // 🔒 Secure Admin Authentication Flow
+        function toggleAdminGateway() {
+            const btn = document.getElementById('toggleViewBtn');
             const bView = document.getElementById('buyer-view');
             const sView = document.getElementById('seller-view');
-            const btn = document.getElementById('toggleViewBtn');
+            const statusBar = document.getElementById('adminStatusBar');
 
-            if (currentMode === "buyer") {
+            if (!isAdminLoggedIn) {
+                // Trigger Authentication prompt
                 let enteredId = prompt("👤 Enter Admin Username ID:");
                 if (enteredId === null) return;
                 let enteredPass = prompt("🔒 Enter Admin Password:");
                 if (enteredPass === null) return;
 
                 if (enteredId.trim() === ADMIN_ID && enteredPass === ADMIN_PASSWORD) {
+                    isAdminLoggedIn = true;
+                    btn.classList.add('logged-in');
+                    statusBar.style.display = 'block';
+                    
+                    // Route directly into the Mobile Form View
                     bView.style.display = 'none';
                     sView.style.display = 'block';
-                    btn.innerHTML = '<i class="fas fa-eye"></i> Storefront View';
-                    currentMode = "seller";
+                    btn.innerHTML = '<i class="fas fa-eye"></i> View Storefront';
+                    currentView = "seller";
                 } else {
                     alert("❌ Invalid Credentials! Access Denied.");
                 }
             } else {
-                sView.style.display = 'none';
-                bView.style.display = 'block';
-                btn.innerHTML = '<i class="fas fa-lock"></i> Admin Panel';
-                currentMode = "buyer";
+                // Switch layouts if already logged in
+                if (currentView === "buyer") {
+                    bView.style.display = 'none';
+                    sView.style.display = 'block';
+                    btn.innerHTML = '<i class="fas fa-eye"></i> View Storefront';
+                    currentView = "seller";
+                } else {
+                    sView.style.display = 'none';
+                    bView.style.display = 'block';
+                    btn.innerHTML = '<i class="fas fa-lock-open"></i> Admin Panel';
+                    currentView = "buyer";
+                }
             }
         }
 
-        // Processing files up to 10 photos loop array map
+        // Render stock grid cleanly from saved local storage references
+        function renderGridFromStorage() {
+            const grid = document.getElementById('vehiclesGrid');
+            grid.innerHTML = ""; // Clear active viewport layout
+            
+            const currentStock = JSON.parse(localStorage.getItem('bazaar_inventory')) || [];
+            
+            currentStock.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'product-card';
+                card.setAttribute('data-category', item.category);
+                
+                // Direct file paths parsing allocations safety maps
+                let displayCover = item.images && item.images[0] ? item.images[0] : "https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?auto=format&fit=crop&w=500&q=80";
+
+                card.onclick = function() {
+                    openVehicleSpecs(item.title, item.price, item.category, item.images, item.year, item.owner, item.location, item.desc, item.secretName, item.secretPhone);
+                };
+
+                card.innerHTML = `
+                    <div class="img-container">
+                        <img src="${displayCover}" alt="Vehicle">
+                        <span class="category-badge">${item.category}</span>
+                    </div>
+                    <div class="card-details">
+                        <div>
+                            <h3>${item.title}</h3>
+                            <div class="card-meta">Model: ${item.year} • ${item.owner}</div>
+                        </div>
+                        <div class="card-pricing">
+                            <span class="card-price">${item.price}</span>
+                            <span class="card-action-text">Details →</span>
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        // Processing upload images lists safely
         function processMultipleImages(input) {
-            const files = Array.from(input.files);
+            const files = Array.from(input.files).slice(0, 10);
             const previewBox = document.getElementById('multiPreviewBox');
             
-            // Limit files reading count array allocation safely to 10 items
-            const filesToProcess = files.slice(0, 10);
-            uploadedImagesArray = []; // Empty baseline
-            previewBox.innerHTML = ""; // Clear display logs
+            uploadedImagesArray = []; 
+            previewBox.innerHTML = ""; 
 
-            if (filesToProcess.length > 0) {
+            if (files.length > 0) {
                 previewBox.style.display = 'flex';
-                document.getElementById('photoCountLbl').innerText = `${filesToProcess.length} / 10 images loaded`;
+                document.getElementById('photoCountLbl').innerText = `${files.length} / 10 images loaded`;
                 
-                filesToProcess.forEach(file => {
+                files.forEach(file => {
                     const reader = new FileReader();
                     reader.onload = function(e) {
                         uploadedImagesArray.push(e.target.result);
-                        
-                        // Render miniature preview thumb squares inside input panel rows
                         const thumbWrap = document.createElement('div');
                         thumbWrap.className = 'preview-thumb-wrap';
                         thumbWrap.innerHTML = `<img src="${e.target.result}">`;
@@ -766,7 +856,7 @@
             document.getElementById('fCategory').value = value;
         }
 
-        // Open detailed specification sheets view overlay loop drawer maps
+        // Open layout specification slides maps
         function openVehicleSpecs(title, price, category, imagesList, year, owner, location, description, secretName, secretPhone) {
             document.getElementById('dTitle').innerText = title;
             document.getElementById('dPrice').innerText = price;
@@ -776,19 +866,16 @@
             document.getElementById('dSpecLoc').innerText = location + ", Rajasthan";
             document.getElementById('dDesc').innerText = description || "Verified evaluation complete.";
 
-            // 1. Image Gallery Initialization
             const mainImgElement = document.getElementById('dMainImg');
             const thumbsStrip = document.getElementById('dThumbsStrip');
-            thumbsStrip.innerHTML = ""; // Clear legacy thumbnail renders
+            thumbsStrip.innerHTML = ""; 
 
             if(!imagesList || imagesList.length === 0) {
-                // If zero photos provided, pull a generic fallback cover placeholder
                 imagesList = ["https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?auto=format&fit=crop&w=500&q=80"];
             }
 
-            mainImgElement.src = imagesList[0]; // Active main viewing asset slot
+            mainImgElement.src = imagesList[0];
 
-            // Build individual click filters if multiple layout images exist
             imagesList.forEach((src, idx) => {
                 const thumbImg = document.createElement('img');
                 thumbImg.src = src;
@@ -801,21 +888,19 @@
                 thumbsStrip.appendChild(thumbImg);
             });
 
-            // 2. Security Gate Check: Display internal owner details ONLY if logged in as Admin
+            // 🔒 REVEAL OWNER METRICS LOG IF ACTIVE SESSION IS ADMIN
             const adminBox = document.getElementById('secureAdminBox');
-            if (currentMode === "seller") { 
-                // Show private fields only if the active top app bar session mode is "Admin Panel"
+            if (isAdminLoggedIn) { 
                 adminBox.style.display = 'block';
                 document.getElementById('dPrivNameTxt').innerText = secretName;
                 document.getElementById('dPrivPhoneTxt').innerText = secretPhone;
                 document.getElementById('adminCallLink').href = `tel:${secretPhone}`;
                 document.getElementById('adminWaLink').href = `https://wa.me/91${secretPhone}?text=Hello%20${encodeURIComponent(secretName)},%20regarding%20your%20vehicle%20${encodeURIComponent(title)}.`;
             } else {
-                adminBox.style.display = 'none'; // Lock away out of reach from common buyers
+                adminBox.style.display = 'none'; // Stays completely locked and hidden from buyers
             }
 
-            // Public Customer Communication routing logic string
-            const customerMsg = encodeURIComponent(`Hello! I want more info regarding this vehicle entry:\n\n🚙 *${title}*\n💰 Price: ${price}\n📅 Year: ${year}\n📍 City: ${location}`);
+            const customerMsg = encodeURIComponent("Hello! I want more info regarding this vehicle entry:\n\n" + "🚙 *" + title + "*\n" + "💰 Price: " + price + "\n" + "📅 Year: " + year + "\n" + "📍 City: " + location);
             document.getElementById('dWaBtn').href = `https://wa.me/919610147688?text=${customerMsg}`;
 
             const overlay = document.getElementById('detailDrawer');
@@ -833,6 +918,7 @@
             setTimeout(() => { overlay.style.display = 'none'; document.body.style.overflow = ''; }, 250);
         }
 
+        // Permanent storage form commit integration loop
         function handleFormSubmit(event) {
             event.preventDefault();
 
@@ -843,70 +929,61 @@
             const owner = document.getElementById('fOwner').value;
             const location = document.getElementById('fLoc').value;
             const desc = document.getElementById('fDesc').value;
-            
-            // Collect the new Private Office strings
             const secretName = document.getElementById('fPrivName').value;
             const secretPhone = document.getElementById('fPrivPhone').value;
 
             if(!price.startsWith('₹')) { price = '₹' + price; }
 
-            // Copy items list state references
-            const itemImagesCopy = [...uploadedImagesArray];
-            let primaryDisplayCover = itemImagesCopy[0];
-
-            if (!primaryDisplayCover) {
-                primaryDisplayCover = "https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?auto=format&fit=crop&w=500&q=80"; // car fallback
-                if (category === "Tractors") {
-                    primaryDisplayCover = "https://images.unsplash.com/photo-1594913785162-e6785b423cb1?auto=format&fit=crop&w=500&q=80";
-                } else if (category === "Commercial") {
-                    primaryDisplayCover = "https://images.unsplash.com/photo-1601584115197-04ecc0da31d7?auto=format&fit=crop&w=500&q=80";
-                }
+            let itemImagesCopy = [...uploadedImagesArray];
+            if (itemImagesCopy.length === 0) {
+                // Fallback stock images matches
+                let fallback = "https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?auto=format&fit=crop&w=500&q=80";
+                if (category === "Tractors") fallback = "https://images.unsplash.com/photo-1594913785162-e6785b423cb1?auto=format&fit=crop&w=500&q=80";
+                else if (category === "Commercial") fallback = "https://images.unsplash.com/photo-1601584115197-04ecc0da31d7?auto=format&fit=crop&w=500&q=80";
+                itemImagesCopy.push(fallback);
             }
 
-            const grid = document.getElementById('vehiclesGrid');
-            const card = document.createElement('div');
-            card.className = 'product-card';
-            card.setAttribute('data-category', category);
-            
-            card.onclick = function() {
-                openVehicleSpecs(title, price, category, itemImagesCopy, year, owner, location, desc, secretName, secretPhone);
+            // Create structural item data block object
+            const newVehicleObject = {
+                id: "vehicle_" + Date.now(),
+                title: title,
+                category: category,
+                price: price,
+                year: year,
+                owner: owner,
+                location: location,
+                desc: desc,
+                secretName: secretName,
+                secretPhone: secretPhone,
+                images: itemImagesCopy
             };
 
-            card.innerHTML = `
-                <div class="img-container">
-                    <img src="${primaryDisplayCover}" alt="Vehicle">
-                    <span class="category-badge">${category}</span>
-                </div>
-                <div class="card-details">
-                    <div>
-                        <h3>${title}</h3>
-                        <div class="card-meta">Model: ${year} • ${owner}</div>
-                    </div>
-                    <div class="card-pricing">
-                        <span class="card-price">${price}</span>
-                        <span class="card-action-text">Details →</span>
-                    </div>
-                </div>
-            `;
+            // Pull, Append, and Commit back to local browser storage permanently
+            const existingInventory = JSON.parse(localStorage.getItem('bazaar_inventory')) || [];
+            existingInventory.unshift(newVehicleObject);
+            localStorage.setItem('bazaar_inventory', JSON.stringify(existingInventory));
 
-            grid.insertBefore(card, grid.firstChild);
-            
-            // Form formatting clean slate metrics adjustments
+            // Force refresh active layout loops instantly
+            renderGridFromStorage();
+
+            // Clear inputs reset states
             document.getElementById('vehicleForm').reset();
             document.getElementById('multiPreviewBox').style.display = 'none';
             document.getElementById('photoCountLbl').innerText = "0 / 10 images loaded";
-            uploadedImagesArray = []; 
+            uploadedImagesArray = [];
+
+            alert("💾 Permanent Success! Data saved to local registry records.");
             
-            alert("🚀 Vehicle entry with custom image gallery & hidden admin records added live!");
-            switchView(); 
+            // Toggle view back to check item
+            toggleAdminGateway();
         }
 
         // --- PWA SERVICE WORKER COUPLING REGISTER LOGIC ---
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('./sw.js')
-                    .then(reg => console.log('🚀 PWA Service Worker Registered!', reg))
-                    .catch(err => console.log('❌ Service Worker Registration Failed:', err));
+                    .then(reg => console.log('🚀 PWA Service Worker Ready!'))
+                    .catch(err => console.log('❌ PWA registration error'));
             });
         }
     </script>

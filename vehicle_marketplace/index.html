@@ -18,22 +18,17 @@
         let isAdminLoggedIn = false;
         let currentView = "buyer";
 
-        function runAdminGatewayLogic() {
+        function toggleAdminGateway() {
             const btn = document.getElementById('toggleViewBtn');
             const bView = document.getElementById('buyer-view');
             const sView = document.getElementById('seller-view');
             const statusBar = document.getElementById('adminStatusBar');
 
-            // Safety check to ensure DOM elements are loaded before running logic
-            if (!btn || !bView || !sView || !statusBar) {
-                console.error("Critical Error: Core layout sections are missing from the page.");
-                return;
-            }
+            if (!btn || !bView || !sView || !statusBar) return;
 
             if (!isAdminLoggedIn) {
                 let enteredId = prompt("👤 Enter Admin Username ID:");
                 if (enteredId === null) return;
-                
                 let enteredPass = prompt("🔒 Enter Admin Password:");
                 if (enteredPass === null) return;
 
@@ -63,14 +58,13 @@
             }
         }
 
-        // Direct Force Listener Mount once structural layout hits window stream
         window.addEventListener('DOMContentLoaded', () => {
-            const adminButtonElement = document.getElementById('toggleViewBtn');
-            if (adminButtonElement) {
-                adminButtonElement.addEventListener('click', (e) => {
+            const adminBtn = document.getElementById('toggleViewBtn');
+            if (adminBtn) {
+                adminBtn.addEventListener('click', (e) => {
                     e.preventDefault();
-                    e.stopPropagation(); // Stop invisible layout overlays from capturing the tap
-                    runAdminGatewayLogic();
+                    e.stopPropagation();
+                    toggleAdminGateway();
                 });
             }
         });
@@ -79,40 +73,10 @@
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
         body { background-color: #f4f6f9; color: #333; }
-        
-        /* High Z-Index on Header to prevent invisible item blocking clicks */
-        .app-header { 
-            background: #232f3e; 
-            color: white; 
-            padding: 15px 5%; 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            position: sticky; 
-            top: 0; 
-            z-index: 99999 !important; /* Force to top tier layout stack */
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1); 
-        }
-        
+        .app-header { background: #232f3e; color: white; padding: 15px 5%; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 99999 !important; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
         .back-home { color: #ff9900; text-decoration: none; font-size: 14px; font-weight: bold; display: flex; align-items: center; gap: 5px; }
         .app-title { font-size: 18px; font-weight: 800; letter-spacing: 0.5px; }
-        
-        .admin-toggle-btn { 
-            background: rgba(255,255,255,0.1); 
-            border: none; 
-            color: white; 
-            padding: 8px 12px; 
-            border-radius: 20px; 
-            font-size: 12px; 
-            font-weight: bold; 
-            cursor: pointer; 
-            position: relative;
-            z-index: 100000 !important; /* Higher than header block overlay tier */
-            transition: background 0.2s; 
-            display: flex; 
-            align-items: center; 
-            gap: 5px; 
-        }
+        .admin-toggle-btn { background: rgba(255,255,255,0.1); border: none; color: white; padding: 8px 12px; border-radius: 20px; font-size: 12px; font-weight: bold; cursor: pointer; position: relative; z-index: 100000 !important; transition: background 0.2s; display: flex; align-items: center; gap: 5px; }
         .admin-toggle-btn:hover, .admin-toggle-btn.logged-in { background: #ff9900; color: white; }
         .admin-status-bar { display: none; background: #ff9900; color: #232f3e; text-align: center; padding: 6px; font-size: 12px; font-weight: bold; box-shadow: inset 0 -2px 5px rgba(0,0,0,0.1); }
         .view-section { padding: 20px 5%; max-width: 1200px; margin: 0 auto; }
@@ -134,7 +98,6 @@
         .card-price { font-size: 17px; font-weight: 800; color: #ff9900; }
         .card-action-text { font-size: 12px; color: #1a73e8; font-weight: bold; }
         
-        /* Lowered structural initial overlay coordinates below header tier constraints */
         .drawer-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); backdrop-filter: blur(2px); z-index: 1000; display: none; justify-content: flex-end; }
         .drawer-container { width: 100%; max-width: 460px; background: white; height: 100%; display: flex; flex-direction: column; justify-content: space-between; transform: translateX(100%); transition: transform 0.3s ease-in-out; overflow-y: auto; }
         .drawer-header { padding: 15px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; }
@@ -238,7 +201,7 @@
 
                 <div class="form-group">
                     <label>Demand Price (₹)*</label>
-                    <input type="text" id="fPrice" required placeholder="e.g., ₹3,40,000" class="form-input">
+                    <input type="text" id="fPrice" required placeholder="e.g., 340000" class="form-input">
                 </div>
 
                 <div class="form-group">
@@ -283,7 +246,7 @@
                     <div class="multi-preview-scroll" id="multiPreviewBox"></div>
                 </div>
 
-                <button type="submit" class="submit-btn">🚀 Add Item Cloud Live</button>
+                <button type="submit" class="submit-btn" id="submitFormBtn">🚀 Add Item Cloud Live</button>
             </form>
         </div>
     </main>
@@ -329,14 +292,12 @@
     </div>
 
     <script>
-        // --- DATABASE LOGIC & FALLBACK CONFIGURATION ---
         const SUPABASE_URL = "https://mkcceghlkrrmtrbpuqzm.supabase.co"; 
         const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1rY2NlZ2hsa3JybXRyYnB1cXptIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk0MTMyMDIsImV4cCI6MjA5NDk4OTIwMn0.5Ehw0tXnjs_JUIktzA3OL3k9KfaYuhpaRrfZxBvZvR0";
 
         let supabase = null;
         let uploadedImagesArray = [];
 
-        // Standalone offline presentation mock backup list data array maps
         const backupDemoData = [
             {
                 title: "Mahindra Arjun 555 DI",
@@ -345,33 +306,18 @@
                 year: "2022",
                 owner: "1st Owner",
                 location: "Jaipur",
-                description: "Perfect engine health, original showroom tires with 85% life. Fully verified documentation with clearance certificate.",
+                description: "Perfect engine health, original showroom tires with 85% life.",
                 secret_name: "Ramesh Sharma",
                 secret_phone: "9610147688",
                 images: ["https://images.unsplash.com/photo-1594913785162-e6785b423cb1?auto=format&fit=crop&w=600&q=80"]
-            },
-            {
-                title: "Maruti Suzuki Swift VXI",
-                category: "Cars",
-                price: "₹4,85,000",
-                year: "2020",
-                owner: "2nd Owner",
-                location: "Tonk",
-                description: "Neat family car. Power steering, ice cold AC, power windows, active third party insurance.",
-                secret_name: "Sunil Choudhary",
-                secret_phone: "9414000000",
-                images: ["https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?auto=format&fit=crop&w=600&q=80"]
             }
         ];
 
-        // Safe client constructor
         try {
             if (window.supabase) {
                 supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
             }
-        } catch (e) {
-            console.error("Database socket generation bypassed. Switching client script to native backup cache layout grids.", e);
-        }
+        } catch (e) { console.error("Supabase fail", e); }
 
         window.addEventListener('load', () => {
             fetchVehicles();
@@ -395,7 +341,6 @@
                 if (error) throw error;
                 renderGrid(vehicles);
             } catch (err) {
-                console.warn("Database connection offline or columns parsing error. Loading default local seed arrays instead.");
                 renderGrid(backupDemoData);
             }
         }
@@ -405,7 +350,7 @@
             grid.innerHTML = ""; 
             
             if (!dataList || dataList.length === 0) {
-                grid.innerHTML = "<p style='padding:40px 20px; color:#777; text-align:center; grid-column: 1/-1;'>Showroom is completely empty.<br><br>Log in to your Admin Panel to add new vehicle entries.</p>";
+                grid.innerHTML = "<p style='padding:40px; color:#777; text-align:center; grid-column:1/-1;'>Showroom is completely empty.</p>";
                 return;
             }
 
@@ -439,8 +384,55 @@
             });
         }
 
+        // 📸 FAST AUTOMATIC PHONE PHOTO COMPRESSION ROUTINE
+        function processMultipleImages(input) {
+            const files = Array.from(input.files).slice(0, 10);
+            const previewBox = document.getElementById('multiPreviewBox');
+            uploadedImagesArray = []; 
+            previewBox.innerHTML = ""; 
+
+            if (files.length > 0) {
+                previewBox.style.display = 'flex';
+                document.getElementById('photoCountLbl').innerText = `Processing ${files.length} photos...`;
+                
+                files.forEach(file => {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        const img = new Image();
+                        img.src = e.target.result;
+                        img.onload = function() {
+                            // Shrink image dimensions down to an optimized canvas bounding size
+                            const canvas = document.createElement('canvas');
+                            const MAX_WIDTH = 600;
+                            const scaleSize = MAX_WIDTH / img.width;
+                            canvas.width = MAX_WIDTH;
+                            canvas.height = img.height * scaleSize;
+
+                            const ctx = canvas.getContext('2d');
+                            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+                            // Compress the binary canvas to a lightweight JPEG string
+                            const compressedBase64 = canvas.toDataURL('image/jpeg', 0.6); 
+                            uploadedImagesArray.push(compressedBase64);
+
+                            const thumbWrap = document.createElement('div');
+                            thumbWrap.className = 'preview-thumb-wrap';
+                            thumbWrap.innerHTML = `<img src="${compressedBase64}">`;
+                            previewBox.appendChild(thumbWrap);
+
+                            document.getElementById('photoCountLbl').innerText = `${uploadedImagesArray.length} / 10 images loaded`;
+                        }
+                    }
+                    reader.readAsDataURL(file);
+                });
+            }
+        }
+
         async function handleFormSubmit(event) {
             event.preventDefault();
+            const btn = document.getElementById('submitFormBtn');
+            btn.disabled = true;
+            btn.innerText = "Syncing Cloud Database...";
 
             const title = document.getElementById('fTitle').value;
             const category = document.getElementById('fCategory').value;
@@ -458,7 +450,6 @@
             if (itemImagesCopy.length === 0) {
                 let fallback = "https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?auto=format&fit=crop&w=500&q=80";
                 if (category === "Tractors") fallback = "https://images.unsplash.com/photo-1594913785162-e6785b423cb1?auto=format&fit=crop&w=500&q=80";
-                else if (category === "Commercial") fallback = "https://images.unsplash.com/photo-1601584115197-04ecc0da31d7?auto=format&fit=crop&w=500&q=80";
                 itemImagesCopy.push(fallback);
             }
 
@@ -472,46 +463,24 @@
                 try {
                     const { error } = await supabase.from('vehicles').insert([newObject]);
                     if (error) throw error;
-                    alert("💾 Saved to Supabase cloud database successfully!");
+                    alert("💾 Permanent Success! Vehicle details written to cloud backend.");
                 } catch (err) {
                     backupDemoData.unshift(newObject);
-                    alert("⚠️ Shifting row entry to temporary local viewport session records.");
+                    alert("⚠️ Saved to local screen display.");
                 }
             } else {
                 backupDemoData.unshift(newObject);
-                alert("💾 Demo Entry published live on grid layout stack!");
             }
 
             document.getElementById('vehicleForm').reset();
             document.getElementById('multiPreviewBox').style.display = 'none';
             document.getElementById('photoCountLbl').innerText = "0 / 10 images loaded";
             uploadedImagesArray = [];
+            btn.disabled = false;
+            btn.innerText = "🚀 Add Item Cloud Live";
 
             if(supabase) { fetchVehicles(); } else { renderGrid(backupDemoData); }
             toggleAdminGateway(); 
-        }
-
-        function processMultipleImages(input) {
-            const files = Array.from(input.files).slice(0, 10);
-            const previewBox = document.getElementById('multiPreviewBox');
-            uploadedImagesArray = []; 
-            previewBox.innerHTML = ""; 
-
-            if (files.length > 0) {
-                previewBox.style.display = 'flex';
-                document.getElementById('photoCountLbl').innerText = `${files.length} / 10 images loaded`;
-                files.forEach(file => {
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
-                        uploadedImagesArray.push(e.target.result);
-                        const thumbWrap = document.createElement('div');
-                        thumbWrap.className = 'preview-thumb-wrap';
-                        thumbWrap.innerHTML = `<img src="${e.target.result}">`;
-                        previewBox.appendChild(thumbWrap);
-                    }
-                    reader.readAsDataURL(file);
-                });
-            }
         }
 
         function openVehicleSpecs(title, price, category, imagesList, year, owner, location, description, secretName, secretPhone) {

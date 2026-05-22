@@ -12,14 +12,108 @@
     
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
+    <script>
+        const ADMIN_ID = "admin";
+        const ADMIN_PASSWORD = "vip786";
+        let isAdminLoggedIn = false;
+        let currentView = "buyer";
+
+        function runAdminGatewayLogic() {
+            const btn = document.getElementById('toggleViewBtn');
+            const bView = document.getElementById('buyer-view');
+            const sView = document.getElementById('seller-view');
+            const statusBar = document.getElementById('adminStatusBar');
+
+            // Safety check to ensure DOM elements are loaded before running logic
+            if (!btn || !bView || !sView || !statusBar) {
+                console.error("Critical Error: Core layout sections are missing from the page.");
+                return;
+            }
+
+            if (!isAdminLoggedIn) {
+                let enteredId = prompt("👤 Enter Admin Username ID:");
+                if (enteredId === null) return;
+                
+                let enteredPass = prompt("🔒 Enter Admin Password:");
+                if (enteredPass === null) return;
+
+                if (enteredId.trim() === ADMIN_ID && enteredPass === ADMIN_PASSWORD) {
+                    isAdminLoggedIn = true;
+                    btn.classList.add('logged-in');
+                    statusBar.style.display = 'block';
+                    bView.style.display = 'none';
+                    sView.style.display = 'block';
+                    btn.innerHTML = '<i class="fas fa-eye"></i> View Storefront';
+                    currentView = "seller";
+                } else {
+                    alert("❌ Invalid Credentials! Access Denied.");
+                }
+            } else {
+                if (currentView === "buyer") {
+                    bView.style.display = 'none';
+                    sView.style.display = 'block';
+                    btn.innerHTML = '<i class="fas fa-eye"></i> View Storefront';
+                    currentView = "seller";
+                } else {
+                    sView.style.display = 'none';
+                    bView.style.display = 'block';
+                    btn.innerHTML = '<i class="fas fa-lock-open"></i> Admin Panel';
+                    currentView = "buyer";
+                }
+            }
+        }
+
+        // Direct Force Listener Mount once structural layout hits window stream
+        window.addEventListener('DOMContentLoaded', () => {
+            const adminButtonElement = document.getElementById('toggleViewBtn');
+            if (adminButtonElement) {
+                adminButtonElement.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation(); // Stop invisible layout overlays from capturing the tap
+                    runAdminGatewayLogic();
+                });
+            }
+        });
+    </script>
+
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
         body { background-color: #f4f6f9; color: #333; }
-        .app-header { background: #232f3e; color: white; padding: 15px 5%; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        
+        /* High Z-Index on Header to prevent invisible item blocking clicks */
+        .app-header { 
+            background: #232f3e; 
+            color: white; 
+            padding: 15px 5%; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            position: sticky; 
+            top: 0; 
+            z-index: 99999 !important; /* Force to top tier layout stack */
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1); 
+        }
+        
         .back-home { color: #ff9900; text-decoration: none; font-size: 14px; font-weight: bold; display: flex; align-items: center; gap: 5px; }
         .app-title { font-size: 18px; font-weight: 800; letter-spacing: 0.5px; }
-        .admin-toggle-btn { background: rgba(255,255,255,0.1); border: none; color: white; padding: 8px 12px; border-radius: 20px; font-size: 12px; font-weight: bold; cursor: pointer; transition: background 0.2s; display: flex; align-items: center; gap: 5px; }
-        .admin-toggle-btn:hover, .admin-toggle-btn.logged-in { background: #ff9900; }
+        
+        .admin-toggle-btn { 
+            background: rgba(255,255,255,0.1); 
+            border: none; 
+            color: white; 
+            padding: 8px 12px; 
+            border-radius: 20px; 
+            font-size: 12px; 
+            font-weight: bold; 
+            cursor: pointer; 
+            position: relative;
+            z-index: 100000 !important; /* Higher than header block overlay tier */
+            transition: background 0.2s; 
+            display: flex; 
+            align-items: center; 
+            gap: 5px; 
+        }
+        .admin-toggle-btn:hover, .admin-toggle-btn.logged-in { background: #ff9900; color: white; }
         .admin-status-bar { display: none; background: #ff9900; color: #232f3e; text-align: center; padding: 6px; font-size: 12px; font-weight: bold; box-shadow: inset 0 -2px 5px rgba(0,0,0,0.1); }
         .view-section { padding: 20px 5%; max-width: 1200px; margin: 0 auto; }
         #seller-view { display: none; max-width: 500px; }
@@ -39,7 +133,9 @@
         .card-pricing { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #f5f5f5; padding-top: 8px; }
         .card-price { font-size: 17px; font-weight: 800; color: #ff9900; }
         .card-action-text { font-size: 12px; color: #1a73e8; font-weight: bold; }
-        .drawer-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); backdrop-filter: blur(2px); z-index: 200; display: none; justify-content: flex-end; }
+        
+        /* Lowered structural initial overlay coordinates below header tier constraints */
+        .drawer-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); backdrop-filter: blur(2px); z-index: 1000; display: none; justify-content: flex-end; }
         .drawer-container { width: 100%; max-width: 460px; background: white; height: 100%; display: flex; flex-direction: column; justify-content: space-between; transform: translateX(100%); transition: transform 0.3s ease-in-out; overflow-y: auto; }
         .drawer-header { padding: 15px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; }
         .drawer-close-btn { background: none; border: none; font-size: 24px; cursor: pointer; color: #888; }
@@ -95,7 +191,7 @@
     <header class="app-header">
         <a href="../index.html" class="back-home"><i class="fas fa-arrow-left"></i> Hub</a>
         <div class="app-title">🚗 Vehicle Bazaar</div>
-        <button class="admin-toggle-btn" id="toggleViewBtn" onclick="toggleAdminGateway()">
+        <button class="admin-toggle-btn" id="toggleViewBtn">
             <i class="fas fa-lock"></i> Admin Panel
         </button>
     </header>
@@ -233,58 +329,14 @@
     </div>
 
     <script>
-        // --- 🛠️ 1. STANDALONE LOCK GATEWAY BLOCK (Placed on top so it NEVER breaks) ---
-        const ADMIN_ID = "admin";
-        const ADMIN_PASSWORD = "vip786";
-        let isAdminLoggedIn = false;
-        let currentView = "buyer";
-
-        function toggleAdminGateway() {
-            const btn = document.getElementById('toggleViewBtn');
-            const bView = document.getElementById('buyer-view');
-            const sView = document.getElementById('seller-view');
-            const statusBar = document.getElementById('adminStatusBar');
-
-            if (!isAdminLoggedIn) {
-                let enteredId = prompt("👤 Enter Admin Username ID:");
-                if (enteredId === null) return;
-                let enteredPass = prompt("🔒 Enter Admin Password:");
-                if (enteredPass === null) return;
-
-                if (enteredId.trim() === ADMIN_ID && enteredPass === ADMIN_PASSWORD) {
-                    isAdminLoggedIn = true;
-                    btn.classList.add('logged-in');
-                    statusBar.style.display = 'block';
-                    bView.style.display = 'none';
-                    sView.style.display = 'block';
-                    btn.innerHTML = '<i class="fas fa-eye"></i> View Storefront';
-                    currentView = "seller";
-                } else {
-                    alert("❌ Invalid Credentials! Access Denied.");
-                }
-            } else {
-                if (currentView === "buyer") {
-                    bView.style.display = 'none';
-                    sView.style.display = 'block';
-                    btn.innerHTML = '<i class="fas fa-eye"></i> View Storefront';
-                    currentView = "seller";
-                } else {
-                    sView.style.display = 'none';
-                    bView.style.display = 'block';
-                    btn.innerHTML = '<i class="fas fa-lock-open"></i> Admin Panel';
-                    currentView = "buyer";
-                }
-            }
-        }
-
-        // --- ⚡ 2. DATABASE ROUTINES & FALLBACK STRATEGY ---
+        // --- DATABASE LOGIC & FALLBACK CONFIGURATION ---
         const SUPABASE_URL = "https://mkcceghlkrrmtrbpuqzm.supabase.co"; 
         const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1rY2NlZ2hsa3JybXRyYnB1cXptIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk0MTMyMDIsImV4cCI6MjA5NDk4OTIwMn0.5Ehw0tXnjs_JUIktzA3OL3k9KfaYuhpaRrfZxBvZvR0";
 
         let supabase = null;
         let uploadedImagesArray = [];
 
-        // Pre-loaded offline seed memory row array logic
+        // Standalone offline presentation mock backup list data array maps
         const backupDemoData = [
             {
                 title: "Mahindra Arjun 555 DI",
@@ -312,13 +364,13 @@
             }
         ];
 
-        // Safe database client loader instantiation
+        // Safe client constructor
         try {
             if (window.supabase) {
                 supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
             }
         } catch (e) {
-            console.error("Supabase client connection failed initialization, shifting engine entirely to demo local storage maps.", e);
+            console.error("Database socket generation bypassed. Switching client script to native backup cache layout grids.", e);
         }
 
         window.addEventListener('load', () => {
@@ -343,7 +395,7 @@
                 if (error) throw error;
                 renderGrid(vehicles);
             } catch (err) {
-                console.warn("Table structures not fetched correctly, pulling default mock items list arrays.");
+                console.warn("Database connection offline or columns parsing error. Loading default local seed arrays instead.");
                 renderGrid(backupDemoData);
             }
         }
@@ -353,7 +405,7 @@
             grid.innerHTML = ""; 
             
             if (!dataList || dataList.length === 0) {
-                grid.innerHTML = "<p style='padding:40px 20px; color:#777; text-align:center; grid-column: 1/-1;'>Showroom is empty.<br><br>Open Admin Panel to insert listings live!</p>";
+                grid.innerHTML = "<p style='padding:40px 20px; color:#777; text-align:center; grid-column: 1/-1;'>Showroom is completely empty.<br><br>Log in to your Admin Panel to add new vehicle entries.</p>";
                 return;
             }
 
@@ -420,14 +472,14 @@
                 try {
                     const { error } = await supabase.from('vehicles').insert([newObject]);
                     if (error) throw error;
-                    alert("💾 Saved to database successfully!");
+                    alert("💾 Saved to Supabase cloud database successfully!");
                 } catch (err) {
                     backupDemoData.unshift(newObject);
-                    alert("⚠️ Mode shifts to Local backup storage cache logic.");
+                    alert("⚠️ Shifting row entry to temporary local viewport session records.");
                 }
             } else {
                 backupDemoData.unshift(newObject);
-                alert("💾 Demo product card uploaded locally!");
+                alert("💾 Demo Entry published live on grid layout stack!");
             }
 
             document.getElementById('vehicleForm').reset();
@@ -537,10 +589,6 @@
             options.forEach(opt => opt.classList.remove('selected'));
             element.classList.add('selected');
             document.getElementById('fCategory').value = value;
-        }
-
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => { navigator.serviceWorker.register('./sw.js'); });
         }
     </script>
 </body>

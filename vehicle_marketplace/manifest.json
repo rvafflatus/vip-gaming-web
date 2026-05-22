@@ -1,21 +1,21 @@
 {
-  "short_name": "VehicleBazaar",
-  "name": "Vehicle Bazaar Admin & Showroom",
+  "short_name": "MansooriAuto",
+  "name": "Mansoori Auto World",
   "icons": [
     {
-      "src": "https://img.icons8.com/color/192/delivery-van.png",
+      "src": "https://img.icons8.com/color/192/car.png",
       "type": "image/png",
       "sizes": "192x192"
     },
     {
-      "src": "https://img.icons8.com/color/512/delivery-van.png",
+      "src": "https://img.icons8.com/color/512/car.png",
       "type": "image/png",
       "sizes": "512x512"
     }
   ],
   "start_url": "./index.html",
-  "background_color": "#232f3e",
-  "theme_color": "#232f3e",
+  "background_color": "#0f172a",
+  "theme_color": "#3b82f6",
   "display": "standalone",
   "orientation": "portrait"
 }

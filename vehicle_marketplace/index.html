@@ -10,506 +10,87 @@
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
     <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-        }
-
-        body {
-            background-color: #f4f6f9;
-            color: #333;
-        }
-
-        /* --- Header View App Bar --- */
-        .app-header {
-            background: #232f3e;
-            color: white;
-            padding: 15px 5%;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-
-        .back-home {
-            color: #ff9900;
-            text-decoration: none;
-            font-size: 14px;
-            font-weight: bold;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        .app-title {
-            font-size: 18px;
-            font-weight: 800;
-            letter-spacing: 0.5px;
-        }
-
-        .admin-toggle-btn {
-            background: rgba(255,255,255,0.1);
-            border: none;
-            color: white;
-            padding: 8px 12px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: background 0.2s;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-        .admin-toggle-btn:hover, .admin-toggle-btn.logged-in {
-            background: #ff9900;
-        }
-
-        /* --- Admin Notification Indicator Strip --- */
-        .admin-status-bar {
-            display: none;
-            background: #ff9900;
-            color: #232f3e;
-            text-align: center;
-            padding: 6px;
-            font-size: 12px;
-            font-weight: bold;
-            box-shadow: inset 0 -2px 5px rgba(0,0,0,0.1);
-        }
-
-        /* --- View Containers --- */
-        .view-section {
-            padding: 20px 5%;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        #seller-view {
-            display: none;
-            max-width: 500px;
-        }
-
-        /* --- Buyer View: Filters --- */
-        .filter-container {
-            display: flex;
-            gap: 8px;
-            overflow-x: auto;
-            padding: 5px 0 15px 0;
-            scrollbar-width: none;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+        body { background-color: #f4f6f9; color: #333; }
+        .app-header { background: #232f3e; color: white; padding: 15px 5%; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .back-home { color: #ff9900; text-decoration: none; font-size: 14px; font-weight: bold; display: flex; align-items: center; gap: 5px; }
+        .app-title { font-size: 18px; font-weight: 800; letter-spacing: 0.5px; }
+        .admin-toggle-btn { background: rgba(255,255,255,0.1); border: none; color: white; padding: 8px 12px; border-radius: 20px; font-size: 12px; font-weight: bold; cursor: pointer; transition: background 0.2s; display: flex; align-items: center; gap: 5px; }
+        .admin-toggle-btn:hover, .admin-toggle-btn.logged-in { background: #ff9900; }
+        .admin-status-bar { display: none; background: #ff9900; color: #232f3e; text-align: center; padding: 6px; font-size: 12px; font-weight: bold; box-shadow: inset 0 -2px 5px rgba(0,0,0,0.1); }
+        .view-section { padding: 20px 5%; max-width: 1200px; margin: 0 auto; }
+        #seller-view { display: none; max-width: 500px; }
+        .filter-container { display: flex; gap: 8px; overflow-x: auto; padding: 5px 0 15px 0; scrollbar-width: none; }
         .filter-container::-webkit-scrollbar { display: none; }
-
-        .filter-chip {
-            background: white;
-            border: 1px solid #ddd;
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 13px;
-            font-weight: 600;
-            cursor: pointer;
-            white-space: nowrap;
-            transition: all 0.2s;
-            color: #555;
-        }
-        .filter-chip.active, .filter-chip:hover {
-            background: #ff9900;
-            color: white;
-            border-color: #ff9900;
-        }
-
-        /* --- Buyer View: E-Commerce Product Grid --- */
-        .showroom-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-            gap: 20px;
-            margin-top: 10px;
-        }
-
-        .product-card {
-            background: white;
-            border: 1px solid #e0e0e0;
-            border-radius: 12px;
-            overflow: hidden;
-            cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
-            display: flex;
-            flex-direction: column;
-        }
-        .product-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 6px 15px rgba(0,0,0,0.08);
-            border-color: #ff9900;
-        }
-
-        .img-container {
-            position: relative;
-            aspect-ratio: 4/3;
-            background: #eaeded;
-        }
-        .img-container img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        .category-badge {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            background: rgba(35, 47, 62, 0.9);
-            color: white;
-            font-size: 10px;
-            font-weight: bold;
-            padding: 4px 8px;
-            border-radius: 4px;
-            text-transform: uppercase;
-        }
-
-        .card-details {
-            padding: 12px;
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
-        .card-details h3 {
-            font-size: 15px;
-            color: #232f3e;
-            margin-bottom: 4px;
-            line-height: 1.3;
-        }
-        .card-meta {
-            font-size: 12px;
-            color: #777;
-            margin-bottom: 12px;
-        }
-        .card-pricing {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-top: 1px solid #f5f5f5;
-            padding-top: 8px;
-        }
-        .card-price {
-            font-size: 17px;
-            font-weight: 800;
-            color: #ff9900;
-        }
-        .card-action-text {
-            font-size: 12px;
-            color: #1a73e8;
-            font-weight: bold;
-        }
-
-        /* --- Buyer View: Slide Out Detail Drawer Sheet --- */
-        .drawer-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.5);
-            backdrop-filter: blur(2px);
-            z-index: 200;
-            display: none;
-            justify-content: flex-end;
-        }
-        .drawer-container {
-            width: 100%;
-            max-width: 460px;
-            background: white;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            transform: translateX(100%);
-            transition: transform 0.3s ease-in-out;
-            overflow-y: auto;
-        }
-        .drawer-header {
-            padding: 15px;
-            border-bottom: 1px solid #eee;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .drawer-close-btn {
-            background: none;
-            border: none;
-            font-size: 24px;
-            cursor: pointer;
-            color: #888;
-        }
-        
-        /* --- Gallery Carousel Slider Layout --- */
-        .drawer-gallery-wrapper {
-            width: 100%;
-            background: #232f3e;
-            position: relative;
-        }
-        .drawer-main-img-box {
-            width: 100%;
-            aspect-ratio: 16/10;
-            overflow: hidden;
-        }
-        .drawer-main-img-box img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        .drawer-thumbs-strip {
-            display: flex;
-            gap: 6px;
-            padding: 10px;
-            background: rgba(0,0,0,0.4);
-            overflow-x: auto;
-            scrollbar-width: none;
-        }
+        .filter-chip { background: white; border: 1px solid #ddd; padding: 8px 16px; border-radius: 20px; font-size: 13px; font-weight: 600; cursor: pointer; white-space: nowrap; transition: all 0.2s; color: #555; }
+        .filter-chip.active, .filter-chip:hover { background: #ff9900; color: white; border-color: #ff9900; }
+        .showroom-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 20px; margin-top: 10px; }
+        .product-card { background: white; border: 1px solid #e0e0e0; border-radius: 12px; overflow: hidden; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; display: flex; flex-direction: column; }
+        .product-card:hover { transform: translateY(-4px); box-shadow: 0 6px 15px rgba(0,0,0,0.08); border-color: #ff9900; }
+        .img-container { position: relative; aspect-ratio: 4/3; background: #eaeded; }
+        .img-container img { width: 100%; height: 100%; object-fit: cover; }
+        .category-badge { position: absolute; top: 10px; left: 10px; background: rgba(35, 47, 62, 0.9); color: white; font-size: 10px; font-weight: bold; padding: 4px 8px; border-radius: 4px; text-transform: uppercase; }
+        .card-details { padding: 12px; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between; }
+        .card-details h3 { font-size: 15px; color: #232f3e; margin-bottom: 4px; line-height: 1.3; }
+        .card-meta { font-size: 12px; color: #777; margin-bottom: 12px; }
+        .card-pricing { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #f5f5f5; padding-top: 8px; }
+        .card-price { font-size: 17px; font-weight: 800; color: #ff9900; }
+        .card-action-text { font-size: 12px; color: #1a73e8; font-weight: bold; }
+        .drawer-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); backdrop-filter: blur(2px); z-index: 200; display: none; justify-content: flex-end; }
+        .drawer-container { width: 100%; max-width: 460px; background: white; height: 100%; display: flex; flex-direction: column; justify-content: space-between; transform: translateX(100%); transition: transform 0.3s ease-in-out; overflow-y: auto; }
+        .drawer-header { padding: 15px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; }
+        .drawer-close-btn { background: none; border: none; font-size: 24px; cursor: pointer; color: #888; }
+        .drawer-gallery-wrapper { width: 100%; background: #232f3e; position: relative; }
+        .drawer-main-img-box { width: 100%; aspect-ratio: 16/10; overflow: hidden; }
+        .drawer-main-img-box img { width: 100%; height: 100%; object-fit: cover; }
+        .drawer-thumbs-strip { display: flex; gap: 6px; padding: 10px; background: rgba(0,0,0,0.4); overflow-x: auto; scrollbar-width: none; }
         .drawer-thumbs-strip::-webkit-scrollbar { display: none; }
-        .thumb-nav-item {
-            width: 50px;
-            height: 40px;
-            border-radius: 4px;
-            object-fit: cover;
-            cursor: pointer;
-            border: 2px solid transparent;
-            opacity: 0.6;
-            transition: all 0.2s;
-            flex-shrink: 0;
-        }
-        .thumb-nav-item.active-thumb, .thumb-nav-item:hover {
-            opacity: 1;
-            border-color: #ff9900;
-        }
-
-        .drawer-body {
-            padding: 20px;
-            flex-grow: 1;
-        }
-        .drawer-v-title {
-            font-size: 20px;
-            color: #232f3e;
-            font-weight: 800;
-        }
-        .drawer-price {
-            font-size: 24px;
-            font-weight: 800;
-            color: #ff9900;
-            margin: 6px 0 15px 0;
-        }
-        .specs-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-        .spec-card {
-            background: #f8f9fa;
-            padding: 10px;
-            border-radius: 8px;
-            border: 1px solid #eee;
-        }
-        .spec-lbl {
-            font-size: 11px;
-            color: #999;
-            display: block;
-        }
-        .spec-txt {
-            font-size: 13px;
-            font-weight: bold;
-            color: #333;
-        }
-        .drawer-desc-box {
-            font-size: 13px;
-            color: #555;
-            line-height: 1.5;
-            background: #fff9f2;
-            padding: 12px;
-            border-radius: 8px;
-            border-left: 4px solid #ff9900;
-            margin-bottom: 20px;
-        }
-
-        /* --- 🔒 PRIVATE ADMIN ONLY RECORD BOX --- */
-        .admin-private-box {
-            display: none; /* Stays completely invisible from regular online customers */
-            background: #eff6ff;
-            border: 1px solid #bfdbfe;
-            border-radius: 10px;
-            padding: 15px;
-            margin-top: 15px;
-        }
-        .admin-private-box h4 {
-            font-size: 13px;
-            color: #1e40af;
-            text-transform: uppercase;
-            margin-bottom: 8px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-        .admin-private-info {
-            font-size: 14px;
-            color: #1e3a8a;
-            margin-bottom: 10px;
-            line-height: 1.4;
-        }
-        .admin-action-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 8px;
-        }
-        .admin-call-btn {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-            padding: 10px;
-            border-radius: 6px;
-            text-decoration: none;
-            font-size: 13px;
-            font-weight: bold;
-            text-align: center;
-        }
+        .thumb-nav-item { width: 50px; height: 40px; border-radius: 4px; object-fit: cover; cursor: pointer; border: 2px solid transparent; opacity: 0.6; transition: all 0.2s; flex-shrink: 0; }
+        .thumb-nav-item.active-thumb, .thumb-nav-item:hover { opacity: 1; border-color: #ff9900; }
+        .drawer-body { padding: 20px; flex-grow: 1; }
+        .drawer-v-title { font-size: 20px; color: #232f3e; font-weight: 800; }
+        .drawer-price { font-size: 24px; font-weight: 800; color: #ff9900; margin: 6px 0 15px 0; }
+        .specs-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+        .spec-card { background: #f8f9fa; padding: 10px; border-radius: 8px; border: 1px solid #eee; }
+        .spec-lbl { font-size: 11px; color: #999; display: block; }
+        .spec-txt { font-size: 13px; font-weight: bold; color: #333; }
+        .drawer-desc-box { font-size: 13px; color: #555; line-height: 1.5; background: #fff9f2; padding: 12px; border-radius: 8px; border-left: 4px solid #ff9900; margin-bottom: 20px; }
+        
+        /* 🔒 Private Admin Elements Layout */
+        .admin-private-box { display: none; background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 10px; padding: 15px; margin-top: 15px; }
+        .admin-private-box h4 { font-size: 13px; color: #1e40af; text-transform: uppercase; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+        .admin-private-info { font-size: 14px; color: #1e3a8a; margin-bottom: 10px; line-height: 1.4; }
+        .admin-action-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+        .admin-call-btn { display: flex; align-items: center; justify-content: center; gap: 6px; padding: 10px; border-radius: 6px; text-decoration: none; font-size: 13px; font-weight: bold; text-align: center; }
         .btn-phone { background: #1a73e8; color: white; }
         .btn-wa { background: #25d366; color: white; }
-
-        .drawer-footer {
-            padding: 15px;
-            border-top: 1px solid #eee;
-            background: white;
-            position: sticky;
-            bottom: 0;
-        }
-        .wa-chat-btn {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            background: #25d366;
-            color: white;
-            text-decoration: none;
-            padding: 14px;
-            border-radius: 8px;
-            font-weight: bold;
-            font-size: 15px;
-            box-shadow: 0 3px 10px rgba(37,211,102,0.2);
-        }
-
-        /* --- Seller View: PWA Admin Mobile Form Layout --- */
-        .form-card {
-            background: white;
-            border-radius: 16px;
-            padding: 20px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-            border: 1px solid #e0e0e0;
-        }
-        .form-card h2 {
-            font-size: 18px;
-            color: #232f3e;
-            margin-bottom: 15px;
-            border-bottom: 2px solid #f0f0f0;
-            padding-bottom: 8px;
-        }
-        .form-group {
-            margin-bottom: 15px;
-        }
-        .form-group label {
-            display: block;
-            font-size: 13px;
-            font-weight: 700;
-            color: #444;
-            margin-bottom: 5px;
-        }
-        .form-input {
-            width: 100%;
-            font-size: 15px;
-            padding: 11px 12px;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            background: #fdfdfd;
-            outline: none;
-        }
-        .form-input:focus {
-            border-color: #ff9900;
-            background: #fff;
-        }
-        .category-picker {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 8px;
-        }
-        .picker-option {
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
-            padding: 10px 5px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
+        
+        .drawer-footer { padding: 15px; border-top: 1px solid #eee; background: white; position: sticky; bottom: 0; }
+        .wa-chat-btn { display: flex; align-items: center; justify-content: center; gap: 8px; background: #25d366; color: white; text-decoration: none; padding: 14px; border-radius: 8px; font-weight: bold; font-size: 15px; box-shadow: 0 3px 10px rgba(37,211,102,0.2); }
+        .form-card { background: white; border-radius: 16px; padding: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 1px solid #e0e0e0; }
+        .form-card h2 { font-size: 18px; color: #232f3e; margin-bottom: 15px; border-bottom: 2px solid #f0f0f0; padding-bottom: 8px; }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; font-size: 13px; font-weight: 700; color: #444; margin-bottom: 5px; }
+        .form-input { width: 100%; font-size: 15px; padding: 11px 12px; border: 1px solid #ccc; border-radius: 8px; background: #fdfdfd; outline: none; }
+        .form-input:focus { border-color: #ff9900; background: #fff; }
+        .category-picker { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+        .picker-option { border: 2px solid #e0e0e0; border-radius: 8px; padding: 10px 5px; text-align: center; cursor: pointer; transition: all 0.2s; }
         .picker-option input { display: none; }
         .picker-option span { display: block; font-size: 11px; font-weight: bold; margin-top: 3px; }
         .picker-option .icon { font-size: 20px; }
-        .picker-option.selected {
-            border-color: #ff9900;
-            background: #fff8f0;
-            color: #ff9900;
-        }
-
-        /* --- Image Grid Multi Upload Style --- */
-        .image-upload-box {
-            border: 2px dashed #ff9900;
-            background: #fffcf7;
-            padding: 18px;
-            border-radius: 8px;
-            text-align: center;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
+        .picker-option.selected { border-color: #ff9900; background: #fff8f0; color: #ff9900; }
+        .image-upload-box { border: 2px dashed #ff9900; background: #fffcf7; padding: 18px; border-radius: 8px; text-align: center; cursor: pointer; transition: background 0.2s; }
         .image-upload-box:hover { background: #fff5e6; }
         .image-upload-box i { font-size: 26px; color: #ff9900; margin-bottom: 6px; }
         .image-upload-box p { font-size: 12px; color: #666; }
-        
-        .multi-preview-scroll {
-            display: none;
-            margin-top: 10px;
-            gap: 8px;
-            overflow-x: auto;
-            padding-bottom: 5px;
-        }
-        .preview-thumb-wrap {
-            position: relative;
-            width: 70px;
-            height: 55px;
-            border-radius: 6px;
-            overflow: hidden;
-            border: 1px solid #ccc;
-            flex-shrink: 0;
-        }
+        .multi-preview-scroll { display: none; margin-top: 10px; gap: 8px; overflow-x: auto; padding-bottom: 5px; }
+        .preview-thumb-wrap { position: relative; width: 70px; height: 55px; border-radius: 6px; overflow: hidden; border: 1px solid #ccc; flex-shrink: 0; }
         .preview-thumb-wrap img { width: 100%; height: 100%; object-fit: cover; }
-        .photo-count-badge {
-            font-size: 11px;
-            color: #ff9900;
-            font-weight: bold;
-            margin-top: 4px;
-            display: block;
-            text-align: right;
-        }
-
-        @media (max-width: 768px) {
-            .showroom-grid {
-                grid-template-columns: repeat(2, 1fr);
-                gap: 12px;
-            }
-            .card-details h3 { font-size: 13px; }
-            .card-price { font-size: 15px; }
-            .app-title { font-size: 15px; }
-        }
+        .photo-count-badge { font-size: 11px; color: #ff9900; font-weight: bold; margin-top: 4px; display: block; text-align: right; }
+        @media (max-width: 768px) { .showroom-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; } .card-details h3 { font-size: 13px; } .card-price { font-size: 15px; } .app-title { font-size: 15px; } }
     </style>
 </head>
 <body>
@@ -533,9 +114,7 @@
             <button class="filter-chip" onclick="filterCategory('Tractors', this)">🚜 Tractors</button>
             <button class="filter-chip" onclick="filterCategory('Commercial', this)">🚛 Commercial</button>
         </div>
-
-        <div class="showroom-grid" id="vehiclesGrid">
-            </div>
+        <div class="showroom-grid" id="vehiclesGrid"></div>
     </main>
 
     <main class="view-section" id="seller-view">
@@ -545,23 +124,20 @@
                 
                 <div class="form-group">
                     <label>Vehicle Title / Name*</label>
-                    <input type="text" id="fTitle" required placeholder="e.g., Mahindra Bolero, Honda City" class="form-input">
+                    <input type="text" id="fTitle" required placeholder="e.g., Mahindra Bolero" class="form-input">
                 </div>
 
                 <div class="form-group">
                     <label>Select Category*</label>
                     <div class="category-picker">
                         <div class="picker-option selected" onclick="selectCategoryInput('Cars', this)">
-                            <div class="icon">🚗</div>
-                            <span>Car</span>
+                            <div class="icon">🚗</div><span>Car</span>
                         </div>
                         <div class="picker-option" onclick="selectCategoryInput('Tractors', this)">
-                            <div class="icon">🚜</div>
-                            <span>Tractor</span>
+                            <div class="icon">🚜</div><span>Tractor</span>
                         </div>
                         <div class="picker-option" onclick="selectCategoryInput('Commercial', this)">
-                            <div class="icon">🚛</div>
-                            <span>Commercial</span>
+                            <div class="icon">🚛</div><span>Commercial</span>
                         </div>
                     </div>
                     <input type="hidden" id="fCategory" value="Cars">
@@ -579,44 +155,42 @@
 
                 <div class="form-group">
                     <label>Owner Details / Mileage*</label>
-                    <input type="text" id="fOwner" required placeholder="e.g., 1st Owner, 25k KM" class="form-input">
+                    <input type="text" id="fOwner" required placeholder="e.g., 1st Owner" class="form-input">
                 </div>
 
                 <div class="form-group">
                     <label>Location / City Name*</label>
-                    <input type="text" id="fLoc" required placeholder="e.g., Tonk, Jaipur" class="form-input">
+                    <input type="text" id="fLoc" required placeholder="e.g., Tonk" class="form-input">
                 </div>
 
                 <div class="form-group">
                     <label>Condition Notes / Additional Features</label>
-                    <textarea id="fDesc" rows="3" placeholder="e.g., Mint condition body line, agency records available..." class="form-input" style="resize:none;"></textarea>
+                    <textarea id="fDesc" rows="3" placeholder="Features..." class="form-input" style="resize:none;"></textarea>
                 </div>
 
                 <div style="background: #f0f7ff; padding: 12px; border-radius: 8px; border: 1px dashed #1a73e8; margin-bottom: 15px;">
                     <label style="display:block; font-size:12px; font-weight:800; color:#1a73e8; text-transform:uppercase; margin-bottom:10px;"><i class="fas fa-user-shield"></i> Office Use Only (Private Records)</label>
-                    
                     <div class="form-group">
                         <label style="color:#333;">Actual Owner Full Name*</label>
-                        <input type="text" id="fPrivName" required placeholder="e.g., Ramesh Sharma" class="form-input" style="border-color:#b4d5ff">
+                        <input type="text" id="fPrivName" required placeholder="e.g., Ramesh Sharma" class="form-input">
                     </div>
                     <div class="form-group" style="margin-bottom:0;">
                         <label style="color:#333;">Owner Contact Number*</label>
-                        <input type="tel" id="fPrivPhone" required placeholder="e.g., 9610147688" class="form-input" style="border-color:#b4d5ff">
+                        <input type="tel" id="fPrivPhone" required placeholder="e.g., 9610147688" class="form-input">
                     </div>
                 </div>
 
                 <div class="form-group">
-                    <label>Upload Vehicle Images (Max 10 Photos)*</label>
+                    <label>Upload Vehicle Images (Max 10)*</label>
                     <div class="image-upload-box" onclick="document.getElementById('fImageInput').click()">
-                        <i class="fas fa-images"></i>
-                        <p><strong>Click to Choose Multiple Images</strong></p>
+                        <i class="fas fa-images"></i><p><strong>Click to Choose Images</strong></p>
                         <input type="file" id="fImageInput" accept="image/*" multiple style="display:none;" onchange="processMultipleImages(this)">
                     </div>
                     <span class="photo-count-badge" id="photoCountLbl">0 / 10 images loaded</span>
                     <div class="multi-preview-scroll" id="multiPreviewBox"></div>
                 </div>
 
-                <button type="submit" class="submit-btn">🚀 Add Item to Live Grid</button>
+                <button type="submit" class="submit-btn">🚀 Add Item Cloud Live</button>
             </form>
         </div>
     </main>
@@ -628,34 +202,19 @@
                     <span id="dBadge" class="category-badge" style="position:static;">Category</span>
                     <button class="drawer-close-btn" onclick="closeVehicleDrawer()">&times;</button>
                 </div>
-                
                 <div class="drawer-gallery-wrapper">
-                    <div class="drawer-main-img-box">
-                        <img id="dMainImg" src="" alt="Main Preview Picture">
-                    </div>
+                    <div class="drawer-main-img-box"><img id="dMainImg" src=""></div>
                     <div class="drawer-thumbs-strip" id="dThumbsStrip"></div>
                 </div>
-                
                 <div class="drawer-body">
                     <h2 id="dTitle" class="drawer-v-title">Vehicle Name</h2>
                     <div id="dPrice" class="drawer-price">₹0,00,000</div>
-                    
                     <div class="specs-grid">
-                        <div class="spec-card">
-                            <span class="spec-lbl">Model Year</span>
-                            <span class="spec-txt" id="dSpecYear">-</span>
-                        </div>
-                        <div class="spec-card">
-                            <span class="spec-lbl">Owner / Running</span>
-                            <span class="spec-txt" id="dSpecOwner">-</span>
-                        </div>
-                        <div class="spec-card" style="grid-column: span 2;">
-                            <span class="spec-lbl">Vehicle Location</span>
-                            <span class="spec-txt" id="dSpecLoc">-</span>
-                        </div>
+                        <div class="spec-card"><span class="spec-lbl">Model Year</span><span class="spec-txt" id="dSpecYear">-</span></div>
+                        <div class="spec-card"><span class="spec-lbl">Owner / Running</span><span class="spec-txt" id="dSpecOwner">-</span></div>
+                        <div class="spec-card" style="grid-column: span 2;"><span class="spec-lbl">Vehicle Location</span><span class="spec-txt" id="dSpecLoc">-</span></div>
                     </div>
-                    
-                    <div id="dDesc" class="drawer-desc-box">No additional notes uploaded.</div>
+                    <div id="dDesc" class="drawer-desc-box">Notes...</div>
 
                     <div class="admin-private-box" id="secureAdminBox">
                         <h4><i class="fas fa-user-lock"></i> Private Record Details (Admin Only)</h4>
@@ -668,124 +227,63 @@
                             <a id="adminWaLink" href="#" target="_blank" class="admin-call-btn btn-wa"><i class="fab fa-whatsapp"></i> WhatsApp</a>
                         </div>
                     </div>
-
                 </div>
             </div>
-            
             <div class="drawer-footer">
-                <a id="dWaBtn" href="#" target="_blank" class="wa-chat-btn">
-                    <i class="fab fa-whatsapp" style="font-size:18px;"></i> Send Message on WhatsApp
-                </a>
+                <a id="dWaBtn" href="#" target="_blank" class="wa-chat-btn"><i class="fab fa-whatsapp"></i> Send Message on WhatsApp</a>
             </div>
         </div>
     </div>
 
     <script>
+        // ⚡ LINKED AND MOUNTED LIVE SUPABASE CONFIGURATION ENDPOINTS
+        const SUPABASE_URL = "https://mkcceghlkrrmtrbpuqzm.supabase.co"; 
+        const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1rY2NlZ2hsa3JybXRyYnB1cXptIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk0MTMyMDIsImV4cCI6MjA5NDk4OTIwMn0.5Ehw0tXnjs_JUIktzA3OL3k9KfaYuhpaRrfZxBvZvR0";
+
+        // Establish core socket channel
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
         const ADMIN_ID = "admin";
         const ADMIN_PASSWORD = "vip786";
+        let isAdminLoggedIn = false;
+        let currentView = "buyer";
+        let uploadedImagesArray = [];
 
-        let isAdminLoggedIn = false; // Persistent login session toggle flag
-        let currentView = "buyer"; // Tracks which page section layout is open
-        let uploadedImagesArray = []; // Stores Base64 string list of images
-
-        // Default item array to show if localStorage is fresh and empty
-        const defaultStockData = [
-            {
-                id: "default_1",
-                title: "Mahindra Arjun 555 DI",
-                category: "Tractors",
-                price: "₹5,42,000",
-                year: "2022",
-                owner: "1st Owner",
-                location: "Jaipur",
-                desc: "Perfect engine health, original showroom tires with 85% life. Fully verified documentation with clearance certificate.",
-                secretName: "Ramesh Kumar",
-                secretPhone: "9610147688",
-                images: ["https://images.unsplash.com/photo-1594913785162-e6785b423cb1?auto=format&fit=crop&w=600&q=80"]
-            },
-            {
-                id: "default_2",
-                title: "Maruti Suzuki Swift VXI",
-                category: "Cars",
-                price: "₹4,85,000",
-                year: "2020",
-                owner: "2nd Owner",
-                location: "Tonk",
-                desc: "Neat family car. Power steering, ice cold AC, power windows, active third party insurance.",
-                secretName: "Sunil Choudhary",
-                secretPhone: "9414000000",
-                images: ["https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?auto=format&fit=crop&w=600&q=80"]
-            }
-        ];
-
-        // Core initializer loader
         window.addEventListener('load', () => {
-            if (!localStorage.getItem('bazaar_inventory')) {
-                localStorage.setItem('bazaar_inventory', JSON.stringify(defaultStockData));
-            }
-            renderGridFromStorage();
+            fetchVehiclesFromCloud();
         });
 
-        // 🔒 Secure Admin Authentication Flow
-        function toggleAdminGateway() {
-            const btn = document.getElementById('toggleViewBtn');
-            const bView = document.getElementById('buyer-view');
-            const sView = document.getElementById('seller-view');
-            const statusBar = document.getElementById('adminStatusBar');
-
-            if (!isAdminLoggedIn) {
-                // Trigger Authentication prompt
-                let enteredId = prompt("👤 Enter Admin Username ID:");
-                if (enteredId === null) return;
-                let enteredPass = prompt("🔒 Enter Admin Password:");
-                if (enteredPass === null) return;
-
-                if (enteredId.trim() === ADMIN_ID && enteredPass === ADMIN_PASSWORD) {
-                    isAdminLoggedIn = true;
-                    btn.classList.add('logged-in');
-                    statusBar.style.display = 'block';
-                    
-                    // Route directly into the Mobile Form View
-                    bView.style.display = 'none';
-                    sView.style.display = 'block';
-                    btn.innerHTML = '<i class="fas fa-eye"></i> View Storefront';
-                    currentView = "seller";
-                } else {
-                    alert("❌ Invalid Credentials! Access Denied.");
-                }
-            } else {
-                // Switch layouts if already logged in
-                if (currentView === "buyer") {
-                    bView.style.display = 'none';
-                    sView.style.display = 'block';
-                    btn.innerHTML = '<i class="fas fa-eye"></i> View Storefront';
-                    currentView = "seller";
-                } else {
-                    sView.style.display = 'none';
-                    bView.style.display = 'block';
-                    btn.innerHTML = '<i class="fas fa-lock-open"></i> Admin Panel';
-                    currentView = "buyer";
-                }
-            }
-        }
-
-        // Render stock grid cleanly from saved local storage references
-        function renderGridFromStorage() {
+        // 📥 DYNAMIC READER SYNC LOOP FROM CLOUD
+        async function fetchVehiclesFromCloud() {
             const grid = document.getElementById('vehiclesGrid');
-            grid.innerHTML = ""; // Clear active viewport layout
+            grid.innerHTML = "<p style='padding:20px; color:#666; text-align:center;'><i class='fas fa-spinner fa-spin'></i> Syncing Cloud Showroom Database...</p>";
+
+            const { data: vehicles, error } = await supabase
+                .from('vehicles')
+                .select('*')
+                .order('created_at', { ascending: false });
+
+            if (error) {
+                console.error("Database sync failure:", error);
+                grid.innerHTML = "<p style='padding:20px; color:red; text-align:center;'>⚠️ Cloud Sync Failure. Check table creation inside SQL editor.</p>";
+                return;
+            }
+
+            grid.innerHTML = ""; // Clear loader
             
-            const currentStock = JSON.parse(localStorage.getItem('bazaar_inventory')) || [];
-            
-            currentStock.forEach(item => {
+            if (!vehicles || vehicles.length === 0) {
+                grid.innerHTML = "<p style='padding:40px 20px; color:#777; text-align:center; grid-column: 1/-1;'>Showroom is currently empty.<br><br>Toggle <strong>Admin Panel</strong> at the top right to insert listings live!</p>";
+                return;
+            }
+
+            vehicles.forEach(item => {
                 const card = document.createElement('div');
                 card.className = 'product-card';
                 card.setAttribute('data-category', item.category);
-                
-                // Direct file paths parsing allocations safety maps
                 let displayCover = item.images && item.images[0] ? item.images[0] : "https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?auto=format&fit=crop&w=500&q=80";
 
                 card.onclick = function() {
-                    openVehicleSpecs(item.title, item.price, item.category, item.images, item.year, item.owner, item.location, item.desc, item.secretName, item.secretPhone);
+                    openVehicleSpecs(item.title, item.price, item.category, item.images, item.year, item.owner, item.location, item.description, item.secret_name, item.secret_phone);
                 };
 
                 card.innerHTML = `
@@ -808,18 +306,111 @@
             });
         }
 
-        // Processing upload images lists safely
+        // 📤 DYNAMIC WRITER COMMIT PATHWAY TO CLOUD
+        async function handleFormSubmit(event) {
+            event.preventDefault();
+
+            const title = document.getElementById('fTitle').value;
+            const category = document.getElementById('fCategory').value;
+            let price = document.getElementById('fPrice').value;
+            const year = document.getElementById('fYear').value;
+            const owner = document.getElementById('fOwner').value;
+            const location = document.getElementById('fLoc').value;
+            const desc = document.getElementById('fDesc').value;
+            const secretName = document.getElementById('fPrivName').value;
+            const secretPhone = document.getElementById('fPrivPhone').value;
+
+            if(!price.startsWith('₹')) { price = '₹' + price; }
+
+            let itemImagesCopy = [...uploadedImagesArray];
+            if (itemImagesCopy.length === 0) {
+                let fallback = "https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?auto=format&fit=crop&w=500&q=80";
+                if (category === "Tractors") fallback = "https://images.unsplash.com/photo-1594913785162-e6785b423cb1?auto=format&fit=crop&w=500&q=80";
+                else if (category === "Commercial") fallback = "https://images.unsplash.com/photo-1601584115197-04ecc0da31d7?auto=format&fit=crop&w=500&q=80";
+                itemImagesCopy.push(fallback);
+            }
+
+            // Commit object straight onto live rows
+            const { error } = await supabase
+                .from('vehicles')
+                .insert([
+                    { 
+                        title: title, 
+                        category: category, 
+                        price: price, 
+                        year: year, 
+                        owner: owner, 
+                        location: location, 
+                        description: desc, 
+                        secret_name: secretName, 
+                        secret_phone: secretPhone, 
+                        images: itemImagesCopy 
+                    }
+                ]);
+
+            if (error) {
+                alert("❌ Supabase Insertion Failure: " + error.message);
+                return;
+            }
+
+            // Form Reset Operations complete
+            document.getElementById('vehicleForm').reset();
+            document.getElementById('multiPreviewBox').style.display = 'none';
+            document.getElementById('photoCountLbl').innerText = "0 / 10 images loaded";
+            uploadedImagesArray = [];
+
+            alert("💾 Permanent Success! Vehicle row synchronized safely across the cloud.");
+            fetchVehiclesFromCloud(); // Force updates onto showroom view grid layout
+            toggleAdminGateway(); // Return layout window view back
+        }
+
+        function toggleAdminGateway() {
+            const btn = document.getElementById('toggleViewBtn');
+            const bView = document.getElementById('buyer-view');
+            const sView = document.getElementById('seller-view');
+            const statusBar = document.getElementById('adminStatusBar');
+
+            if (!isAdminLoggedIn) {
+                let enteredId = prompt("👤 Enter Admin Username ID:");
+                if (enteredId === null) return;
+                let enteredPass = prompt("🔒 Enter Admin Password:");
+                if (enteredPass === null) return;
+
+                if (enteredId.trim() === ADMIN_ID && enteredPass === ADMIN_PASSWORD) {
+                    isAdminLoggedIn = true;
+                    btn.classList.add('logged-in');
+                    statusBar.style.display = 'block';
+                    bView.style.display = 'none';
+                    sView.style.display = 'block';
+                    btn.innerHTML = '<i class="fas fa-eye"></i> View Storefront';
+                    currentView = "seller";
+                } else {
+                    alert("❌ Invalid Credentials! Access Denied.");
+                }
+            } else {
+                if (currentView === "buyer") {
+                    bView.style.display = 'none';
+                    sView.style.display = 'block';
+                    btn.innerHTML = '<i class="fas fa-eye"></i> View Storefront';
+                    currentView = "seller";
+                } else {
+                    sView.style.display = 'none';
+                    bView.style.display = 'block';
+                    btn.innerHTML = '<i class="fas fa-lock-open"></i> Admin Panel';
+                    currentView = "buyer";
+                }
+            }
+        }
+
         function processMultipleImages(input) {
             const files = Array.from(input.files).slice(0, 10);
             const previewBox = document.getElementById('multiPreviewBox');
-            
             uploadedImagesArray = []; 
             previewBox.innerHTML = ""; 
 
             if (files.length > 0) {
                 previewBox.style.display = 'flex';
                 document.getElementById('photoCountLbl').innerText = `${files.length} / 10 images loaded`;
-                
                 files.forEach(file => {
                     const reader = new FileReader();
                     reader.onload = function(e) {
@@ -834,29 +425,6 @@
             }
         }
 
-        function filterCategory(category, element) {
-            const chips = document.querySelectorAll('.filter-chip');
-            chips.forEach(c => c.classList.remove('active'));
-            element.classList.add('active');
-
-            const cards = document.querySelectorAll('.product-card');
-            cards.forEach(card => {
-                if (category === 'all' || card.getAttribute('data-category') === category) {
-                    card.style.display = 'flex';
-                } else {
-                    card.style.display = 'none';
-                }
-            });
-        }
-
-        function selectCategoryInput(value, element) {
-            const options = document.querySelectorAll('.picker-option');
-            options.forEach(opt => opt.classList.remove('selected'));
-            element.classList.add('selected');
-            document.getElementById('fCategory').value = value;
-        }
-
-        // Open layout specification slides maps
         function openVehicleSpecs(title, price, category, imagesList, year, owner, location, description, secretName, secretPhone) {
             document.getElementById('dTitle').innerText = title;
             document.getElementById('dPrice').innerText = price;
@@ -888,24 +456,23 @@
                 thumbsStrip.appendChild(thumbImg);
             });
 
-            // 🔒 REVEAL OWNER METRICS LOG IF ACTIVE SESSION IS ADMIN
+            // 🔒 ADMIN CONFIDENTIAL FIELD DECODER TRIGGER
             const adminBox = document.getElementById('secureAdminBox');
             if (isAdminLoggedIn) { 
                 adminBox.style.display = 'block';
                 document.getElementById('dPrivNameTxt').innerText = secretName;
                 document.getElementById('dPrivPhoneTxt').innerText = secretPhone;
                 document.getElementById('adminCallLink').href = `tel:${secretPhone}`;
-                document.getElementById('adminWaLink').href = `https://wa.me/91${secretPhone}?text=Hello%20${encodeURIComponent(secretName)},%20regarding%20your%20vehicle%20${encodeURIComponent(title)}.`;
+                document.getElementById('adminWaLink').href = `https://wa.me/91${secretPhone}?text=Hello%20${encodeURIComponent(secretName)},%20regarding%20vehicle%20${encodeURIComponent(title)}.`;
             } else {
-                adminBox.style.display = 'none'; // Stays completely locked and hidden from buyers
+                adminBox.style.display = 'none'; // Lock back tight out of sight from public clients
             }
 
-            const customerMsg = encodeURIComponent("Hello! I want more info regarding this vehicle entry:\n\n" + "🚙 *" + title + "*\n" + "💰 Price: " + price + "\n" + "📅 Year: " + year + "\n" + "📍 City: " + location);
+            const customerMsg = encodeURIComponent(`Hello! I want more info regarding this vehicle entry:\n\n🚙 *${title}*\n💰 Price: ${price}\n📅 Year: ${year}\n📍 City: ${location}`);
             document.getElementById('dWaBtn').href = `https://wa.me/919610147688?text=${customerMsg}`;
 
             const overlay = document.getElementById('detailDrawer');
             const sheet = document.getElementById('drawerSheet');
-            
             overlay.style.display = 'flex';
             setTimeout(() => { sheet.style.transform = 'translateX(0)'; }, 10);
             document.body.style.overflow = 'hidden';
@@ -918,73 +485,26 @@
             setTimeout(() => { overlay.style.display = 'none'; document.body.style.overflow = ''; }, 250);
         }
 
-        // Permanent storage form commit integration loop
-        function handleFormSubmit(event) {
-            event.preventDefault();
-
-            const title = document.getElementById('fTitle').value;
-            const category = document.getElementById('fCategory').value;
-            let price = document.getElementById('fPrice').value;
-            const year = document.getElementById('fYear').value;
-            const owner = document.getElementById('fOwner').value;
-            const location = document.getElementById('fLoc').value;
-            const desc = document.getElementById('fDesc').value;
-            const secretName = document.getElementById('fPrivName').value;
-            const secretPhone = document.getElementById('fPrivPhone').value;
-
-            if(!price.startsWith('₹')) { price = '₹' + price; }
-
-            let itemImagesCopy = [...uploadedImagesArray];
-            if (itemImagesCopy.length === 0) {
-                // Fallback stock images matches
-                let fallback = "https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?auto=format&fit=crop&w=500&q=80";
-                if (category === "Tractors") fallback = "https://images.unsplash.com/photo-1594913785162-e6785b423cb1?auto=format&fit=crop&w=500&q=80";
-                else if (category === "Commercial") fallback = "https://images.unsplash.com/photo-1601584115197-04ecc0da31d7?auto=format&fit=crop&w=500&q=80";
-                itemImagesCopy.push(fallback);
-            }
-
-            // Create structural item data block object
-            const newVehicleObject = {
-                id: "vehicle_" + Date.now(),
-                title: title,
-                category: category,
-                price: price,
-                year: year,
-                owner: owner,
-                location: location,
-                desc: desc,
-                secretName: secretName,
-                secretPhone: secretPhone,
-                images: itemImagesCopy
-            };
-
-            // Pull, Append, and Commit back to local browser storage permanently
-            const existingInventory = JSON.parse(localStorage.getItem('bazaar_inventory')) || [];
-            existingInventory.unshift(newVehicleObject);
-            localStorage.setItem('bazaar_inventory', JSON.stringify(existingInventory));
-
-            // Force refresh active layout loops instantly
-            renderGridFromStorage();
-
-            // Clear inputs reset states
-            document.getElementById('vehicleForm').reset();
-            document.getElementById('multiPreviewBox').style.display = 'none';
-            document.getElementById('photoCountLbl').innerText = "0 / 10 images loaded";
-            uploadedImagesArray = [];
-
-            alert("💾 Permanent Success! Data saved to local registry records.");
-            
-            // Toggle view back to check item
-            toggleAdminGateway();
+        function filterCategory(category, element) {
+            const chips = document.querySelectorAll('.filter-chip');
+            chips.forEach(c => c.classList.remove('active'));
+            element.classList.add('active');
+            const cards = document.querySelectorAll('.product-card');
+            cards.forEach(card => {
+                if (category === 'all' || card.getAttribute('data-category') === category) card.style.display = 'flex';
+                else card.style.display = 'none';
+            });
         }
 
-        // --- PWA SERVICE WORKER COUPLING REGISTER LOGIC ---
+        function selectCategoryInput(value, element) {
+            const options = document.querySelectorAll('.picker-option');
+            options.forEach(opt => opt.classList.remove('selected'));
+            element.classList.add('selected');
+            document.getElementById('fCategory').value = value;
+        }
+
         if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('./sw.js')
-                    .then(reg => console.log('🚀 PWA Service Worker Ready!'))
-                    .catch(err => console.log('❌ PWA registration error'));
-            });
+            window.addEventListener('load', () => { navigator.serviceWorker.register('./sw.js'); });
         }
     </script>
 </body>

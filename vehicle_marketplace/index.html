@@ -293,18 +293,18 @@
     </div>
 
     <script>
-        // Mapped to your freshly minted project variables perfectly
+        // Cleaned URL endpoints and tokens loaded successfully
         const SUPABASE_URL = "https://dyectpjxjigxcmoiafms.supabase.co"; 
         const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR5ZWN0cGp4amlneGNtb2lhZm1zIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk0NTA2NjIsImV4cCI6MjA5NTAyNjY2Mn0.mOIIA07mg1JJXH89aOuRLxFsAp0Y78NbO-z27m6ZGps";
 
         let supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-        let selectedFilesArray = [];
+        let selectedFilesArray = []; // Tracks live files actively in state memory
 
         window.addEventListener('load', () => {
             fetchVehiclesFromCloud();
         });
 
-        // 📥 READ FROM CLOUD
+        // 📥 READ DATA FROM THE CLOUD
         async function fetchVehiclesFromCloud() {
             const grid = document.getElementById('vehiclesGrid');
             grid.innerHTML = "<p style='padding:40px; color:#64748b; text-align:center; grid-column:1/-1;'><i class='fas fa-spinner fa-spin'></i> Syncing Cloud Inventory...</p>";
@@ -318,7 +318,7 @@
                 if (error) throw error;
                 renderGrid(vehicles);
             } catch (err) {
-                grid.innerHTML = "<p style='padding:40px; color:#ef4444; text-align:center; grid-column:1/-1;'>⚠️ Setup Missing. Run the table creation code inside your Supabase SQL Editor.</p>";
+                grid.innerHTML = "<p style='padding:40px; color:#ef4444; text-align:center; grid-column:1/-1;'>⚠️ Setup Missing. Please make sure you have run the table setup code inside your Supabase SQL Editor window.</p>";
             }
         }
 
@@ -356,17 +356,19 @@
             });
         }
 
-        // 📁 IMAGE SELECTION PREVIEWER
+        // 📁 IMAGE SELECTION AND MEMORY TRACKER
         function prepareFilesForUpload(input) {
             const files = Array.from(input.files).slice(0, 10);
             const previewBox = document.getElementById('multiPreviewBox');
-            selectedFilesArray = files; 
+            
+            // Core Patch Fix: Directly copy incoming files into global memory array state
+            selectedFilesArray = [...files]; 
             previewBox.innerHTML = "";
 
-            if (files.length > 0) {
+            if (selectedFilesArray.length > 0) {
                 previewBox.style.display = 'flex';
-                document.getElementById('photoCountLbl').innerText = `${files.length} files selected for cloud upload`;
-                files.forEach(file => {
+                document.getElementById('photoCountLbl').innerText = `${selectedFilesArray.length} files loaded & ready for cloud`;
+                selectedFilesArray.forEach(file => {
                     const reader = new FileReader();
                     reader.onload = (e) => {
                         const thumb = document.createElement('div');
@@ -379,12 +381,12 @@
             }
         }
 
-        // 📤 WRITE FORM AND UPLOAD TO STORAGE BUCKET
+        // 📤 UPLOAD FILES TO BUCKETS + COMMIT TEXT DATA DATA TO ROW
         async function handleFormSubmit(event) {
             event.preventDefault();
             const btn = document.getElementById('submitFormBtn');
             btn.disabled = true;
-            btn.innerText = "Uploading Photos to Cloud Storage...";
+            btn.innerText = "Connecting to Cloud Storage...";
 
             const title = document.getElementById('fTitle').value;
             const category = document.getElementById('fCategory').value;
@@ -401,34 +403,39 @@
             let publicImageUrls = [];
 
             try {
-                // 1. Storage bucket binary file loop processing layout upload channel
-                for (let i = 0; i < selectedFilesArray.length; i++) {
-                    const file = selectedFilesArray[i];
-                    const fileExtension = file.name.split('.').pop();
-                    const uniqueFileName = `${Date.now()}_${i}.${fileExtension}`;
+                // 1. Process files upload loop directly into the 'vehicle-photos' storage bucket
+                if (selectedFilesArray && selectedFilesArray.length > 0) {
+                    for (let i = 0; i < selectedFilesArray.length; i++) {
+                        const file = selectedFilesArray[i];
+                        const fileExtension = file.name.split('.').pop();
+                        const uniqueFileName = `${Date.now()}_${i}.${fileExtension}`;
 
-                    const { data: storageData, error: storageError } = await supabase.storage
-                        .from('vehicle-photos')
-                        .upload(uniqueFileName, file);
+                        btn.innerText = `Uploading image ${i+1} of ${selectedFilesArray.length}...`;
 
-                    if (storageError) throw storageError;
+                        const { data: storageData, error: storageError } = await supabase.storage
+                            .from('vehicle-photos')
+                            .upload(uniqueFileName, file);
 
-                    const { data: publicUrlData } = supabase.storage
-                        .from('vehicle-photos')
-                        .getPublicUrl(uniqueFileName);
+                        if (storageError) throw storageError;
 
-                    publicImageUrls.push(publicUrlData.publicUrl);
+                        const { data: publicUrlData } = supabase.storage
+                            .from('vehicle-photos')
+                            .getPublicUrl(uniqueFileName);
+
+                        publicImageUrls.push(publicUrlData.publicUrl);
+                    }
                 }
 
+                // Default placeholder logic if zero photos were selected by Admin
                 if (publicImageUrls.length === 0) {
                     let defaultPic = "https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?auto=format&fit=crop&w=500&q=80";
                     if (category === "Tractors") defaultPic = "https://images.unsplash.com/photo-1594913785162-e6785b423cb1?auto=format&fit=crop&w=500&q=80";
                     publicImageUrls.push(defaultPic);
                 }
 
-                btn.innerText = "Saving Data Ledger...";
+                btn.innerText = "Commiting Records to Database Table...";
 
-                // 2. Insert text logs row map data list
+                // 2. Safely push structural fields map array parameters into Table rows
                 const { error: dbError } = await supabase
                     .from('vehicles')
                     .insert([
@@ -440,16 +447,16 @@
 
                 if (dbError) throw dbError;
 
-                alert("💾 Success! Stock published completely over Mansoori Cloud Servers!");
+                alert("💾 Mansoori System: Record uploaded and synchronized live on cloud storefront matrix!");
                 document.getElementById('vehicleForm').reset();
                 document.getElementById('multiPreviewBox').style.display = 'none';
                 document.getElementById('photoCountLbl').innerText = "0 files ready for cloud";
                 selectedFilesArray = [];
                 
-                fetchVehiclesFromCloud();
-                toggleAdminGateway();
+                fetchVehiclesFromCloud(); // Re-trigger storefront render data pull
+                toggleAdminGateway(); // Flip view back to front display
             } catch (err) {
-                alert("❌ Storage Allocation Failure: " + err.message + "\n\n(Make sure your 'vehicle-photos' storage bucket is created and set to public in Supabase)");
+                alert("❌ Pipeline Stalled: " + err.message + "\n\n👉 Reminders: Make sure your bucket is created, named exactly 'vehicle-photos', and its privacy setting is toggled to Public inside your dashboard layout panel.");
             } finally {
                 btn.disabled = false;
                 btn.innerText = "🚀 Upload & Commit Live";

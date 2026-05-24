@@ -239,10 +239,10 @@
 
                 <div class="input-group">
                     <label>Vehicle Stock Photos (Max 10 Images)*</label>
-                    <div class="image-upload-box" onclick="document.getElementById('fImageInput').click()">
+                    <div class="image-upload-box" id="uploadTriggerArea">
                         <i class="fas fa-camera-retro"></i>
                         <p><strong>Tap to Choose Files</strong></p>
-                        <input type="file" id="fImageInput" id="fImageInput" accept="image/*" multiple style="display:none;">
+                        <input type="file" id="fImageInput" accept="image/*" multiple style="display:none;">
                     </div>
                     <span class="photo-count-badge" id="photoCountLbl">0 files ready for cloud</span>
                     <div class="multi-preview-scroll" id="multiPreviewBox"></div>
@@ -294,20 +294,27 @@
     </div>
 
     <script>
-        // Cleaned URL endpoints and tokens loaded successfully
+        // Mapped to your freshly minted project credentials with NO duplicate structures
         const SUPABASE_URL = "https://dyectpjxjigxcmoiafms.supabase.co"; 
         const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR5ZWN0cGp4amlneGNtb2lhZm1zIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk0NTA2NjIsImV4cCI6MjA5NTAyNjY2Mn0.mOIIA07mg1JJXH89aOuRLxFsAp0Y78NbO-z27m6ZGps";
 
+        // Single clean global configuration load
         let supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         let selectedFilesArray = []; 
 
         window.addEventListener('load', () => {
             fetchVehiclesFromCloud();
             
-            // Fixed direct wire connection for image selector events
-            const fileInput = document.getElementById('fImageInput');
-            if (fileInput) {
-                fileInput.addEventListener('change', function(e) {
+            // Wire connection logic for image picker inputs
+            const boxTrigger = document.getElementById('uploadTriggerArea');
+            const hiddenInput = document.getElementById('fImageInput');
+            
+            if (boxTrigger && hiddenInput) {
+                boxTrigger.addEventListener('click', () => {
+                    hiddenInput.click();
+                });
+
+                hiddenInput.addEventListener('change', function(e) {
                     const files = Array.from(e.target.files).slice(0, 10);
                     const previewBox = document.getElementById('multiPreviewBox');
                     
@@ -410,7 +417,7 @@
             let publicImageUrls = [];
 
             try {
-                // 1. Loop and process selected image files uploading straight to bucket file lines
+                // 1. Storage bucket allocation channel
                 if (selectedFilesArray && selectedFilesArray.length > 0) {
                     for (let i = 0; i < selectedFilesArray.length; i++) {
                         const file = selectedFilesArray[i];

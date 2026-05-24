@@ -141,7 +141,8 @@
         .picker-cell.selected span { color: white; }
         .image-upload-box { border: 2px dashed #3b82f6; background: #0f172a; padding: 20px; border-radius: 10px; text-align: center; cursor: pointer; }
         .image-upload-box i { font-size: 26px; color: #3b82f6; margin-bottom: 8px; }
-        .multi-preview-scroll { display: none; gap: 10px; overflow-x: auto; margin-top: 12px; padding-bottom: 5px; }
+        .multi-preview-scroll { display: none; gap: 10px; overflow-x: auto; margin-top: 12px; padding-bottom: 5px; scrollbar-width: none; }
+        .multi-preview-scroll::-webkit-scrollbar { display: none; }
         .preview-thumb-wrap { position: relative; width: 75px; height: 55px; border-radius: 6px; overflow: hidden; border: 1px solid #334155; flex-shrink: 0; }
         .preview-thumb-wrap img { width: 100%; height: 100%; object-fit: cover; }
         .photo-count-badge { font-size: 12px; color: #3b82f6; font-weight: bold; margin-top: 6px; display: block; text-align: right; }
@@ -241,7 +242,7 @@
                     <div class="image-upload-box" onclick="document.getElementById('fImageInput').click()">
                         <i class="fas fa-camera-retro"></i>
                         <p><strong>Tap to Choose Files</strong></p>
-                        <input type="file" id="fImageInput" accept="image/*" multiple style="display:none;" onchange="prepareFilesForUpload(this)">
+                        <input type="file" id="fImageInput" id="fImageInput" accept="image/*" multiple style="display:none;">
                     </div>
                     <span class="photo-count-badge" id="photoCountLbl">0 files ready for cloud</span>
                     <div class="multi-preview-scroll" id="multiPreviewBox"></div>
@@ -298,13 +299,44 @@
         const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR5ZWN0cGp4amlneGNtb2lhZm1zIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk0NTA2NjIsImV4cCI6MjA5NTAyNjY2Mn0.mOIIA07mg1JJXH89aOuRLxFsAp0Y78NbO-z27m6ZGps";
 
         let supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-        let selectedFilesArray = []; // Tracks live files actively in state memory
+        let selectedFilesArray = []; 
 
         window.addEventListener('load', () => {
             fetchVehiclesFromCloud();
+            
+            // Fixed direct wire connection for image selector events
+            const fileInput = document.getElementById('fImageInput');
+            if (fileInput) {
+                fileInput.addEventListener('change', function(e) {
+                    const files = Array.from(e.target.files).slice(0, 10);
+                    const previewBox = document.getElementById('multiPreviewBox');
+                    
+                    selectedFilesArray = [...files]; 
+                    previewBox.innerHTML = "";
+
+                    if (selectedFilesArray.length > 0) {
+                        previewBox.style.display = 'flex';
+                        document.getElementById('photoCountLbl').innerText = `${selectedFilesArray.length} files loaded & ready for cloud`;
+                        
+                        selectedFilesArray.forEach(file => {
+                            const reader = new FileReader();
+                            reader.onload = (event) => {
+                                const thumb = document.createElement('div');
+                                thumb.className = 'preview-thumb-wrap';
+                                thumb.innerHTML = `<img src="${event.target.result}">`;
+                                previewBox.appendChild(thumb);
+                            };
+                            reader.readAsDataURL(file);
+                        });
+                    } else {
+                        document.getElementById('photoCountLbl').innerText = "0 files ready for cloud";
+                        previewBox.style.display = 'none';
+                    }
+                });
+            }
         });
 
-        // 📥 READ DATA FROM THE CLOUD
+        // 📥 FETCH ROWS FROM THE CLOUD
         async function fetchVehiclesFromCloud() {
             const grid = document.getElementById('vehiclesGrid');
             grid.innerHTML = "<p style='padding:40px; color:#64748b; text-align:center; grid-column:1/-1;'><i class='fas fa-spinner fa-spin'></i> Syncing Cloud Inventory...</p>";
@@ -318,7 +350,7 @@
                 if (error) throw error;
                 renderGrid(vehicles);
             } catch (err) {
-                grid.innerHTML = "<p style='padding:40px; color:#ef4444; text-align:center; grid-column:1/-1;'>⚠️ Setup Missing. Please make sure you have run the table setup code inside your Supabase SQL Editor window.</p>";
+                grid.innerHTML = "<p style='padding:40px; color:#ef4444; text-align:center; grid-column:1/-1;'>⚠️ Sync Failure. Verify table setup inside your Supabase project.</p>";
             }
         }
 
@@ -356,32 +388,7 @@
             });
         }
 
-        // 📁 IMAGE SELECTION AND MEMORY TRACKER
-        function prepareFilesForUpload(input) {
-            const files = Array.from(input.files).slice(0, 10);
-            const previewBox = document.getElementById('multiPreviewBox');
-            
-            // Core Patch Fix: Directly copy incoming files into global memory array state
-            selectedFilesArray = [...files]; 
-            previewBox.innerHTML = "";
-
-            if (selectedFilesArray.length > 0) {
-                previewBox.style.display = 'flex';
-                document.getElementById('photoCountLbl').innerText = `${selectedFilesArray.length} files loaded & ready for cloud`;
-                selectedFilesArray.forEach(file => {
-                    const reader = new FileReader();
-                    reader.onload = (e) => {
-                        const thumb = document.createElement('div');
-                        thumb.className = 'preview-thumb-wrap';
-                        thumb.innerHTML = `<img src="${e.target.result}">`;
-                        previewBox.appendChild(thumb);
-                    };
-                    reader.readAsDataURL(file);
-                });
-            }
-        }
-
-        // 📤 UPLOAD FILES TO BUCKETS + COMMIT TEXT DATA DATA TO ROW
+        // 📤 CLOUD MULTI-IMAGE BUCKET PIPELINE INSERT
         async function handleFormSubmit(event) {
             event.preventDefault();
             const btn = document.getElementById('submitFormBtn');
@@ -403,7 +410,7 @@
             let publicImageUrls = [];
 
             try {
-                // 1. Process files upload loop directly into the 'vehicle-photos' storage bucket
+                // 1. Loop and process selected image files uploading straight to bucket file lines
                 if (selectedFilesArray && selectedFilesArray.length > 0) {
                     for (let i = 0; i < selectedFilesArray.length; i++) {
                         const file = selectedFilesArray[i];
@@ -426,16 +433,16 @@
                     }
                 }
 
-                // Default placeholder logic if zero photos were selected by Admin
+                // Auto fallback mapping array data if zero photos selected
                 if (publicImageUrls.length === 0) {
                     let defaultPic = "https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?auto=format&fit=crop&w=500&q=80";
                     if (category === "Tractors") defaultPic = "https://images.unsplash.com/photo-1594913785162-e6785b423cb1?auto=format&fit=crop&w=500&q=80";
                     publicImageUrls.push(defaultPic);
                 }
 
-                btn.innerText = "Commiting Records to Database Table...";
+                btn.innerText = "Committing Records to Database Table...";
 
-                // 2. Safely push structural fields map array parameters into Table rows
+                // 2. Insert row records text parameters map
                 const { error: dbError } = await supabase
                     .from('vehicles')
                     .insert([
@@ -453,10 +460,10 @@
                 document.getElementById('photoCountLbl').innerText = "0 files ready for cloud";
                 selectedFilesArray = [];
                 
-                fetchVehiclesFromCloud(); // Re-trigger storefront render data pull
-                toggleAdminGateway(); // Flip view back to front display
+                fetchVehiclesFromCloud();
+                toggleAdminGateway();
             } catch (err) {
-                alert("❌ Pipeline Stalled: " + err.message + "\n\n👉 Reminders: Make sure your bucket is created, named exactly 'vehicle-photos', and its privacy setting is toggled to Public inside your dashboard layout panel.");
+                alert("❌ Pipeline Stalled: " + err.message + "\n\n👉 Double check: Make sure your bucket is named exactly 'vehicle-photos' and its privacy switch is toggled to Public inside your dashboard.");
             } finally {
                 btn.disabled = false;
                 btn.innerText = "🚀 Upload & Commit Live";

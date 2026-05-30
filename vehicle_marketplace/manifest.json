@@ -1,21 +1,18 @@
 {
-  "short_name": "MansooriAuto",
   "name": "Mansoori Auto World",
+  "short_name": "Mansoori Auto",
+  "description": "Premium Vehicle Marketplace in Tonk, Rajasthan",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#0f172a",
+  "theme_color": "#0f172a",
+  "orientation": "portrait",
   "icons": [
     {
-      "src": "https://img.icons8.com/color/192/car.png",
+      "src": "https://cdn-icons-png.flaticon.com/512/741/741407.png",
+      "sizes": "512x512",
       "type": "image/png",
-      "sizes": "192x192"
-    },
-    {
-      "src": "https://img.icons8.com/color/512/car.png",
-      "type": "image/png",
-      "sizes": "512x512"
+      "purpose": "any maskable"
     }
-  ],
-  "start_url": "./index.html",
-  "background_color": "#0f172a",
-  "theme_color": "#3b82f6",
-  "display": "standalone",
-  "orientation": "portrait"
+  ]
 }

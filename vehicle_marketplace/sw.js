@@ -1,22 +1,26 @@
-const CACHE_NAME = 'mansoori-auto-v1';
+const CACHE_NAME = 'mansoori-v1';
 const ASSETS = [
+  './',
   './index.html',
-  './manifest.json',
-  'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css'
+  './app.js',
+  './database.js',
+  './manifest.json'
 ];
 
+// Install Service Worker and cache core shell assets
 self.addEventListener('install', (e) => {
   e.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => cache.addAll(ASSETS))
+    caches.open(CACHE_NAME).then((cache) => {
+      return cache.addAll(ASSETS);
+    })
   );
 });
 
-self.addEventListener('activate', (e) => {
-  e.waitUntil(self.clients.claim());
-});
-
+// Intercept fetch requests for lightning-fast loading
 self.addEventListener('fetch', (e) => {
   e.respondWith(
-    fetch(e.request).catch(() => caches.match(e.request))
+    caches.match(e.request).then((cachedResponse) => {
+      return cachedResponse || fetch(e.request);
+    })
   );
 });

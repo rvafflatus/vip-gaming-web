@@ -4,542 +4,157 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mansoori Auto World</title>
-    
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#0f172a">
-    
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-    <script>
-        const ADMIN_ID = "admin";
-        const ADMIN_PASSWORD = "vip786";
-        let isAdminLoggedIn = false;
-        let currentView = "buyer";
-
-        function toggleAdminGateway() {
-            const btn = document.getElementById('toggleViewBtn');
-            const bView = document.getElementById('buyer-view');
-            const sView = document.getElementById('seller-view');
-            const statusBar = document.getElementById('adminStatusBar');
-
-            if (!btn || !bView || !sView || !statusBar) return;
-
-            if (!isAdminLoggedIn) {
-                let enteredId = prompt("👤 Enter Authorized Office User ID:");
-                if (enteredId === null) return;
-                let enteredPass = prompt("🔒 Enter Office Access Password:");
-                if (enteredPass === null) return;
-
-                if (enteredId.trim() === ADMIN_ID && enteredPass === ADMIN_PASSWORD) {
-                    isAdminLoggedIn = true;
-                    btn.classList.add('logged-in');
-                    statusBar.style.display = 'block';
-                    bView.style.display = 'none';
-                    sView.style.display = 'block';
-                    btn.innerHTML = '<i class="fas fa-eye"></i> Customer View';
-                    currentView = "seller";
-                } else {
-                    alert("❌ Authentication Failure! Access Denied.");
-                }
-            } else {
-                if (currentView === "buyer") {
-                    bView.style.display = 'none';
-                    sView.style.display = 'block';
-                    btn.innerHTML = '<i class="fas fa-eye"></i> Customer View';
-                    currentView = "seller";
-                } else {
-                    sView.style.display = 'none';
-                    bView.style.display = 'block';
-                    btn.innerHTML = '<i class="fas fa-lock"></i> Office Login';
-                    currentView = "buyer";
-                }
-            }
-        }
-
-        window.addEventListener('DOMContentLoaded', () => {
-            const adminBtn = document.getElementById('toggleViewBtn');
-            if (adminBtn) {
-                adminBtn.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    toggleAdminGateway();
-                });
-            }
-        });
-    </script>
-
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-        body { background-color: #0f172a; color: #f8fafc; }
-        .app-header { background: #1e293b; padding: 18px 6%; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 99999 !important; border-bottom: 1px solid #334155; }
-        .back-hub { color: #94a3b8; text-decoration: none; font-size: 14px; display: flex; align-items: center; gap: 6px; font-weight: 600; }
-        .back-hub:hover { color: #3b82f6; }
-        .brand-title { font-size: 20px; font-weight: 800; color: #3b82f6; letter-spacing: 0.5px; }
-        .brand-title span { color: #ffffff; }
-        .admin-toggle-btn { background: #3b82f6; color: white; border: none; padding: 10px 18px; border-radius: 20px; font-size: 13px; font-weight: 700; cursor: pointer; transition: all 0.2s ease; display: flex; align-items: center; gap: 6px; position: relative; z-index: 100000 !important; }
-        .admin-toggle-btn.logged-in { background: #ef4444; }
-        .admin-banner { display: none; background: #b45309; color: #ffffff; text-align: center; padding: 8px; font-size: 12px; font-weight: bold; letter-spacing: 0.5px; }
-        .view-section { padding: 25px 6%; max-width: 1200px; margin: 0 auto; }
-        #seller-view { display: none; max-width: 550px; }
-        .filter-strip { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 15px; scrollbar-width: none; }
-        .filter-strip::-webkit-scrollbar { display: none; }
-        .filter-chip { background: #1e293b; border: 1px solid #334155; color: #94a3b8; padding: 10px 20px; border-radius: 25px; font-size: 13px; font-weight: bold; cursor: pointer; white-space: nowrap; transition: all 0.2s; }
-        .filter-chip.active, .filter-chip:hover { background: #3b82f6; color: white; border-color: #3b82f6; }
-        .catalog-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 25px; margin-top: 15px; }
-        .product-card { background: #1e293b; border: 1px solid #334155; border-radius: 16px; overflow: hidden; cursor: pointer; transition: transform 0.2s, border-color 0.2s; display: flex; flex-direction: column; }
-        .product-card:hover { transform: translateY(-4px); border-color: #3b82f6; }
-        .img-container { position: relative; aspect-ratio: 4/3; background: #0f172a; }
-        .img-container img { width: 100%; height: 100%; object-fit: cover; }
-        .cat-badge { position: absolute; top: 12px; left: 12px; background: rgba(15, 23, 42, 0.85); border: 1px solid #334155; color: #3b82f6; font-size: 10px; font-weight: bold; padding: 4px 10px; border-radius: 6px; text-transform: uppercase; }
-        .card-body { padding: 16px; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between; }
-        .card-body h3 { font-size: 16px; color: white; margin-bottom: 6px; line-height: 1.3; }
-        .card-meta { font-size: 13px; color: #94a3b8; margin-bottom: 14px; }
-        .card-footer { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #334155; padding-top: 12px; }
-        .card-price { font-size: 18px; font-weight: 800; color: #f59e0b; }
-        .card-action { font-size: 13px; color: #3b82f6; font-weight: bold; }
-        .drawer-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); backdrop-filter: blur(4px); z-index: 2000; display: none; justify-content: flex-end; }
-        .drawer-sheet { width: 100%; max-width: 480px; background: #1e293b; height: 100%; display: flex; flex-direction: column; justify-content: space-between; transform: translateX(100%); transition: transform 0.3s ease-in-out; overflow-y: auto; border-left: 1px solid #334155; }
-        .drawer-header { padding: 18px; border-bottom: 1px solid #334155; display: flex; justify-content: space-between; align-items: center; }
-        .drawer-close { background: none; border: none; font-size: 26px; cursor: pointer; color: #94a3b8; }
-        .gallery-wrapper { width: 100%; background: #0f172a; position: relative; }
-        .gallery-main { width: 100%; aspect-ratio: 16/10; overflow: hidden; }
-        .gallery-main img { width: 100%; height: 100%; object-fit: cover; }
-        .gallery-strip { display: flex; gap: 8px; padding: 12px; background: rgba(30,41,59,0.5); overflow-x: auto; scrollbar-width: none; }
-        .gallery-strip::-webkit-scrollbar { display: none; }
-        .gallery-thumb { width: 55px; height: 42px; border-radius: 6px; object-fit: cover; cursor: pointer; border: 2px solid transparent; opacity: 0.5; flex-shrink: 0; }
-        .gallery-thumb.active-thumb, .gallery-thumb:hover { opacity: 1; border-color: #3b82f6; }
-        .drawer-body { padding: 22px; flex-grow: 1; }
-        .drawer-title { font-size: 22px; color: white; font-weight: 800; }
-        .drawer-price { font-size: 26px; font-weight: 800; color: #f59e0b; margin: 8px 0 16px 0; }
-        .specs-matrix { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
-        .spec-tile { background: #0f172a; padding: 12px; border-radius: 10px; border: 1px solid #334155; }
-        .spec-lbl { font-size: 11px; color: #64748b; display: block; margin-bottom: 2px; text-transform: uppercase; font-weight: bold; }
-        .spec-val { font-size: 14px; font-weight: 700; color: #e2e8f0; }
-        .desc-box { font-size: 14px; color: #cbd5e1; line-height: 1.6; background: #0f172a; padding: 14px; border-radius: 10px; border-left: 4px solid #3b82f6; margin-bottom: 20px; }
-        .admin-private-box { display: none; background: #0284c7; border: 1px solid #0ea5e9; border-radius: 12px; padding: 16px; margin-top: 15px; }
-        .admin-private-box h4 { font-size: 13px; color: white; text-transform: uppercase; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; letter-spacing: 0.5px; }
-        .admin-private-info { font-size: 14px; color: #f0f9ff; margin-bottom: 12px; line-height: 1.5; }
-        .admin-action-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        .admin-call-btn { display: flex; align-items: center; justify-content: center; gap: 6px; padding: 10px; border-radius: 8px; text-decoration: none; font-size: 13px; font-weight: bold; text-align: center; color: white; }
-        .phone-bg { background: #1e40af; }
-        .wa-bg { background: #16a34a; }
-        .drawer-footer { padding: 16px; border-top: 1px solid #334155; background: #1e293b; position: sticky; bottom: 0; }
-        .public-wa-btn { display: flex; align-items: center; justify-content: center; gap: 8px; background: #25d366; color: white; text-decoration: none; padding: 14px; border-radius: 10px; font-weight: bold; font-size: 15px; box-shadow: 0 4px 12px rgba(37,211,102,0.2); }
-        .form-container { background: #1e293b; border-radius: 16px; padding: 25px; border: 1px solid #334155; }
-        .form-container h2 { font-size: 20px; color: white; margin-bottom: 18px; border-bottom: 2px solid #334155; padding-bottom: 10px; }
-        .input-group { margin-bottom: 16px; }
-        .input-group label { display: block; font-size: 13px; font-weight: bold; color: #94a3b8; margin-bottom: 6px; }
-        .control-input { width: 100%; font-size: 15px; padding: 12px; border: 1px solid #334155; border-radius: 8px; background: #0f172a; color: white; outline: none; }
-        .control-input:focus { border-color: #3b82f6; }
-        .type-picker { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
-        .picker-cell { border: 2px solid #334155; border-radius: 10px; padding: 12px 5px; text-align: center; cursor: pointer; transition: all 0.2s; background: #0f172a; }
-        .picker-cell span { display: block; font-size: 11px; font-weight: bold; margin-top: 5px; color: #94a3b8; }
-        .picker-cell .icon { font-size: 22px; }
-        .picker-cell.selected { border-color: #3b82f6; background: #1e3a8a; }
-        .picker-cell.selected span { color: white; }
-        .image-upload-box { border: 2px dashed #3b82f6; background: #0f172a; padding: 20px; border-radius: 10px; text-align: center; cursor: pointer; }
-        .image-upload-box i { font-size: 26px; color: #3b82f6; margin-bottom: 8px; }
-        .multi-preview-scroll { display: none; gap: 10px; overflow-x: auto; margin-top: 12px; padding-bottom: 5px; scrollbar-width: none; }
-        .multi-preview-scroll::-webkit-scrollbar { display: none; }
-        .preview-thumb-wrap { position: relative; width: 75px; height: 55px; border-radius: 6px; overflow: hidden; border: 1px solid #334155; flex-shrink: 0; }
-        .preview-thumb-wrap img { width: 100%; height: 100%; object-fit: cover; }
-        .photo-count-badge { font-size: 12px; color: #3b82f6; font-weight: bold; margin-top: 6px; display: block; text-align: right; }
-        .submit-btn { width: 100%; background: #3b82f6; color: white; border: none; padding: 14px; border-radius: 8px; font-size: 15px; font-weight: bold; cursor: pointer; margin-top: 10px; box-shadow: 0 4px 12px rgba(59,130,246,0.3); }
-        @media (max-width: 768px) { .catalog-grid { grid-template-columns: repeat(2, 1fr); gap: 14px; } .card-body h3 { font-size: 14px; } .card-price { font-size: 16px; } .brand-title { font-size: 17px; } }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
 </head>
-<body>
+<body class="bg-[#0f172a] text-slate-100 min-h-screen font-sans flex flex-col">
 
-    <header class="app-header">
-        <a href="../index.html" class="back-hub"><i class="fas fa-arrow-left"></i> Hub</a>
-        <div class="brand-title">MANSOORI <span>AUTO WORLD</span></div>
-        <button class="admin-toggle-btn" id="toggleViewBtn">
-            <i class="fas fa-lock"></i> Office Login
+    <header class="sticky top-0 z-40 bg-[#1e293b]/90 backdrop-blur-md border-b border-slate-800 px-4 py-3 flex items-center justify-between shadow-lg">
+        <div class="flex items-center gap-2">
+            <div class="bg-blue-500 text-white p-2 rounded-xl">
+                <i data-lucide="car-front" class="w-6 h-6"></i>
+            </div>
+            <div>
+                <h1 class="text-lg font-bold text-white leading-tight">Mansoori Auto World</h1>
+                <p class="text-xs text-slate-400 flex items-center gap-1">
+                    <i data-lucide="map-pin" class="w-3 h-3 text-blue-400"></i> Tonk, Rajasthan
+                </p>
+            </div>
+        </div>
+        <button id="officeLoginBtn" class="flex items-center gap-2 px-4 py-2 bg-slate-800 hover:bg-slate-700 text-sm font-medium rounded-xl border border-slate-700 transition">
+            <i data-lucide="shield-check" class="w-4 h-4 text-blue-400"></i>
+            <span>Office Login</span>
         </button>
     </header>
 
-    <div class="admin-banner" id="adminStatusBar">
-        🛡️ PRIVATE SYSTEM SECURED — CONFIDENTIAL SUPPLIER RECORDS REVEALED
-    </div>
+    <main class="flex-1 max-w-7xl w-full mx-auto p-4 space-y-6 pb-24">
+        
+        <section class="flex gap-2 overflow-x-auto no-scrollbar py-1" id="categoryChips">
+            <button onclick="AppEngine.filterCategory('All')" class="category-chip active px-5 py-2.5 bg-blue-600 text-white text-sm font-medium rounded-full cursor-pointer transition">All Vehicles</button>
+            <button onclick="AppEngine.filterCategory('Cars')" class="category-chip px-5 py-2.5 bg-slate-800 text-slate-300 hover:bg-slate-700 text-sm font-medium rounded-full border border-slate-700/60 cursor-pointer transition">Cars</button>
+            <button onclick="AppEngine.filterCategory('Tractors')" class="category-chip px-5 py-2.5 bg-slate-800 text-slate-300 hover:bg-slate-700 text-sm font-medium rounded-full border border-slate-700/60 cursor-pointer transition">Tractors</button>
+            <button onclick="AppEngine.filterCategory('Commercial')" class="category-chip px-5 py-2.5 bg-slate-800 text-slate-300 hover:bg-slate-700 text-sm font-medium rounded-full border border-slate-700/60 cursor-pointer transition">Commercial</button>
+        </section>
 
-    <main class="view-section" id="buyer-view">
-        <div class="filter-strip">
-            <button class="filter-chip active" onclick="filterCategory('all', this)">All Showroom Stock</button>
-            <button class="filter-chip" onclick="filterCategory('Cars', this)">🚗 Cars</button>
-            <button class="filter-chip" onclick="filterCategory('Tractors', this)">🚜 Tractors</button>
-            <button class="filter-chip" onclick="filterCategory('Commercial', this)">🚛 Commercial</button>
-        </div>
-        <div class="catalog-grid" id="vehiclesGrid"></div>
+        <section id="showroomGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            </section>
     </main>
 
-    <main class="view-section" id="seller-view">
-        <div class="form-container">
-            <h2>Stock Record Registration</h2>
-            <form id="vehicleForm" onsubmit="handleFormSubmit(event)">
-                
-                <div class="input-group">
-                    <label>Vehicle Model / Name*</label>
-                    <input type="text" id="fTitle" required placeholder="e.g., Mahindra Bolero B6" class="control-input">
+    <div id="detailDrawer" class="fixed inset-0 z-50 pointer-events-none transition-all duration-300">
+        <div id="drawerBackdrop" class="absolute inset-0 bg-black/60 opacity-0 transition-opacity pointer-events-none duration-300"></div>
+        <div class="absolute top-0 right-0 h-full w-full max-w-md bg-[#1e293b] border-l border-slate-800 flex flex-col transform translate-x-full pointer-events-auto transition-transform duration-300 ease-in-out overflow-y-auto">
+            <div class="sticky top-0 bg-[#1e293b]/90 backdrop-blur-md z-10 flex items-center justify-between p-4 border-b border-slate-800">
+                <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                    <i data-lucide="info" class="w-5 h-5 text-blue-500"></i> Specifications Info
+                </h3>
+                <button id="closeDrawerBtn" class="p-2 hover:bg-slate-800 rounded-lg text-slate-400 hover:text-white transition">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+            <div id="drawerContent" class="p-4 space-y-6"></div>
+        </div>
+    </div>
+
+    <div id="adminModal" class="fixed inset-0 z-50 bg-[#0f172a] hidden overflow-y-auto">
+        <header class="bg-[#1e293b] border-b border-slate-800 px-4 py-4 flex items-center justify-between sticky top-0 z-10">
+            <h2 class="text-xl font-extrabold text-white flex items-center gap-2">
+                <i data-lucide="sliders" class="w-6 h-6 text-blue-500"></i> Mansoori Dashboard Panel
+            </h2>
+            <button id="closeAdminBtn" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 rounded-xl text-sm font-medium border border-slate-700 transition">Exit Panel</button>
+        </header>
+
+        <div class="max-w-3xl mx-auto p-4 md:p-6 space-y-8">
+            <div id="adminAuthBox" class="max-w-md mx-auto mt-12 bg-[#1e293b] p-6 rounded-2xl border border-slate-800 space-y-4">
+                <h3 class="text-lg font-bold text-center text-white">Security Validation Required</h3>
+                <div>
+                    <label class="block text-xs uppercase text-slate-400 font-bold mb-1">User ID</label>
+                    <input type="text" id="authId" class="w-full bg-[#0f172a] border border-slate-700 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-blue-500">
+                </div>
+                <div>
+                    <label class="block text-xs uppercase text-slate-400 font-bold mb-1">Password</label>
+                    <input type="password" id="authPass" class="w-full bg-[#0f172a] border border-slate-700 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-blue-500">
+                </div>
+                <button id="submitAuthBtn" class="w-full bg-blue-600 hover:bg-blue-500 py-3 text-sm font-bold rounded-xl transition shadow-md shadow-blue-500/20">Verify Access</button>
+            </div>
+
+            <form id="vehicleForm" class="hidden bg-[#1e293b] p-6 rounded-2xl border border-slate-800 space-y-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-400 mb-1">Vehicle Listing Title *</label>
+                        <input type="text" id="formTitle" required placeholder="e.g., Mahindra Arjun Ultra DI" class="w-full bg-[#0f172a] border border-slate-800 rounded-xl px-4 py-2.5 text-white text-sm">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-400 mb-1">Category Classification *</label>
+                        <select id="formCategory" required class="w-full bg-[#0f172a] border border-slate-800 rounded-xl px-4 py-2.5 text-white text-sm">
+                            <option value="Cars">Cars</option>
+                            <option value="Tractors">Tractors</option>
+                            <option value="Commercial">Commercial</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-400 mb-1">Asking Price (₹) *</label>
+                        <input type="text" id="formPrice" required placeholder="e.g., ₹ 4,50,000" class="w-full bg-[#0f172a] border border-slate-800 rounded-xl px-4 py-2.5 text-white text-sm">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-400 mb-1">Model Manufacturing Year *</label>
+                        <input type="text" id="formYear" required placeholder="e.g., 2021" class="w-full bg-[#0f172a] border border-slate-800 rounded-xl px-4 py-2.5 text-white text-sm">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-400 mb-1">Display Owner Name *</label>
+                        <input type="text" id="formOwner" required placeholder="e.g., Mansoori Dealership" class="w-full bg-[#0f172a] border border-slate-800 rounded-xl px-4 py-2.5 text-white text-sm">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-400 mb-1">Operation Yard Location *</label>
+                        <input type="text" id="formLocation" required placeholder="e.g., Tonk Bypass" class="w-full bg-[#0f172a] border border-slate-800 rounded-xl px-4 py-2.5 text-white text-sm">
+                    </div>
                 </div>
 
-                <div class="input-group">
-                    <label>Classification Category*</label>
-                    <div class="type-picker">
-                        <div class="picker-cell selected" onclick="selectCategoryInput('Cars', this)">
-                            <div class="icon">🚗</div><span>Car</span>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-400 mb-1">Comprehensive Vehicle Description *</label>
+                    <textarea id="formDescription" required rows="3" placeholder="Condition details, engine state..." class="w-full bg-[#0f172a] border border-slate-800 rounded-xl px-4 py-2.5 text-white text-sm"></textarea>
+                </div>
+
+                <div class="p-4 bg-[#0f172a] border border-dashed border-slate-700 rounded-xl space-y-4">
+                    <h4 class="text-xs font-bold text-blue-400 uppercase tracking-wider flex items-center gap-1"><i data-lucide="lock" class="w-3.5 h-3.5"></i> Office Core Logs (Private Records)</h4>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-400 mb-1">Original Seller Legal Name</label>
+                            <input type="text" id="formSecretName" class="w-full bg-[#1e293b] border border-slate-800 rounded-xl px-4 py-2.5 text-white text-sm">
                         </div>
-                        <div class="picker-cell" onclick="selectCategoryInput('Tractors', this)">
-                            <div class="icon">🚜</div><span>Tractor</span>
-                        </div>
-                        <div class="picker-cell" onclick="selectCategoryInput('Commercial', this)">
-                            <div class="icon">🚛</div><span>Commercial</span>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-400 mb-1">Original Seller Secure Mobile</label>
+                            <input type="text" id="formSecretPhone" class="w-full bg-[#1e293b] border border-slate-800 rounded-xl px-4 py-2.5 text-white text-sm">
                         </div>
                     </div>
-                    <input type="hidden" id="fCategory" value="Cars">
                 </div>
 
-                <div class="input-group">
-                    <label>Demand Price Ask (₹)*</label>
-                    <input type="text" id="fPrice" required placeholder="e.g., 5,80,000" class="control-input">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-400 mb-1">Showroom Images Upload (Max 10) *</label>
+                    <label class="flex flex-col items-center justify-center w-full h-32 border-2 border-slate-700 border-dashed rounded-xl cursor-pointer bg-[#0f172a] hover:bg-[#0f172a]/60 transition">
+                        <div class="flex flex-col items-center justify-center text-center px-4">
+                            <i data-lucide="upload-cloud" class="w-8 h-8 text-blue-500 mb-1"></i>
+                            <p class="text-sm text-slate-300 font-medium">Click to select files</p>
+                        </div>
+                        <input type="file" id="photoFilesInput" multiple accept="image/*" class="hidden" />
+                    </label>
+                    <div id="filePreviewDeck" class="grid grid-cols-5 gap-2 mt-3"></div>
                 </div>
 
-                <div class="input-group">
-                    <label>Registration Model Year*</label>
-                    <input type="number" id="fYear" required placeholder="e.g., 2023" class="control-input">
-                </div>
-
-                <div class="input-group">
-                    <label>Running Kilometers / Owner Status*</label>
-                    <input type="text" id="fOwner" required placeholder="e.g., 1st Owner, 42,000 Km" class="control-input">
-                </div>
-
-                <div class="input-group">
-                    <label>Current Location Stock Yard*</label>
-                    <input type="text" id="fLoc" required placeholder="e.g., Tonk Yard" class="control-input">
-                </div>
-
-                <div class="input-group">
-                    <label>Technical Highlights / Evaluation Notes</label>
-                    <textarea id="fDesc" rows="3" placeholder="Highlights..." class="control-input" style="resize:none;"></textarea>
-                </div>
-
-                <div style="background: #0f172a; padding: 15px; border-radius: 10px; border: 1px dashed #38bdf8; margin-bottom: 16px;">
-                    <label style="display:block; font-size:12px; font-weight:800; color:#38bdf8; text-transform:uppercase; margin-bottom:12px;"><i class="fas fa-user-shield"></i> Confidential Supplier Metrics</label>
-                    <div class="input-group">
-                        <label style="color:#cbd5e1;">Original Owner Full Name*</label>
-                        <input type="text" id="fPrivName" required placeholder="e.g., Ramesh Sharma" class="control-input">
-                    </div>
-                    <div class="input-group" style="margin-bottom:0;">
-                        <label style="color:#cbd5e1;">Private Contact Phone Number*</label>
-                        <input type="tel" id="fPrivPhone" required placeholder="e.g., 9610147688" class="control-input">
-                    </div>
-                </div>
-
-                <div class="input-group">
-                    <label>Vehicle Stock Photos (Max 10 Images)*</label>
-                    <div class="image-upload-box" id="uploadTriggerArea">
-                        <i class="fas fa-camera-retro"></i>
-                        <p><strong>Tap to Choose Files</strong></p>
-                        <input type="file" id="fImageInput" accept="image/*" multiple style="display:none;">
-                    </div>
-                    <span class="photo-count-badge" id="photoCountLbl">0 files ready for cloud</span>
-                    <div class="multi-preview-scroll" id="multiPreviewBox"></div>
-                </div>
-
-                <button type="submit" class="submit-btn" id="submitFormBtn">🚀 Upload & Commit Live</button>
+                <button type="submit" id="submitFormBtn" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3.5 rounded-xl transition flex items-center justify-center gap-2 shadow-lg shadow-blue-500/20">
+                    <i data-lucide="check-circle" class="w-5 h-5"></i><span>Publish Asset to Realtime Showroom</span>
+                </button>
             </form>
         </div>
-    </main>
-
-    <div class="drawer-overlay" id="detailDrawer" onclick="closeVehicleDrawer()">
-        <div class="drawer-sheet" id="drawerSheet" onclick="event.stopPropagation()">
-            <div>
-                <div class="drawer-header">
-                    <span id="dBadge" class="cat-badge" style="position:static;">Category</span>
-                    <button class="drawer-close" onclick="closeVehicleDrawer()">&times;</button>
-                </div>
-                <div class="gallery-wrapper">
-                    <div class="gallery-main"><img id="dMainImg" src="" alt="Showcase"></div>
-                    <div class="gallery-strip" id="dThumbsStrip"></div>
-                </div>
-                <div class="drawer-body">
-                    <h2 id="dTitle" class="drawer-title">Vehicle Name</h2>
-                    <div id="dPrice" class="drawer-price">₹0,00,000</div>
-                    <div class="specs-matrix">
-                        <div class="spec-tile"><span class="spec-lbl">Model Year</span><span class="spec-val" id="dSpecYear">-</span></div>
-                        <div class="spec-tile"><span class="spec-lbl">Ownership / Km</span><span class="spec-val" id="dSpecOwner">-</span></div>
-                        <div class="spec-tile" style="grid-column: span 2;"><span class="spec-lbl">Stock Yard Location</span><span class="spec-val" id="dSpecLoc">-</span></div>
-                    </div>
-                    <div id="dDesc" class="desc-box">Notes...</div>
-
-                    <div class="admin-private-box" id="secureAdminBox">
-                        <h4><i class="fas fa-user-secret"></i> Internal Procurement Log</h4>
-                        <div class="admin-private-info">
-                            <strong>Supplier Name:</strong> <span id="dPrivNameTxt">-</span><br>
-                            <strong>Direct Contact:</strong> <span id="dPrivPhoneTxt">-</span>
-                        </div>
-                        <div class="admin-action-row">
-                            <a id="adminCallLink" href="#" class="admin-call-btn btn-phone phone-bg"><i class="fas fa-phone-alt"></i> Voice Call</a>
-                            <a id="adminWaLink" href="#" target="_blank" class="admin-call-btn btn-wa wa-bg"><i class="fab fa-whatsapp"></i> Chat Office</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="drawer-footer">
-                <a id="dPublicWaBtn" href="#" target="_blank" class="public-wa-btn"><i class="fab fa-whatsapp"></i> Inquire Regarding Stock</a>
-            </div>
-        </div>
     </div>
 
-    <script>
-        const SUPABASE_URL = "https://dyectpjxjigxcmoiafms.supabase.co"; 
-        const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR5ZWN0cGp4amlneGNtb2lhZm1zIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk0NTA2NjIsImV4cCI6MjA5NTAyNjY2Mn0.mOIIA07mg1JJXH89aOuRLxFsAp0Y78NbO-z27m6ZGps";
-
-        // Single declaration variable setup
-        let supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-        let selectedFilesArray = []; 
-
-        window.addEventListener('load', () => {
-            fetchVehiclesFromCloud();
-            
-            const boxTrigger = document.getElementById('uploadTriggerArea');
-            const hiddenInput = document.getElementById('fImageInput');
-            
-            if (boxTrigger && hiddenInput) {
-                boxTrigger.addEventListener('click', () => {
-                    hiddenInput.click();
-                });
-
-                hiddenInput.addEventListener('change', function(e) {
-                    const files = Array.from(e.target.files).slice(0, 10);
-                    const previewBox = document.getElementById('multiPreviewBox');
-                    
-                    selectedFilesArray = [...files]; 
-                    previewBox.innerHTML = "";
-
-                    if (selectedFilesArray.length > 0) {
-                        previewBox.style.display = 'flex';
-                        document.getElementById('photoCountLbl').innerText = `${selectedFilesArray.length} files loaded & ready for cloud`;
-                        
-                        selectedFilesArray.forEach(file => {
-                            const reader = new FileReader();
-                            reader.onload = (event) => {
-                                const thumb = document.createElement('div');
-                                thumb.className = 'preview-thumb-wrap';
-                                thumb.innerHTML = `<img src="${event.target.result}">`;
-                                previewBox.appendChild(thumb);
-                            };
-                            reader.readAsDataURL(file);
-                        });
-                    } else {
-                        document.getElementById('photoCountLbl').innerText = "0 files ready for cloud";
-                        previewBox.style.display = 'none';
-                    }
-                });
-            }
-        });
-
-        async function fetchVehiclesFromCloud() {
-            const grid = document.getElementById('vehiclesGrid');
-            grid.innerHTML = "<p style='padding:40px; color:#64748b; text-align:center; grid-column:1/-1;'><i class='fas fa-spinner fa-spin'></i> Syncing Cloud Inventory...</p>";
-
-            try {
-                const { data: vehicles, error } = await supabase
-                    .from('vehicles')
-                    .select('*')
-                    .order('created_at', { ascending: false });
-
-                if (error) throw error;
-                renderGrid(vehicles);
-            } catch (err) {
-                grid.innerHTML = "<p style='padding:40px; color:#ef4444; text-align:center; grid-column:1/-1;'>⚠️ Sync Failure. Verify table setup inside your Supabase project.</p>";
-            }
-        }
-
-        function renderGrid(dataList) {
-            const grid = document.getElementById('vehiclesGrid');
-            grid.innerHTML = "";
-            if (!dataList || dataList.length === 0) {
-                grid.innerHTML = "<p style='padding:40px; color:#64748b; text-align:center; grid-column:1/-1;'>Showroom stock yard is currently empty.</p>";
-                return;
-            }
-            dataList.forEach(item => {
-                const card = document.createElement('div');
-                card.className = 'product-card';
-                card.setAttribute('data-category', item.category);
-                let cover = item.images && item.images[0] ? item.images[0] : "https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?auto=format&fit=crop&w=500&q=80";
-
-                card.onclick = () => openVehicleSpecs(item);
-                card.innerHTML = `
-                    <div class="img-container">
-                        <img src="${cover}" alt="Vehicle">
-                        <span class="cat-badge">${item.category}</span>
-                    </div>
-                    <div class="card-body">
-                        <div>
-                            <h3>${item.title}</h3>
-                            <div class="card-meta">Model: ${item.year} • ${item.owner}</div>
-                        </div>
-                        <div class="card-footer">
-                            <span class="card-price">${item.price}</span>
-                            <span class="card-action">Details →</span>
-                        </div>
-                    </div>
-                `;
-                grid.appendChild(card);
-            });
-        }
-
-        async function handleFormSubmit(event) {
-            event.preventDefault();
-            const btn = document.getElementById('submitFormBtn');
-            btn.disabled = true;
-            btn.innerText = "Connecting to Cloud Storage...";
-
-            const title = document.getElementById('fTitle').value;
-            const category = document.getElementById('fCategory').value;
-            let price = document.getElementById('fPrice').value;
-            const year = document.getElementById('fYear').value;
-            const owner = document.getElementById('fOwner').value;
-            const location = document.getElementById('fLoc').value;
-            const description = document.getElementById('fDesc').value;
-            const secret_name = document.getElementById('fPrivName').value;
-            const secret_phone = document.getElementById('fPrivPhone').value;
-
-            if(!price.startsWith('₹')) { price = '₹' + price; }
-
-            let publicImageUrls = [];
-
-            try {
-                if (selectedFilesArray && selectedFilesArray.length > 0) {
-                    for (let i = 0; i < selectedFilesArray.length; i++) {
-                        const file = selectedFilesArray[i];
-                        const fileExtension = file.name.split('.').pop();
-                        const uniqueFileName = `${Date.now()}_${i}.${fileExtension}`;
-
-                        btn.innerText = `Uploading image ${i+1} of ${selectedFilesArray.length}...`;
-
-                        const { data: storageData, error: storageError } = await supabase.storage
-                            .from('vehicle-photos')
-                            .upload(uniqueFileName, file);
-
-                        if (storageError) throw storageError;
-
-                        const { data: publicUrlData } = supabase.storage
-                            .from('vehicle-photos')
-                            .getPublicUrl(uniqueFileName);
-
-                        publicImageUrls.push(publicUrlData.publicUrl);
-                    }
-                }
-
-                if (publicImageUrls.length === 0) {
-                    let defaultPic = "https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?auto=format&fit=crop&w=500&q=80";
-                    if (category === "Tractors") defaultPic = "https://images.unsplash.com/photo-1594913785162-e6785b423cb1?auto=format&fit=crop&w=500&q=80";
-                    publicImageUrls.push(defaultPic);
-                }
-
-                btn.innerText = "Committing Records to Database Table...";
-
-                const { error: dbError } = await supabase
-                    .from('vehicles')
-                    .insert([
-                        { 
-                            title, category, price, year, owner, location, 
-                            description, secret_name, secret_phone, images: publicImageUrls 
-                        }
-                    ]);
-
-                if (dbError) throw dbError;
-
-                alert("💾 Mansoori System: Record uploaded and synchronized live on cloud storefront matrix!");
-                document.getElementById('vehicleForm').reset();
-                document.getElementById('multiPreviewBox').style.display = 'none';
-                document.getElementById('photoCountLbl').innerText = "0 files ready for cloud";
-                selectedFilesArray = [];
-                
-                fetchVehiclesFromCloud();
-                toggleAdminGateway();
-            } catch (err) {
-                alert("❌ Pipeline Stalled: " + err.message);
-            } finally {
-                btn.disabled = false;
-                btn.innerText = "🚀 Upload & Commit Live";
-            }
-        }
-
-        function openVehicleSpecs(item) {
-            document.getElementById('dTitle').innerText = item.title;
-            document.getElementById('dPrice').innerText = item.price;
-            document.getElementById('dBadge').innerText = item.category;
-            document.getElementById('dSpecYear').innerText = item.year;
-            document.getElementById('dSpecOwner').innerText = item.owner;
-            document.getElementById('dSpecLoc').innerText = item.location + ", Rajasthan";
-            document.getElementById('dDesc').innerText = item.description || "Evaluation check complete.";
-
-            const mainImg = document.getElementById('dMainImg');
-            const thumbStrip = document.getElementById('dThumbsStrip');
-            thumbStrip.innerHTML = "";
-
-            let photos = item.images && item.images.length > 0 ? item.images : ["https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?auto=format&fit=crop&w=500&q=80"];
-            mainImg.src = photos[0];
-
-            photos.forEach((src, index) => {
-                const thumb = document.createElement('img');
-                thumb.src = src;
-                thumb.className = 'gallery-thumb' + (index === 0 ? ' active-thumb' : '');
-                thumb.onclick = () => {
-                    mainImg.src = src;
-                    document.querySelectorAll('.gallery-thumb').forEach(t => t.classList.remove('active-thumb'));
-                    thumb.classList.add('active-thumb');
-                };
-                thumbStrip.appendChild(thumb);
-            });
-
-            const adminBox = document.getElementById('secureAdminBox');
-            if (isAdminLoggedIn) {
-                adminBox.style.display = 'block';
-                document.getElementById('dPrivNameTxt').innerText = item.secret_name;
-                document.getElementById('dPrivPhoneTxt').innerText = item.secret_phone;
-                document.getElementById('adminCallLink').href = `tel:${item.secret_phone}`;
-                document.getElementById('adminWaLink').href = `https://wa.me/91${item.secret_phone}?text=Office%20Log:%20Regarding%20${encodeURIComponent(item.title)}`;
-            } else {
-                adminBox.style.display = 'none';
-            }
-
-            const publicMsg = encodeURIComponent(`Mansoori Auto World! I am interested in purchasing:\n\n🚙 *${item.title}*\n💰 Price Ask: ${item.price}\n📍 Location stock yard: ${item.location}`);
-            document.getElementById('dPublicWaBtn').href = `https://wa.me/919610147688?text=${publicMsg}`;
-
-            const overlay = document.getElementById('detailDrawer');
-            const sheet = document.getElementById('drawerSheet');
-            overlay.style.display = 'flex';
-            setTimeout(() => { sheet.style.transform = 'translateX(0)'; }, 10);
-            document.body.style.overflow = 'hidden';
-        }
-
-        function closeVehicleDrawer() {
-            const overlay = document.getElementById('detailDrawer');
-            const sheet = document.getElementById('drawerSheet');
-            sheet.style.transform = 'translateX(100%)';
-            setTimeout(() => { overlay.style.display = 'none'; document.body.style.overflow = ''; }, 250);
-        }
-
-        function filterCategory(category, element) {
-            document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active');
-            element.classList.add('active');
-            document.querySelectorAll('.product-card').forEach(card => {
-                if (category === 'all' || card.getAttribute('data-category') === category) card.style.display = 'flex';
-                else card.style.display = 'none';
-            });
-        }
-
-        function selectCategoryInput(value, element) {
-            document.querySelectorAll('.picker-cell').forEach(cell => cell.classList.remove('selected'));
-            element.classList.add('selected');
-            document.getElementById('fCategory').value = value;
-        }
-    </script>
+    <script src="database.js"></script>
+    <script src="app.js"></script>
 </body>
 </html>

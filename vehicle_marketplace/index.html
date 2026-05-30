@@ -14,33 +14,33 @@
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
 </head>
-<body class="bg-[#0f172a] text-slate-100 min-h-screen font-sans flex flex-col">
+<body class="bg-[#0f172a] text-slate-100 min-h-screen font-sans flex flex-col antialiased">
 
-    <header class="sticky top-0 z-40 bg-[#1e293b]/90 backdrop-blur-md border-b border-slate-800 px-4 py-3 flex items-center justify-between shadow-lg">
-        <div class="flex items-center gap-2">
-            <div class="bg-blue-500 text-white p-2 rounded-xl">
-                <i data-lucide="car-front" class="w-6 h-6"></i>
+    <header class="sticky top-0 z-40 bg-[#1e293b]/95 backdrop-blur-md border-b border-slate-800 px-5 py-4 flex items-center justify-between shadow-xl">
+        <div class="flex items-center gap-3">
+            <div class="bg-blue-500 text-white p-3 rounded-2xl shadow-lg shadow-blue-500/20">
+                <i data-lucide="car-front" class="w-7 h-7"></i>
             </div>
             <div>
-                <h1 class="text-lg font-bold text-white leading-tight">Mansoori Auto World</h1>
-                <p class="text-xs text-slate-400 flex items-center gap-1">
-                    <i data-lucide="map-pin" class="w-3 h-3 text-blue-400"></i> Tonk, Rajasthan
+                <h1 class="text-xl md:text-2xl font-black text-white tracking-wide uppercase leading-tight">Mansoori Auto World</h1>
+                <p class="text-sm font-semibold text-slate-400 flex items-center gap-1 mt-0.5">
+                    <i data-lucide="map-pin" class="w-4 h-4 text-blue-400"></i> Tonk, Rajasthan
                 </p>
             </div>
         </div>
-        <button id="officeLoginBtn" class="flex items-center gap-2 px-4 py-2 bg-slate-800 hover:bg-slate-700 text-sm font-medium rounded-xl border border-slate-700 transition">
-            <i data-lucide="shield-check" class="w-4 h-4 text-blue-400"></i>
+        <button id="officeLoginBtn" class="flex items-center gap-2 px-5 py-3 bg-slate-800 hover:bg-slate-700 active:scale-95 text-base font-bold rounded-xl border border-slate-700 shadow-md transition cursor-pointer">
+            <i data-lucide="shield-check" class="w-5 h-5 text-blue-400"></i>
             <span>Office Login</span>
         </button>
     </header>
 
-    <main class="flex-1 max-w-7xl w-full mx-auto p-4 space-y-6 pb-24">
+    <main class="flex-1 max-w-7xl w-full mx-auto p-5 space-y-8 pb-28">
         
-        <section class="flex gap-2 overflow-x-auto no-scrollbar py-1" id="categoryChips">
-            <button onclick="AppEngine.filterCategory('All')" class="category-chip active px-5 py-2.5 bg-blue-600 text-white text-sm font-medium rounded-full cursor-pointer transition">All Vehicles</button>
-            <button onclick="AppEngine.filterCategory('Cars')" class="category-chip px-5 py-2.5 bg-slate-800 text-slate-300 hover:bg-slate-700 text-sm font-medium rounded-full border border-slate-700/60 cursor-pointer transition">Cars</button>
-            <button onclick="AppEngine.filterCategory('Tractors')" class="category-chip px-5 py-2.5 bg-slate-800 text-slate-300 hover:bg-slate-700 text-sm font-medium rounded-full border border-slate-700/60 cursor-pointer transition">Tractors</button>
-            <button onclick="AppEngine.filterCategory('Commercial')" class="category-chip px-5 py-2.5 bg-slate-800 text-slate-300 hover:bg-slate-700 text-sm font-medium rounded-full border border-slate-700/60 cursor-pointer transition">Commercial</button>
+        <section class="flex gap-3 overflow-x-auto no-scrollbar py-2" id="categoryChips">
+            <button onclick="AppEngine.filterCategory('All')" class="category-chip active px-7 py-3.5 bg-blue-600 text-white text-base font-bold rounded-full cursor-pointer transition shadow-md shadow-blue-600/20 whitespace-nowrap">All Vehicles</button>
+            <button onclick="AppEngine.filterCategory('Cars')" class="category-chip px-7 py-3.5 bg-slate-800 text-slate-200 hover:bg-slate-700 text-base font-bold rounded-full border border-slate-700/80 cursor-pointer transition whitespace-nowrap">Cars</button>
+            <button onclick="AppEngine.filterCategory('Tractors')" class="category-chip px-7 py-3.5 bg-slate-800 text-slate-200 hover:bg-slate-700 text-base font-bold rounded-full border border-slate-700/80 cursor-pointer transition whitespace-nowrap">Tractors</button>
+            <button onclick="AppEngine.filterCategory('Commercial')" class="category-chip px-7 py-3.5 bg-slate-800 text-slate-200 hover:bg-slate-700 text-base font-bold rounded-full border border-slate-700/80 cursor-pointer transition whitespace-nowrap">Commercial</button>
         </section>
 
         <section id="showroomGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -48,107 +48,107 @@
     </main>
 
     <div id="detailDrawer" class="fixed inset-0 z-50 pointer-events-none transition-all duration-300">
-        <div id="drawerBackdrop" class="absolute inset-0 bg-black/60 opacity-0 transition-opacity pointer-events-none duration-300"></div>
+        <div id="drawerBackdrop" class="absolute inset-0 bg-black/70 opacity-0 transition-opacity pointer-events-none duration-300"></div>
         <div class="absolute top-0 right-0 h-full w-full max-w-md bg-[#1e293b] border-l border-slate-800 flex flex-col transform translate-x-full pointer-events-auto transition-transform duration-300 ease-in-out overflow-y-auto">
-            <div class="sticky top-0 bg-[#1e293b]/90 backdrop-blur-md z-10 flex items-center justify-between p-4 border-b border-slate-800">
-                <h3 class="text-lg font-bold text-white flex items-center gap-2">
-                    <i data-lucide="info" class="w-5 h-5 text-blue-500"></i> Specifications Info
+            <div class="sticky top-0 bg-[#1e293b]/95 backdrop-blur-md z-10 flex items-center justify-between p-5 border-b border-slate-800">
+                <h3 class="text-xl font-extrabold text-white flex items-center gap-2">
+                    <i data-lucide="info" class="w-6 h-6 text-blue-500"></i> Specifications Info
                 </h3>
-                <button id="closeDrawerBtn" class="p-2 hover:bg-slate-800 rounded-lg text-slate-400 hover:text-white transition">
-                    <i data-lucide="x" class="w-5 h-5"></i>
+                <button id="closeDrawerBtn" class="p-2.5 hover:bg-slate-800 rounded-xl text-slate-400 hover:text-white transition cursor-pointer">
+                    <i data-lucide="x" class="w-6 h-6"></i>
                 </button>
             </div>
-            <div id="drawerContent" class="p-4 space-y-6"></div>
+            <div id="drawerContent" class="p-5 space-y-6"></div>
         </div>
     </div>
 
     <div id="adminModal" class="fixed inset-0 z-50 bg-[#0f172a] hidden overflow-y-auto">
-        <header class="bg-[#1e293b] border-b border-slate-800 px-4 py-4 flex items-center justify-between sticky top-0 z-10">
-            <h2 class="text-xl font-extrabold text-white flex items-center gap-2">
-                <i data-lucide="sliders" class="w-6 h-6 text-blue-500"></i> Mansoori Dashboard Panel
+        <header class="bg-[#1e293b] border-b border-slate-800 px-5 py-5 flex items-center justify-between sticky top-0 z-10">
+            <h2 class="text-2xl font-black text-white flex items-center gap-2 tracking-wide uppercase">
+                <i data-lucide="sliders" class="w-7 h-7 text-blue-500"></i> Mansoori Dashboard Panel
             </h2>
-            <button id="closeAdminBtn" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 rounded-xl text-sm font-medium border border-slate-700 transition">Exit Panel</button>
+            <button id="closeAdminBtn" class="px-5 py-2.5 bg-slate-800 hover:bg-slate-700 rounded-xl text-base font-bold border border-slate-700 transition cursor-pointer">Exit Panel</button>
         </header>
 
-        <div class="max-w-3xl mx-auto p-4 md:p-6 space-y-8">
-            <div id="adminAuthBox" class="max-w-md mx-auto mt-12 bg-[#1e293b] p-6 rounded-2xl border border-slate-800 space-y-4">
-                <h3 class="text-lg font-bold text-center text-white">Security Validation Required</h3>
+        <div class="max-w-3xl mx-auto p-5 md:p-8 space-y-8">
+            <div id="adminAuthBox" class="max-w-md mx-auto mt-12 bg-[#1e293b] p-8 rounded-2xl border border-slate-800 space-y-5 shadow-2xl">
+                <h3 class="text-xl font-extrabold text-center text-white tracking-tight">Security Validation Required</h3>
                 <div>
-                    <label class="block text-xs uppercase text-slate-400 font-bold mb-1">User ID</label>
-                    <input type="text" id="authId" class="w-full bg-[#0f172a] border border-slate-700 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-blue-500">
+                    <label class="block text-sm uppercase tracking-wider text-slate-400 font-bold mb-2">User ID</label>
+                    <input type="text" id="authId" class="w-full bg-[#0f172a] border border-slate-700 rounded-xl px-4 py-3 text-white text-base focus:outline-none focus:border-blue-500">
                 </div>
                 <div>
-                    <label class="block text-xs uppercase text-slate-400 font-bold mb-1">Password</label>
-                    <input type="password" id="authPass" class="w-full bg-[#0f172a] border border-slate-700 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-blue-500">
+                    <label class="block text-sm uppercase tracking-wider text-slate-400 font-bold mb-2">Password</label>
+                    <input type="password" id="authPass" class="w-full bg-[#0f172a] border border-slate-700 rounded-xl px-4 py-3 text-white text-base focus:outline-none focus:border-blue-500">
                 </div>
-                <button id="submitAuthBtn" class="w-full bg-blue-600 hover:bg-blue-500 py-3 text-sm font-bold rounded-xl transition shadow-md shadow-blue-500/20">Verify Access</button>
+                <button id="submitAuthBtn" class="w-full bg-blue-600 hover:bg-blue-500 py-3.5 text-base font-bold rounded-xl transition shadow-lg shadow-blue-500/20 cursor-pointer">Verify Access</button>
             </div>
 
             <form id="vehicleForm" class="hidden bg-[#1e293b] p-6 rounded-2xl border border-slate-800 space-y-6">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                     <div>
-                        <label class="block text-xs font-semibold text-slate-400 mb-1">Vehicle Listing Title *</label>
-                        <input type="text" id="formTitle" required placeholder="e.g., Mahindra Arjun Ultra DI" class="w-full bg-[#0f172a] border border-slate-800 rounded-xl px-4 py-2.5 text-white text-sm">
+                        <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Vehicle Listing Title *</label>
+                        <input type="text" id="formTitle" required placeholder="e.g., Mahindra Arjun Ultra DI" class="w-full bg-[#0f172a] border border-slate-800 rounded-xl px-4 py-3 text-white text-base focus:outline-none focus:border-blue-500">
                     </div>
                     <div>
-                        <label class="block text-xs font-semibold text-slate-400 mb-1">Category Classification *</label>
-                        <select id="formCategory" required class="w-full bg-[#0f172a] border border-slate-800 rounded-xl px-4 py-2.5 text-white text-sm">
+                        <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Category Classification *</label>
+                        <select id="formCategory" required class="w-full bg-[#0f172a] border border-slate-800 rounded-xl px-4 py-3 text-white text-base focus:outline-none focus:border-blue-500">
                             <option value="Cars">Cars</option>
                             <option value="Tractors">Tractors</option>
                             <option value="Commercial">Commercial</option>
                         </select>
                     </div>
                     <div>
-                        <label class="block text-xs font-semibold text-slate-400 mb-1">Asking Price (₹) *</label>
-                        <input type="text" id="formPrice" required placeholder="e.g., ₹ 4,50,000" class="w-full bg-[#0f172a] border border-slate-800 rounded-xl px-4 py-2.5 text-white text-sm">
+                        <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Asking Price (₹) *</label>
+                        <input type="text" id="formPrice" required placeholder="e.g., ₹ 4,50,000" class="w-full bg-[#0f172a] border border-slate-800 rounded-xl px-4 py-3 text-white text-base focus:outline-none focus:border-blue-500">
                     </div>
                     <div>
-                        <label class="block text-xs font-semibold text-slate-400 mb-1">Model Manufacturing Year *</label>
-                        <input type="text" id="formYear" required placeholder="e.g., 2021" class="w-full bg-[#0f172a] border border-slate-800 rounded-xl px-4 py-2.5 text-white text-sm">
+                        <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Model Manufacturing Year *</label>
+                        <input type="text" id="formYear" required placeholder="e.g., 2021" class="w-full bg-[#0f172a] border border-slate-800 rounded-xl px-4 py-3 text-white text-base focus:outline-none focus:border-blue-500">
                     </div>
                     <div>
-                        <label class="block text-xs font-semibold text-slate-400 mb-1">Display Owner Name *</label>
-                        <input type="text" id="formOwner" required placeholder="e.g., Mansoori Dealership" class="w-full bg-[#0f172a] border border-slate-800 rounded-xl px-4 py-2.5 text-white text-sm">
+                        <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Display Owner Name *</label>
+                        <input type="text" id="formOwner" required placeholder="e.g., Mansoori Dealership" class="w-full bg-[#0f172a] border border-slate-800 rounded-xl px-4 py-3 text-white text-base focus:outline-none focus:border-blue-500">
                     </div>
                     <div>
-                        <label class="block text-xs font-semibold text-slate-400 mb-1">Operation Yard Location *</label>
-                        <input type="text" id="formLocation" required placeholder="e.g., Tonk Bypass" class="w-full bg-[#0f172a] border border-slate-800 rounded-xl px-4 py-2.5 text-white text-sm">
+                        <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Operation Yard Location *</label>
+                        <input type="text" id="formLocation" required placeholder="e.g., Tonk Bypass" class="w-full bg-[#0f172a] border border-slate-800 rounded-xl px-4 py-3 text-white text-base focus:outline-none focus:border-blue-500">
                     </div>
                 </div>
 
                 <div>
-                    <label class="block text-xs font-semibold text-slate-400 mb-1">Comprehensive Vehicle Description *</label>
-                    <textarea id="formDescription" required rows="3" placeholder="Condition details, engine state..." class="w-full bg-[#0f172a] border border-slate-800 rounded-xl px-4 py-2.5 text-white text-sm"></textarea>
+                    <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Comprehensive Vehicle Description *</label>
+                    <textarea id="formDescription" required rows="4" placeholder="Condition details, engine state..." class="w-full bg-[#0f172a] border border-slate-800 rounded-xl px-4 py-3 text-white text-base focus:outline-none focus:border-blue-500"></textarea>
                 </div>
 
-                <div class="p-4 bg-[#0f172a] border border-dashed border-slate-700 rounded-xl space-y-4">
-                    <h4 class="text-xs font-bold text-blue-400 uppercase tracking-wider flex items-center gap-1"><i data-lucide="lock" class="w-3.5 h-3.5"></i> Office Core Logs (Private Records)</h4>
+                <div class="p-5 bg-[#0f172a] border border-dashed border-slate-700 rounded-xl space-y-4">
+                    <h4 class="text-sm font-bold text-blue-400 uppercase tracking-wider flex items-center gap-1.5"><i data-lucide="lock" class="w-4 h-4"></i> Office Core Logs (Private Records)</h4>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
-                            <label class="block text-xs font-semibold text-slate-400 mb-1">Original Seller Legal Name</label>
-                            <input type="text" id="formSecretName" class="w-full bg-[#1e293b] border border-slate-800 rounded-xl px-4 py-2.5 text-white text-sm">
+                            <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Original Seller Legal Name</label>
+                            <input type="text" id="formSecretName" class="w-full bg-[#1e293b] border border-slate-800 rounded-xl px-4 py-3 text-white text-base focus:outline-none focus:border-blue-500">
                         </div>
                         <div>
-                            <label class="block text-xs font-semibold text-slate-400 mb-1">Original Seller Secure Mobile</label>
-                            <input type="text" id="formSecretPhone" class="w-full bg-[#1e293b] border border-slate-800 rounded-xl px-4 py-2.5 text-white text-sm">
+                            <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Original Seller Secure Mobile</label>
+                            <input type="text" id="formSecretPhone" class="w-full bg-[#1e293b] border border-slate-800 rounded-xl px-4 py-3 text-white text-base focus:outline-none focus:border-blue-500">
                         </div>
                     </div>
                 </div>
 
                 <div>
-                    <label class="block text-xs font-semibold text-slate-400 mb-1">Showroom Images Upload (Max 10) *</label>
-                    <label class="flex flex-col items-center justify-center w-full h-32 border-2 border-slate-700 border-dashed rounded-xl cursor-pointer bg-[#0f172a] hover:bg-[#0f172a]/60 transition">
+                    <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Showroom Images Upload (Max 10) *</label>
+                    <label class="flex flex-col items-center justify-center w-full h-36 border-2 border-slate-700 border-dashed rounded-xl cursor-pointer bg-[#0f172a] hover:bg-[#0f172a]/60 transition">
                         <div class="flex flex-col items-center justify-center text-center px-4">
-                            <i data-lucide="upload-cloud" class="w-8 h-8 text-blue-500 mb-1"></i>
-                            <p class="text-sm text-slate-300 font-medium">Click to select files</p>
+                            <i data-lucide="upload-cloud" class="w-10 h-10 text-blue-500 mb-2"></i>
+                            <p class="text-base text-slate-200 font-bold">Click to select files</p>
                         </div>
                         <input type="file" id="photoFilesInput" multiple accept="image/*" class="hidden" />
                     </label>
                     <div id="filePreviewDeck" class="grid grid-cols-5 gap-2 mt-3"></div>
                 </div>
 
-                <button type="submit" id="submitFormBtn" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3.5 rounded-xl transition flex items-center justify-center gap-2 shadow-lg shadow-blue-500/20">
-                    <i data-lucide="check-circle" class="w-5 h-5"></i><span>Publish Asset to Realtime Showroom</span>
+                <button type="submit" id="submitFormBtn" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-4 rounded-xl text-base transition flex items-center justify-center gap-2 shadow-lg shadow-blue-500/20 cursor-pointer">
+                    <i data-lucide="check-circle" class="w-6 h-6"></i><span>Publish Asset to Realtime Showroom</span>
                 </button>
             </form>
         </div>

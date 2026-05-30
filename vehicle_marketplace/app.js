@@ -2,6 +2,7 @@
 let globalVehiclesArray = [];
 let activeSelectedCategory = "All";
 let memoryPhotoBuffer = [];
+let isAdminLoggedIn = false; // Tracks if the admin is authenticated
 
 const AppEngine = {
     // Initialize standard runtime parameters
@@ -15,14 +16,21 @@ const AppEngine = {
     // Sync state layout from database hook
     async loadShowroomData() {
         const grid = document.getElementById("showroomGrid");
-        grid.innerHTML = `<div class="animate-pulse bg-[#1e293b] rounded-2xl h-80 border border-slate-800 col-span-full"></div>`;
+        // Custom placeholder if we are inside the admin modal context
+        const targetGrid = isAdminLoggedIn ? document.getElementById("adminShowroomGrid") : grid;
+        
+        if (targetGrid) {
+            targetGrid.innerHTML = `<div class="animate-pulse bg-[#1e293b] rounded-2xl h-80 border border-slate-800 col-span-full"></div>`;
+        }
         
         try {
             globalVehiclesArray = await DatabaseEngine.fetchAllVehicles();
             this.renderShowroom();
         } catch (err) {
             console.error("Critical dashboard sync failure: ", err);
-            grid.innerHTML = `<div class="col-span-full text-center text-red-400 p-6">Failed loading inventory data streams from Supabase backend.</div>`;
+            if (targetGrid) {
+                targetGrid.innerHTML = `<div class="col-span-full text-center text-red-400 p-6">Failed loading data from Supabase.</div>`;
+            }
         }
     },
 
@@ -43,12 +51,30 @@ const AppEngine = {
         visibleItems.forEach(vehicle => {
             const thumb = vehicle.images?.[0] || "https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&w=600&q=80";
             const card = document.createElement("div");
-            card.className = "bg-[#1e293b] rounded-2xl border border-slate-800 overflow-hidden shadow-md hover:border-slate-700/80 transition flex flex-col group cursor-pointer";
-            card.onclick = () => this.openDrawer(vehicle.id);
+            card.className = "bg-[#1e293b] rounded-2xl border border-slate-800 overflow-hidden shadow-md hover:border-slate-700/80 transition flex flex-col group cursor-pointer relative";
+            
+            // Clicking the card opens specifications
+            card.onclick = (e) => {
+                // If they clicked the delete button inside the card, don't open the drawer
+                if (e.target.closest('.delete-btn')) return;
+                this.openDrawer(vehicle.id);
+            };
+
+            // Build structural template logic
+            let deleteButtonHTML = "";
+            if (isAdminLoggedIn) {
+                deleteButtonHTML = `
+                    <button type="button" onclick="AppEngine.handleDeleteListing('${vehicle.id}', '${vehicle.title.replace(/'/g, "\\'")}')" class="delete-btn absolute top-3 right-3 z-20 p-3 bg-red-600 hover:bg-red-500 text-white rounded-xl transition shadow-lg shadow-red-600/30 cursor-pointer">
+                        <i data-lucide="trash-2" class="w-5 h-5"></i>
+                    </button>
+                `;
+            }
+
             card.innerHTML = `
                 <div class="relative aspect-video bg-slate-950 overflow-hidden">
                     <img src="${thumb}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
-                    <span class="absolute top-3 left-3 bg-blue-600 text-white text-xs font-bold px-2.5 py-1 rounded-md">${vehicle.category}</span>
+                    <span class="absolute top-3 left-3 bg-blue-600 text-white text-xs font-bold px-2.5 py-1 rounded-md z-10">${vehicle.category}</span>
+                    ${deleteButtonHTML}
                 </div>
                 <div class="p-4 flex-1 flex flex-col justify-between space-y-4">
                     <div>
@@ -100,7 +126,7 @@ const AppEngine = {
                 <div class="flex justify-between"><span class="text-slate-400">Yard Location</span><span class="text-white font-bold">${item.location}</span></div>
             </div>
             <p class="text-sm text-slate-300 bg-[#0f172a] p-3 rounded-xl border border-slate-800 whitespace-pre-wrap">${item.description}</p>
-            <a href="https://wa.me/919782147688?text=Interested%20in%20${encodeURIComponent(item.title)}" target="_blank" class="w-full bg-emerald-600 hover:bg-emerald-500 py-3 rounded-xl font-bold flex justify-center items-center gap-2 transition">Contact on WhatsApp</a>
+            <a href="https://wa.me/919999999999?text=Interested%20in%20${encodeURIComponent(item.title)}" target="_blank" class="w-full bg-emerald-600 hover:bg-emerald-500 py-3 rounded-xl font-bold flex justify-center items-center gap-2 transition">Contact on WhatsApp</a>
         `;
 
         document.getElementById("detailDrawer").classList.remove("pointer-events-none");
@@ -115,31 +141,54 @@ const AppEngine = {
         document.getElementById("detailDrawer").querySelector(".absolute.top-0.right-0").classList.add("translate-x-full");
     },
 
+    // NEW: Handles the confirmation and action for dropping an entry row item
+    async handleDeleteListing(id, title) {
+        const confirmation = confirm(`Are you absolutely sure you want to permanently delete "${title}" from Mansoori Auto World?`);
+        if (!confirmation) return;
+
+        try {
+            await DatabaseEngine.deleteVehicle(id);
+            alert("Listing successfully deleted.");
+            this.loadShowroomData(); // Refresh the showroom UI cleanly
+        } catch (err) {
+            alert(`Failed to delete listing: ${err.message}`);
+        }
+    },
+
     bindEvents() {
         document.getElementById("closeDrawerBtn").onclick = () => this.closeDrawer();
         document.getElementById("drawerBackdrop").onclick = () => this.closeDrawer();
 
-        // Control Admin view states
         document.getElementById("officeLoginBtn").onclick = () => {
             document.getElementById("adminModal").classList.remove("hidden");
-            document.getElementById("adminAuthBox").classList.remove("hidden");
-            document.getElementById("vehicleForm").classList.add("hidden");
+            // If already verified previously, keep them logged in smoothly
+            if (isAdminLoggedIn) {
+                document.getElementById("adminAuthBox").classList.add("hidden");
+                document.getElementById("vehicleForm").classList.remove("hidden");
+            } else {
+                document.getElementById("adminAuthBox").classList.remove("hidden");
+                document.getElementById("vehicleForm").classList.add("hidden");
+            }
         };
 
         document.getElementById("closeAdminBtn").onclick = () => {
             document.getElementById("adminModal").classList.add("hidden");
+            // Turn off admin mode status flag when exiting panel to reset customer view safety
+            isAdminLoggedIn = false;
+            this.renderShowroom(); 
         };
 
         document.getElementById("submitAuthBtn").onclick = () => {
             if (document.getElementById("authId").value === "admin" && document.getElementById("authPass").value === "vip786") {
+                isAdminLoggedIn = true;
                 document.getElementById("adminAuthBox").classList.add("hidden");
                 document.getElementById("vehicleForm").classList.remove("hidden");
+                this.renderShowroom(); // Re-render to safely show delete buttons inside the layout
             } else {
                 alert("Incorrect Identity Verification credentials.");
             }
         };
 
-        // File stream multi image buffer logic
         document.getElementById("photoFilesInput").onchange = (e) => {
             const files = Array.from(e.target.files);
             if ((memoryPhotoBuffer.length + files.length) > 10) {
@@ -178,7 +227,6 @@ const AppEngine = {
             btn.innerHTML = "Processing Upload Pipeline...";
 
             try {
-                // Execute pipeline: Upload files first, get back direct public URLs
                 const imageUrlStrings = await DatabaseEngine.uploadVehiclePhotos(validPhotos);
 
                 const payload = {
@@ -201,13 +249,12 @@ const AppEngine = {
                 document.getElementById("filePreviewDeck").innerHTML = "";
                 memoryPhotoBuffer = [];
                 document.getElementById("adminModal").classList.add("hidden");
+                isAdminLoggedIn = false; // Turn off admin mode status flag
                 this.loadShowroomData();
             } catch (err) {
                 alert(`Pipeline rejection error: ${err.message}`);
-            } finally {
                 btn.disabled = false;
                 btn.innerHTML = originalText;
-                lucide.createIcons();
             }
         };
     },

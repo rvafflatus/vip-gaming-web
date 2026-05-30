@@ -1,8 +1,7 @@
 // --- SUPABASE DIRECT API CORE CONNECTION ---
 const SUPABASE_URL = "https://dyectpjxjigxcmoiafms.supabase.co";
-const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR5ZWN0cGp4amlneGNtb2lhZm1zIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk0NTA2NjIsImV4cCI6MjA5NTAyNjY2Mn0.mOIIA07mg1JJXH89aOuRLxFsAp0Y78NbO-z27m6ZGps";
+const SUPABASE_ANON_KEY = "YOUR_SUPABASE_ANON_KEY"; // Keep your real anon key here
 
-// Single unified instance client allocation
 const dbClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 const DatabaseEngine = {
@@ -26,14 +25,12 @@ const DatabaseEngine = {
             const fileExtension = file.name.split('.').pop();
             const uniqueFileName = `${crypto.randomUUID()}.${fileExtension}`;
 
-            // Upload raw binary chunk stream to bucket directly
             const { data, error: storageError } = await dbClient.storage
                 .from('vehicle-photos')
                 .upload(uniqueFileName, file, { cacheControl: '3600', upsert: false });
 
             if (storageError) throw storageError;
 
-            // Extract public dynamic URL path target
             const { data: urlData } = dbClient.storage
                 .from('vehicle-photos')
                 .getPublicUrl(uniqueFileName);
@@ -50,6 +47,16 @@ const DatabaseEngine = {
         const { data, error } = await dbClient
             .from('vehicles')
             .insert([payloadData]);
+        if (error) throw error;
+        return data;
+    },
+
+    // 4. NEW: Delete a vehicle row by its unique ID
+    async deleteVehicle(id) {
+        const { data, error } = await dbClient
+            .from('vehicles')
+            .delete()
+            .eq('id', id);
         if (error) throw error;
         return data;
     }

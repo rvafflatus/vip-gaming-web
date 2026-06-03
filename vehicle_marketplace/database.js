@@ -1,6 +1,6 @@
 // --- SUPABASE DIRECT API CORE CONNECTION ---
 const SUPABASE_URL = "https://dyectpjxjigxcmoiafms.supabase.co";
-const SUPABASE_ANON_KEY = "YOUR_SUPABASE_ANON_KEY"; // Keep your real anon key here
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR5ZWN0cGp4amlneGNtb2lhZm1zIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk0NTA2NjIsImV4cCI6MjA5NTAyNjY2Mn0.mOIIA07mg1JJXH89aOuRLxFsAp0Y78NbO-z27m6ZGps"; // Keep your real anon key here
 
 const dbClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 

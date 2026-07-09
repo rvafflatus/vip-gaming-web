@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Payal Collection | Admin Panel</title>
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+</head>
+<body class="bg-gray-50 text-gray-800 font-sans p-6">
+
+  <div class="max-w-3xl mx-auto bg-white rounded-3xl p-6 shadow-sm border border-gray-100">
+    <div class="flex justify-between items-center border-b border-gray-100 pb-4 mb-6">
+      <h1 class="text-2xl font-black text-pink-600">🌸 Payal Collection Admin</h1>
+      <a href="index.html" class="text-xs font-bold text-gray-500 hover:text-pink-600 transition-colors">← View Shop Catalog</a>
+    </div>
+
+    <!-- Product Creation Form -->
+    <form id="productForm" class="space-y-4">
+      <div>
+        <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Garment Title / Name</label>
+        <input type="text" id="title" required placeholder="e.g., Bandhani Print Silk Kurti Set" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2 text-sm focus:outline-pink-500">
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div>
+          <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Price (₹)</label>
+          <input type="number" id="price" required placeholder="799" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2 text-sm focus:outline-pink-500">
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Original Price / MRP (₹)</label>
+          <input type="number" id="originalPrice" placeholder="1499" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2 text-sm focus:outline-pink-500">
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div>
+          <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Fabric Type</label>
+          <select id="fabric" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2 text-sm focus:outline-pink-500">
+            <option value="Cotton">Cotton</option>
+            <option value="Rayon">Rayon</option>
+            <option value="Georgette">Georgette</option>
+            <option value="Silk">Silk</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Style Pattern</label>
+          <select id="styleType" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2 text-sm focus:outline-pink-500">
+            <option value="Straight Cut">Straight Cut</option>
+            <option value="Anarkali">Anarkali</option>
+            <option value="Co-ord Set">Co-ord Set</option>
+            <option value="Lehenga">Lehenga</option>
+          </select>
+        </div>
+      </div>
+
+      <div>
+  <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Upload Product Photo</label>
+  <input type="file" id="imageFile" required accept="image/*" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2 text-sm focus:outline-pink-500 file:mr-4 file:py-1 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-pink-100 file:text-pink-700 hover:file:bg-pink-200">
+      </div>
+
+      <!-- Size Stock Selection Matrix -->
+      <div>
+        <label class="block text-xs font-bold text-gray-500 uppercase mb-2">Available Sizes in Stock</label>
+        <div class="flex gap-4 bg-gray-50 p-3 rounded-xl border border-gray-200 w-max">
+          <label class="flex items-center gap-1.5 font-bold text-sm cursor-pointer"><input type="checkbox" value="S" class="accent-pink-600 size-4"> S</label>
+          <label class="flex items-center gap-1.5 font-bold text-sm cursor-pointer"><input type="checkbox" value="M" class="accent-pink-600 size-4" checked> M</label>
+          <label class="flex items-center gap-1.5 font-bold text-sm cursor-pointer"><input type="checkbox" value="L" class="accent-pink-600 size-4" checked> L</label>
+          <label class="flex items-center gap-1.5 font-bold text-sm cursor-pointer"><input type="checkbox" value="XL" class="accent-pink-600 size-4" checked> XL</label>
+          <label class="flex items-center gap-1.5 font-bold text-sm cursor-pointer"><input type="checkbox" value="XXL" class="accent-pink-600 size-4"> XXL</label>
+        </div>
+      </div>
+
+      <button type="submit" id="submitBtn" class="w-full bg-pink-600 hover:bg-pink-700 text-white font-bold py-2.5 px-4 rounded-xl text-sm transition-colors shadow-xs cursor-pointer">
+        ✨ Upload New Design to Catalog
+      </button>
+    </form>
+  </div>
+
+  <script type="module" src="admin.js"></script>
+</body>
+</html>

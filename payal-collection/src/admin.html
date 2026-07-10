@@ -77,5 +77,38 @@
   </div>
 
   <script type="module" src="admin.js"></script>
+  <!-- Manage Listings Section -->
+<div class="max-w-4xl mx-auto bg-white rounded-3xl shadow-xl border border-gray-100 p-6 mt-8 mb-12">
+  <h2 class="text-xl font-bold text-gray-800 mb-6 flex items-center gap-2">
+    📦 Active Catalog Listings
+  </h2>
+  
+  <!-- Grid layout where current items will display -->
+  <div id="adminProductGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+    <!-- Items will load here dynamically via JavaScript -->
+  </div>
+</div>
+
+<!-- Simple Edit Modal Popup -->
+<div id="editModal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center p-4 z-50">
+  <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl">
+    <h3 class="text-lg font-bold text-gray-800 mb-4">Edit Product Details</h3>
+    <form id="editForm" class="space-y-4">
+      <input type="hidden" id="editProductId">
+      <div>
+        <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Title</label>
+        <input type="text" id="editTitle" required class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2 text-sm focus:outline-pink-500">
+      </div>
+      <div>
+        <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Price (₹)</label>
+        <input type="number" id="editPrice" required class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2 text-sm focus:outline-pink-500">
+      </div>
+      <div class="flex justify-end gap-3 mt-6">
+        <button type="button" onclick="closeEditModal()" class="px-4 py-2 text-sm font-medium text-gray-500 hover:text-gray-700">Cancel</button>
+        <button type="submit" class="bg-pink-600 text-white font-bold px-4 py-2 text-sm rounded-xl hover:bg-pink-700 transition">Save Changes</button>
+      </div>
+    </form>
+  </div>
+</div>
 </body>
 </html>

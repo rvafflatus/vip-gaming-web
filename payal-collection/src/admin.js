@@ -98,3 +98,102 @@ document.getElementById('productForm').addEventListener('submit', async (e) => {
   submitBtn.disabled = false;
   submitBtn.innerText = '✨ Upload New Design to Catalog';
 });
+// --- CATALOG MANAGEMENT LOGIC (FETCH, EDIT, DELETE) ---
+
+// 1. Fetch and render items instantly when the page open up
+async function loadAdminCatalog() {
+  const grid = document.getElementById('adminProductGrid');
+  grid.innerHTML = '<p class="text-gray-400 text-sm col-span-full text-center">Loading current catalog items...</p>';
+
+  const { data: products, error } = await supabase
+    .from('products')
+    .select('*')
+    .order('created_at', { ascending: false });
+
+  if (error) {
+    grid.innerHTML = `<p class="text-red-500 text-sm col-span-full">Error loading items: ${error.message}</p>`;
+    return;
+  }
+
+  if (products.length === 0) {
+    grid.innerHTML = '<p class="text-gray-400 text-sm col-span-full text-center">No catalog items found yet.</p>';
+    return;
+  }
+
+  grid.innerHTML = ''; // Clear status message
+  
+  products.forEach(item => {
+    const card = document.createElement('div');
+    card.className = "bg-gray-50 border border-gray-100 rounded-2xl p-4 flex flex-col justify-between shadow-sm";
+    card.innerHTML = `
+      <div>
+        <img src="${item.primary_image_url || 'https://via.placeholder.com/150'}" class="w-full h-40 object-cover rounded-xl mb-3 border border-gray-200">
+        <h4 class="font-bold text-gray-800 text-sm truncate">${item.title}</h4>
+        <p class="text-pink-600 font-extrabold text-sm mt-1">₹${item.price}</p>
+      </div>
+      <div class="flex gap-2 mt-4">
+        <button onclick="openEditModal('${item.id}', '${item.title.replace(/'/g, "\\'")}', ${item.price})" class="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold py-1.5 px-3 rounded-xl text-xs transition">
+          ✏️ Edit
+        </button>
+        <button onclick="deleteProduct('${item.id}')" class="flex-1 bg-red-50 hover:bg-red-100 text-red-600 font-bold py-1.5 px-3 rounded-xl text-xs transition">
+          🗑️ Delete
+        </button>
+      </div>
+    `;
+    grid.appendChild(card);
+  });
+}
+
+// 2. Delete Process Function
+window.deleteProduct = async (id) => {
+  if (!confirm("Are you absolutely sure you want to completely remove this listing from your store?")) return;
+
+  // Delete product row (Cascade deletes sizes if your DB foreign keys match, or just deletes main item row)
+  const { error } = await supabase
+    .from('products')
+    .delete()
+    .eq('id', id);
+
+  if (error) {
+    alert("❌ Delete action failed: " + error.message);
+  } else {
+    alert("🗑️ Listing removed successfully!");
+    loadAdminCatalog(); // Refresh current display items
+  }
+};
+
+// 3. Modal Controls
+window.openEditModal = (id, title, price) => {
+  document.getElementById('editProductId').value = id;
+  document.getElementById('editTitle').value = title;
+  document.getElementById('editPrice').value = price;
+  document.getElementById('editModal').classList.remove('hidden');
+};
+
+window.closeEditModal = () => {
+  document.getElementById('editModal').classList.add('hidden');
+};
+
+// 4. Handle Edit Submission Modifications
+document.getElementById('editForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const id = document.getElementById('editProductId').value;
+  const newTitle = document.getElementById('editTitle').value;
+  const newPrice = parseFloat(document.getElementById('editPrice').value);
+
+  const { error } = await supabase
+    .from('products')
+    .update({ title: newTitle, price: newPrice })
+    .eq('id', id);
+
+  if (error) {
+    alert("❌ Failed to update item details: " + error.message);
+  } else {
+    alert("✅ Listing modifications saved successfully!");
+    closeEditModal();
+    loadAdminCatalog(); // Refresh database grid list view
+  }
+});
+
+// Run automatically on page execution load
+loadAdminCatalog();

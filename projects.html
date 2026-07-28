@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Projects & Showcase | VIP Gaming</title>
+  <link rel="stylesheet" href="style.css">
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    /* Category Filter & Section Styling */
+    .filter-container {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 40px;
+    }
+
+    .filter-btn {
+      background: var(--bg-card);
+      color: var(--text-muted);
+      border: 1px solid var(--border);
+      padding: 10px 20px;
+      border-radius: 30px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.9rem;
+      transition: all 0.3s ease;
+    }
+
+    .filter-btn:hover, .filter-btn.active {
+      background: var(--primary);
+      color: #000;
+      border-color: var(--primary);
+      box-shadow: 0 0 15px rgba(0, 240, 255, 0.3);
+    }
+
+    .category-section {
+      margin-bottom: 60px;
+    }
+
+    .category-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 25px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 12px;
+    }
+
+    .category-header h2 {
+      font-size: 1.8rem;
+      color: var(--text-main);
+    }
+
+    .category-header i {
+      color: var(--primary);
+      width: 28px;
+      height: 28px;
+    }
+
+    .project-card {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      height: 100%;
+    }
+
+    .project-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 15px;
+      padding-top: 15px;
+      border-top: 1px solid var(--border);
+    }
+
+    .status-badge {
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .status-live {
+      background: rgba(34, 197, 94, 0.15);
+      color: #4ade80;
+      border: 1px solid rgba(34, 197, 94, 0.3);
+    }
+
+    .status-rnd {
+      background: rgba(112, 0, 255, 0.15);
+      color: #a855f7;
+      border: 1px solid rgba(112, 0, 255, 0.3);
+    }
+
+    .project-link {
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.9rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      transition: gap 0.2s;
+    }
+
+    .project-link:hover {
+      gap: 8px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation Bar -->
+  <nav class="navbar">
+    <div class="logo">
+      <a href="index.html" style="text-decoration: none; color: inherit;">
+        <span class="highlight">VIP</span> GAMING
+      </a>
+    </div>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="index.html#about">About</a></li>
+      <li><a href="index.html#innovations">Innovations</a></li>
+      <li><a href="projects.html" class="highlight" style="font-weight: 700;">Projects</a></li>
+      <li><a href="#contact" class="btn-primary">Get in Touch</a></li>
+    </ul>
+  </nav>
+
+  <!-- Header Banner -->
+  <header class="hero-section" style="padding: 5rem 5% 3rem;">
+    <div class="hero-content">
+      <div class="badge">Innovation Portfolio</div>
+      <h1>Our <span class="gradient-text">Projects & Platforms</span></h1>
+      <p>Explore our lineup of websites, software engines, AI tools, robotics, and hardware engineering solutions.</p>
+    </div>
+  </header>
+
+  <!-- Main Content Area -->
+  <main class="section">
+    <!-- Category Filter Buttons -->
+    <div class="filter-container">
+      <button class="filter-btn active" onclick="filterProjects('all')">All Projects</button>
+      <button class="filter-btn" onclick="filterProjects('web')">Web Platforms</button>
+      <button class="filter-btn" onclick="filterProjects('hardware')">Robotics & Hardware</button>
+      <button class="filter-btn" onclick="filterProjects('ai')">AI & Software</button>
+      <button class="filter-btn" onclick="filterProjects('gaming')">Gaming</button>
+    </div>
+
+    <!-- Category 1: Web Platforms & Portals -->
+    <div class="category-section project-group" data-category="web">
+      <div class="category-header">
+        <i data-lucide="globe"></i>
+        <h2>Web Platforms & Digital Services</h2>
+      </div>
+      <div class="grid-3">
+        <!-- Vehicle Bazaar -->
+        <div class="project-card">
+          <div>
+            <div class="project-tag">E-Commerce & Marketplace</div>
+            <h3>Vehicle Bazaar</h3>
+            <p>Digital marketplace designed for buying and selling verified pre-owned cars, commercial vehicles, and tractors.</p>
+          </div>
+          <div class="project-meta">
+            <span class="status-badge status-live">Live</span>
+            <a href="./vehicle_marketplace/index.html" class="project-link">Launch <i data-lucide="external-link"></i></a>
+          </div>
+        </div>
+
+        <!-- e-Mitra Services -->
+        <div class="project-card">
+          <div>
+            <div class="project-tag">Public Services</div>
+            <h3>e-Mitra Service Portal</h3>
+            <p>Integrated portal facilitating online government utility services, Jan Aadhaar applications, and bill payments.</p>
+          </div>
+          <div class="project-meta">
+            <span class="status-badge status-live">Live</span>
+            <a href="emitra/index.html" class="project-link">Launch <i data-lucide="external-link"></i></a>
+          </div>
+        </div>
+
+        <!-- Travel Portal -->
+        <div class="project-card">
+          <div>
+            <div class="project-tag">Tourism Tech</div>
+            <h3>Travel Experience Site</h3>
+            <p>Interactive travel portal showcasing curated tour packages and booking information across top Indian destinations.</p>
+          </div>
+          <div class="project-meta">
+            <span class="status-badge status-live">Live</span>
+            <a href="Travelling/index.html" class="project-link">Launch <i data-lucide="external-link"></i></a>
+          </div>
+        </div>
+
+        <!-- Afflatus Shop Deals -->
+        <div class="project-card">
+          <div>
+            <div class="project-tag">Affiliate E-Commerce</div>
+            <h3>Gaming Gear Shop Deals</h3>
+            <p>Curated affiliate storefront highlighting top deals on gaming peripherals, mobile accessories, and stationery.</p>
+          </div>
+          <div class="project-meta">
+            <span class="status-badge status-live">Live</span>
+            <a href="affiliated_website/index.html" class="project-link">Launch <i data-lucide="external-link"></i></a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Category 2: Robotics, PCBs & Hardware -->
+    <div class="category-section project-group" data-category="hardware">
+      <div class="category-header">
+        <i data-lucide="cpu"></i>
+        <h2>Robotics, PCBs & Hardware Engineering</h2>
+      </div>
+      <div class="grid-3">
+        <!-- Autonomous Rover -->
+        <div class="project-card">
+          <div>
+            <div class="project-tag">Robotics & Embedded Systems</div>
+            <h3>Autonomous Rover Platform</h3>
+            <p>Custom-built robotic rover controlled via custom PCB architecture and edge AI sensor integration for navigation.</p>
+          </div>
+          <div class="project-meta">
+            <span class="status-badge status-rnd">R&D Active</span>
+            <span class="project-link">Prototype</span>
+          </div>
+        </div>
+
+        <!-- Custom MCU Board -->
+        <div class="project-card">
+          <div>
+            <div class="project-tag">Semiconductors & PCB</div>
+            <h3>High-Density MCU Dev Board</h3>
+            <p>In-house engineered microcontroller circuit board built for ultra-low power consumption and IoT sensor networks.</p>
+          </div>
+          <div class="project-meta">
+            <span class="status-badge status-rnd">Hardware Lab</span>
+            <span class="project-link">In Testing</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Category 3: AI & Software Development -->
+    <div class="category-section project-group" data-category="ai">
+      <div class="category-header">
+        <i data-lucide="brain-circuit"></i>
+        <h2>AI & Software Innovation</h2>
+      </div>
+      <div class="grid-3">
+        <!-- AI Code Studio -->
+        <div class="project-card">
+          <div>
+            <div class="project-tag">AI & Web Development</div>
+            <h3>AI Code Generation Studio</h3>
+            <p>Automated software generation tool designed to accelerate front-end workflow and UI design prototyping.</p>
+          </div>
+          <div class="project-meta">
+            <span class="status-badge status-rnd">Beta</span>
+            <span class="project-link">Internal Tool</span>
+          </div>
+        </div>
+
+        <!-- Educational Learning System -->
+        <div class="project-card">
+          <div>
+            <div class="project-tag">EdTech Platform</div>
+            <h3>Afflatus Classes Portal</h3>
+            <p>Educational management portal providing structured digital literacy content, computer notes, and online learning modules.</p>
+          </div>
+          <div class="project-meta">
+            <span class="status-badge status-live">Live</span>
+            <a href="courses.html" class="project-link">View Platform <i data-lucide="external-link"></i></a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Category 4: Gaming & Interactive Media -->
+    <div class="category-section project-group" data-category="gaming">
+      <div class="category-header">
+        <i data-lucide="gamepad-2"></i>
+        <h2>Gaming & Esports</h2>
+      </div>
+      <div class="grid-3">
+        <!-- Gaming Portal -->
+        <div class="project-card">
+          <div>
+            <div class="project-tag">Gaming Platform</div>
+            <h3>VIP Gaming Hub</h3>
+            <p>Primary gaming destination featuring interactive web games, tournament tracking, and esports news.</p>
+          </div>
+          <div class="project-meta">
+            <span class="status-badge status-live">Live</span>
+            <a href="gaming_website/index.html" class="project-link">Enter Hub <i data-lucide="external-link"></i></a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer id="contact" class="footer">
+    <div class="footer-content">
+      <h2>Got an idea? Let's build with <span class="highlight">VIP Gaming</span></h2>
+      <p style="margin-top: 10px; color: var(--text-muted);">From web software to custom silicon and AI models.</p>
+      <p class="copyright">&copy; 2026 VIP Gaming. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script>
+    lucide.createIcons();
+
+    // Client-side Filter Logic
+    function filterProjects(category) {
+      // Update active button state
+      const buttons = document.querySelectorAll('.filter-btn');
+      buttons.forEach(btn => btn.classList.remove('active'));
+      event.target.classList.add('active');
+
+      // Show/Hide project groups
+      const groups = document.querySelectorAll('.project-group');
+      groups.forEach(group => {
+        if (category === 'all' || group.getAttribute('data-category') === category) {
+          group.style.display = 'block';
+        } else {
+          group.style.display = 'none';
+        }
+      });
+    }
+  </script>
+</body>
+</html>

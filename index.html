@@ -1,402 +1,136 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VIP Gaming | Afflatus Classes Portal</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        /* --- Reset & Variables --- */
-        :root {
-            --bg-dark: #0f172a;
-            --bg-card: #1e293b;
-            --accent-gold: #f59e0b;
-            --accent-blue: #3b82f6;
-            --text-light: #f8fafc;
-            --text-muted: #94a3b8;
-            --border-color: #334155;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-
-        body {
-            background-color: var(--bg-dark);
-            color: var(--text-light);
-            line-height: 1.6;
-        }
-
-        /* --- Header & Navigation --- */
-        header.main-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 15px 6%;
-            background: rgba(15, 23, 42, 0.95);
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid var(--border-color);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-        }
-
-        .logo-container {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .logo-container img {
-            height: 42px;
-            border-radius: 6px;
-        }
-
-        .brand-name {
-            font-size: 1.4rem;
-            font-weight: 700;
-            letter-spacing: 0.5px;
-            color: var(--text-light);
-        }
-
-        .brand-name span {
-            color: var(--accent-gold);
-        }
-
-        nav {
-            display: flex;
-            align-items: center;
-            gap: 25px;
-        }
-
-        .nav-link, .dropbtn {
-            text-decoration: none;
-            color: var(--text-light);
-            font-size: 0.95rem;
-            font-weight: 600;
-            padding: 8px 14px;
-            cursor: pointer;
-            background: none;
-            border: none;
-            border-radius: 6px;
-            transition: all 0.3s ease;
-        }
-
-        .nav-link:hover, .dropbtn:hover {
-            color: var(--accent-gold);
-            background: rgba(255, 255, 255, 0.05);
-        }
-
-        .dropdown {
-            position: relative;
-            display: inline-block;
-        }
-
-        .dropdown-content {
-            display: none;
-            position: absolute;
-            background-color: var(--bg-card);
-            min-width: 230px;
-            box-shadow: 0px 10px 25px rgba(0, 0, 0, 0.5);
-            z-index: 1000;
-            border-radius: 10px;
-            top: 100%;
-            left: 0;
-            border: 1px solid var(--border-color);
-            overflow: hidden;
-            margin-top: 10px;
-        }
-
-        .dropdown-content a {
-            color: var(--text-light);
-            padding: 12px 18px;
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 0.9rem;
-            transition: background 0.2s;
-        }
-
-        .dropdown-content a:hover {
-            background-color: rgba(245, 158, 11, 0.15);
-            color: var(--accent-gold);
-        }
-
-        .dropdown:hover .dropdown-content {
-            display: block;
-        }
-
-        /* --- Hero Section --- */
-        .hero-section {
-            text-align: center;
-            padding: 80px 20px 50px;
-            background: radial-gradient(circle at top, rgba(59, 130, 246, 0.15) 0%, transparent 60%);
-        }
-
-        .hero-badge {
-            display: inline-block;
-            background: rgba(245, 158, 11, 0.15);
-            color: var(--accent-gold);
-            padding: 6px 16px;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            font-weight: 700;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            margin-bottom: 20px;
-            border: 1px solid rgba(245, 158, 11, 0.3);
-        }
-
-        .hero-section h1 {
-            font-size: 2.8rem;
-            font-weight: 800;
-            margin-bottom: 15px;
-            background: linear-gradient(to right, #ffffff, #94a3b8);
-            -webkit-background-clip: text;
-            background-clip: text; /* Standard property included to fix VS Code warning */
-            -webkit-text-fill-color: transparent;
-        }
-
-        .hero-section p {
-            font-size: 1.1rem;
-            color: var(--text-muted);
-            max-width: 600px;
-            margin: 0 auto;
-        }
-
-        /* --- Portal Cards Grid --- */
-        .portal-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 25px;
-            padding: 40px 6% 80px;
-            max-width: 1300px;
-            margin: 0 auto;
-        }
-
-        .portal-card {
-            background: var(--bg-card);
-            padding: 30px 25px;
-            border-radius: 16px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-            text-decoration: none;
-            color: var(--text-light);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            border: 1px solid var(--border-color);
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .portal-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 4px;
-            background: linear-gradient(90deg, var(--accent-blue), var(--accent-gold));
-            opacity: 0;
-            transition: opacity 0.3s;
-        }
-
-        .portal-card:hover {
-            transform: translateY(-8px);
-            border-color: rgba(245, 158, 11, 0.4);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
-        }
-
-        .portal-card:hover::before {
-            opacity: 1;
-        }
-
-        .card-icon {
-            font-size: 2.2rem;
-            margin-bottom: 15px;
-            color: var(--accent-gold);
-        }
-
-        .portal-card h2 {
-            font-size: 1.35rem;
-            margin-bottom: 10px;
-            font-weight: 700;
-        }
-
-        .portal-card p {
-            color: var(--text-muted);
-            font-size: 0.92rem;
-            margin-bottom: 20px;
-        }
-
-        .portal-btn {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            padding: 12px 20px;
-            background: rgba(255, 255, 255, 0.05);
-            color: var(--text-light);
-            border-radius: 8px;
-            font-weight: 600;
-            font-size: 0.9rem;
-            border: 1px solid var(--border-color);
-            transition: all 0.3s;
-        }
-
-        .portal-card:hover .portal-btn {
-            background: var(--accent-gold);
-            color: #000;
-            border-color: var(--accent-gold);
-        }
-
-        /* --- Floating WhatsApp Button --- */
-        .whatsapp-float {
-            position: fixed;
-            bottom: 25px;
-            left: 25px;
-            background-color: #25d366;
-            color: white;
-            width: 58px;
-            height: 58px;
-            border-radius: 50%;
-            text-align: center;
-            font-size: 28px;
-            box-shadow: 0 10px 20px rgba(37, 211, 102, 0.3);
-            z-index: 10000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-decoration: none;
-            transition: transform 0.3s;
-        }
-
-        .whatsapp-float:hover {
-            transform: scale(1.1);
-            color: white;
-        }
-
-        /* --- Responsive Styles --- */
-        @media (max-width: 768px) {
-            header.main-header {
-                flex-direction: column;
-                gap: 12px;
-                padding: 15px;
-            }
-            .hero-section h1 {
-                font-size: 2rem;
-            }
-            nav {
-                flex-wrap: wrap;
-                justify-content: center;
-                gap: 10px;
-            }
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VIP Gaming | Next-Gen Hardware & Software Innovation</title>
+  <link rel="stylesheet" href="style.css">
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body>
 
-<header class="main-header">
-    <div class="logo-container">
-        <img src="logo.png" alt="Afflatus Classes Logo">
-        <span class="brand-name">Afflatus <span>VIP</span></span>
+  <!-- Navigation Bar -->
+  <nav class="navbar">
+    <div class="logo">
+      <span class="highlight">VIP</span> GAMING
     </div>
-    <nav>
-        <a href="index.html" class="nav-link"><i class="fas fa-home"></i> Home</a>
-        
-        <div class="dropdown">
-            <button class="dropbtn"><i class="fas fa-cubes"></i> Our Services ▼</button>
-            <div class="dropdown-content">
-                <a href="gaming_website/index.html"><i class="fas fa-gamepad"></i> Gaming Hub</a>
-                <a href="./vehicle_marketplace/index.html"><i class="fas fa-car"></i> Vehicle Bazaar</a>
-                <a href="afflatus_classes/index.html"><i class="fas fa-graduation-cap"></i> Afflatus Classes</a>
-                <a href="affiliated_website/index.html"><i class="fas fa-shopping-cart"></i> Shop Deals</a>
-                <a href="emitra/index.html"><i class="fas fa-file-invoice"></i> e-Mitra Services</a>
-                <a href="Travelling/index.html"><i class="fas fa-plane"></i> Travel Site</a>
-            </div>
-        </div>
+    <ul class="nav-links">
+      <li><a href="#hero">Home</a></li>
+      <li><a href="#about">About</a></li>
+      <li><a href="#innovations">Innovations</a></li>
+      <li><a href="#projects">Projects</a></li>
+      <li><a href="#contact" class="btn-primary">Get in Touch</a></li>
+    </ul>
+  </nav>
 
-        <a href="contact.html" class="nav-link"><i class="fas fa-envelope"></i> Contact Us</a>
-    </nav>
-</header>
+  <!-- Hero Section -->
+  <header id="hero" class="hero-section">
+    <div class="hero-content">
+      <div class="badge">The Innovation Engine</div>
+      <h1>Engineering the Future of <span class="gradient-text">Hardware & AI</span></h1>
+      <p>We build high-performance software, immersive games, custom PCBs, AI models, and next-generation semiconductor tech.</p>
+      <div class="hero-buttons">
+        <a href="#projects" class="btn-primary">Explore Projects</a>
+        <a href="#innovations" class="btn-secondary">What We Do</a>
+      </div>
+    </div>
+  </header>
 
-<main>
-    <section class="hero-section">
-        <span class="hero-badge">Multi-Service Digital Portal</span>
-        <h1>Welcome to Afflatus VIP Portal</h1>
-        <p>Your ultimate destination for Esports, Digital Learning, E-commerce Deals, and Local Services.</p>
-    </section>
+  <!-- About Section -->
+  <section id="about" class="section">
+    <div class="section-title">
+      <h2>Pioneering Technology</h2>
+      <p>Where AI coding meets physical hardware engineering.</p>
+    </div>
+    <div class="about-grid">
+      <div class="about-card">
+        <h3>Vision</h3>
+        <p>VIP Gaming is an innovation hub bridging the gap between intelligent software systems and advanced hardware engineering.</p>
+      </div>
+      <div class="about-card">
+        <h3>Execution</h3>
+        <p>From custom silicon and PCB layouts to modern web apps and AI-driven automation, we build scalable technology from the ground up.</p>
+      </div>
+    </div>
+  </section>
 
-    <section class="portal-container">
-        <a href="gaming_website/index.html" class="portal-card">
-            <div>
-                <div class="card-icon"><i class="fas fa-gamepad"></i></div>
-                <h2>Gaming Hub</h2>
-                <p>Interactive gaming content, tournaments, and news from VIP Gaming.</p>
-            </div>
-            <span class="portal-btn">Enter Gaming Hub <i class="fas fa-arrow-right"></i></span>
-        </a>
+  <!-- Innovations / Capabilities Section -->
+  <section id="innovations" class="section dark-bg">
+    <div class="section-title">
+      <h2>Core Capabilities</h2>
+      <p>Building across the entire technology stack.</p>
+    </div>
+    <div class="grid-3">
+      <div class="card">
+        <i data-lucide="cpu" class="card-icon"></i>
+        <h3>Semiconductors & PCBs</h3>
+        <p>Designing custom circuit boards, integrated systems, and semiconductor prototype solutions.</p>
+      </div>
+      <div class="card">
+        <i data-lucide="bot" class="card-icon"></i>
+        <h3>Robotics & Hardware</h3>
+        <p>Building automated robotics solutions integrated with custom hardware controllers.</p>
+      </div>
+      <div class="card">
+        <i data-lucide="brain-circuit" class="card-icon"></i>
+        <h3>AI & Intelligent Code</h3>
+        <p>Leveraging state-of-the-art AI models for web engineering, system optimization, and automated coding.</p>
+      </div>
+      <div class="card">
+        <i data-lucide="gamepad-2" class="card-icon"></i>
+        <h3>Game Development</h3>
+        <p>Designing interactive mechanics and real-time game engines powered by modern physics.</p>
+      </div>
+      <div class="card">
+        <i data-lucide="code" class="card-icon"></i>
+        <h3>Software & Web Apps</h3>
+        <p>Architecting robust, lightning-fast web applications and enterprise-grade platforms.</p>
+      </div>
+      <div class="card">
+        <i data-lucide="zap" class="card-icon"></i>
+        <h3>Rapid R&D</h3>
+        <p>Turning radical concepts into functional hardware and software prototypes in record time.</p>
+      </div>
+    </div>
+  </section>
 
-        <a href="./vehicle_marketplace/index.html" class="portal-card">
-            <div>
-                <div class="card-icon"><i class="fas fa-car-side"></i></div>
-                <h2>Vehicle Bazaar</h2>
-                <p>Buy & sell verified pre-owned cars, tractors, and commercial vehicles.</p>
-            </div>
-            <span class="portal-btn">Explore Bazaar <i class="fas fa-arrow-right"></i></span>
-        </a>
+  <!-- Projects Section -->
+  <section id="projects" class="section">
+    <div class="section-title">
+      <h2>Featured Projects</h2>
+      <p>A look at what we've engineered.</p>
+    </div>
+    <div class="grid-3">
+      <div class="project-card">
+        <div class="project-tag">Robotics & AI</div>
+        <h3>Autonomous Rover Platform</h3>
+        <p>A custom PCB-driven robotic platform featuring AI edge computing for real-time obstacle navigation.</p>
+      </div>
+      <div class="project-card">
+        <div class="project-tag">Web & AI</div>
+        <h3>AI Code Studio</h3>
+        <p>An intelligent web interface that automates complex front-end code generation and design systems.</p>
+      </div>
+      <div class="project-card">
+        <div class="project-tag">Hardware</div>
+        <h3>Custom MCU Development Board</h3>
+        <p>In-house designed high-density PCB focused on low-power IoT sensor applications and fast prototyping.</p>
+      </div>
+    </div>
+  </section>
 
-        <a href="afflatus_classes/index.html" class="portal-card">
-            <div>
-                <div class="card-icon"><i class="fas fa-graduation-cap"></i></div>
-                <h2>Afflatus Classes</h2>
-                <p>Quality digital literacy education, study notes, and technical courses.</p>
-            </div>
-            <span class="portal-btn">View Courses <i class="fas fa-arrow-right"></i></span>
-        </a>
+  <!-- Footer -->
+  <footer id="contact" class="footer">
+    <div class="footer-content">
+      <h2>Ready to Innovate with <span class="highlight">VIP Gaming</span>?</h2>
+      <p>Let's build the next generation of tech together.</p>
+      <p class="copyright">&copy; 2026 VIP Gaming. All rights reserved.</p>
+    </div>
+  </footer>
 
-        <a href="affiliated_website/index.html" class="portal-card">
-            <div>
-                <div class="card-icon"><i class="fas fa-store"></i></div>
-                <h2>Shop Deals</h2>
-                <p>Handpicked Amazon deals on top-tier gaming gear, electronics, and accessories.</p>
-            </div>
-            <span class="portal-btn">View Deals <i class="fas fa-arrow-right"></i></span>
-        </a>
-
-        <a href="emitra/index.html" class="portal-card">
-            <div>
-                <div class="card-icon"><i class="fas fa-id-card"></i></div>
-                <h2>e-Mitra Services</h2>
-                <p>Government online portal services including Jan Aadhaar and bill payments.</p>
-            </div>
-            <span class="portal-btn">Access Services <i class="fas fa-arrow-right"></i></span>
-        </a>
-
-        <a href="Travelling/index.html" class="portal-card">
-            <div>
-                <div class="card-icon"><i class="fas fa-plane-departure"></i></div>
-                <h2>Travel Portal</h2>
-                <p>Explore curated tour packages across India including Kashmir & Rajasthan.</p>
-            </div>
-            <span class="portal-btn">Explore Travel <i class="fas fa-arrow-right"></i></span>
-        </a>
-    </section>
-</main>
-
-<a href="https://wa.me/919610147688?text=Hello%20Afflatus,%20I%20have%20a%20query%20regarding%20VIP%20Gaming." class="whatsapp-float" target="_blank" title="Chat on WhatsApp">
-    <i class="fab fa-whatsapp"></i>
-</a>
-
-<footer style="text-align: center; padding: 35px 20px; background: #0b1120; color: #64748b; border-top: 1px solid var(--border-color);">
-    <p>&copy; 2026 VIP Gaming - Afflatus Classes. All rights reserved.</p>
-</footer>
-
+  <script>
+    lucide.createIcons();
+  </script>
 </body>
 </html>
